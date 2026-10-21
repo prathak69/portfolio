@@ -7,6 +7,7 @@
   playsinline
   preload="auto"
   (seeked)="onVideoSeeked()"
+  (loadedmetadata)="onMetadataLoaded()"
 ></video>
 
 <!-- NAVBAR (fixed, z-index: 10) -->
@@ -98,8 +99,8 @@
   <div class="max-w-xl relative z-10">
     <!-- 1. Blurred intro label -->
     <div class="blurred-intro pointer-events-none select-none mb-5 sm:mb-6">
-      Hey there, meet A.R.I.A,<br />
-      Mainframe's Adaptive Response Interface Agent
+      Want to meet someone cool?<br>
+      You came to right place
     </div>
 
     <!-- 2. Typewriter text -->
@@ -136,7 +137,7 @@
         class="inline-flex items-center justify-center gap-2 sm:gap-3 text-white bg-transparent border border-white rounded-full text-[13px] sm:text-[15px] px-4 sm:px-5 py-[0.3em] mx-[0.2em] mb-[0.4em] whitespace-nowrap hover:bg-white hover:text-black transition-colors duration-200 cursor-pointer"
       >
         <span>
-          Reach us: <span class="underline underline-offset-1">hello&#64;mainframe.co</span>
+          Reach at: <span class="underline underline-offset-1">prathaksoni.19&#64;gmail.com</span>
         </span>
         <!-- 12x12 inline SVG of two overlapping rectangles -->
         <svg
@@ -165,4 +166,14 @@
       </button>
     </div>
   </div>
+
+  <!-- Mascot character (bottom-right corner) -->
+  <aside class="mascot-container" aria-label="Mainframe Mascot">
+    <img
+      [src]="mascotImage"
+      alt="A.R.I.A Robot Assistant"
+      class="mascot-img"
+      draggable="false"
+    />
+  </aside>
 </main>
