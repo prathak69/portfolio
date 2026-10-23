@@ -10,21 +10,80 @@
 :root {
   --font-heading: 'HelveticaNowDisplay-Medium', 'Helvetica Neue', Arial, sans-serif;
   --font-body: 'HelveticaNowDisplayW01-Rg', 'Helvetica Neue', Arial, sans-serif;
+
+  /* Neutrals for White Background */
+  --bg: #FFFFFF;
+  --paper: #F6F6F4;
+  --line: #E4E4E7;
+  --muted: #5B5F66;
+  --ink: #0C0C0C;
+
+  /* Accent Fills */
+  --red: #E5252A;
+  --orange: #FF7A00;
+  --yellow: #FFC400;
+  --green: #22C55E;
+  --cyan: #06B6D4;
+  --blue: #1F5BFF;
+  --purple: #6D3BFF;
+  --pink: #FF4D94;
+
+  /* Text-safe on White */
+  --red-text: #E5252A;
+  --orange-text: #C74A00;
+  --green-text: #0A7F3A;
+  --cyan-text: #0A7C9C;
+  --blue-text: #1F5BFF;
+  --purple-text: #6D3BFF;
+  --pink-text: #D91E75;
+
+  /* Swap per section or project card */
+  --accent: var(--orange);
+  --on-accent: var(--ink);
+  --accent-text: var(--orange-text);
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html, body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   background-color: #000;
   color: #fff;
   font-family: var(--font-body);
-  overflow: hidden;
+  overflow-x: clip;
+}
+
+/* Transparent Scrollbar - No White Strip */
+::-webkit-scrollbar {
+  width: 6px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(229, 9, 20, 0.4);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(229, 9, 20, 0.8);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(229, 9, 20, 0.4) transparent;
 }
 
 @keyframes blink {

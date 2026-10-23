@@ -5,13 +5,17 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Typewriter } from './services/typewriter';
 import { MASCOT_IMAGE_DATA } from './mascot-data';
 
+import { ProjectStackComponent } from './components/sticky-stacking-cards';
+import { DEFAULT_PROJECTS } from './models/project-card.model';
+
 @Component({
   selector: 'app-root',
-  imports: [MatRipple],
+  imports: [MatRipple, ProjectStackComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App implements OnInit, OnDestroy{
+  readonly projects = DEFAULT_PROJECTS;
   @ViewChild('bgVideo', { static: true }) bgVideoRef!: ElementRef<HTMLVideoElement>;
 
   readonly mascotImage = MASCOT_IMAGE_DATA;
