@@ -10,44 +10,54 @@
   (loadedmetadata)="onMetadataLoaded()"
 ></video>
 
-<!-- NAVBAR (fixed, z-index: 10) -->
-<header class="fixed top-0 left-0 w-full z-20 px-5 sm:px-8 py-4 sm:py-5 flex flex-row justify-between items-center backdrop-blur-md bg-black/40 border-b border-white/5 transition-all">
+<!-- NAVBAR (fixed, z-index: 20) -->
+<header
+  class="nav-header fixed top-0 left-0 w-full z-20 px-6 sm:px-10 py-3.5 sm:py-4 flex flex-row justify-between items-center"
+  [style.background]="navbarTheme().bg"
+  [style.backdrop-filter]="navbarTheme().backdropBlur"
+  [style.-webkit-backdrop-filter]="navbarTheme().backdropBlur"
+  [style.border-bottom]="'1px solid ' + navbarTheme().border"
+  [style.box-shadow]="navbarTheme().shadow"
+>
   <!-- Logo (left) -->
-  <a href="#" class="flex flex-row items-center gap-3 text-white no-underline group">
-    <span class="logo-text text-[21px] sm:text-[26px] tracking-tight text-white group-hover:text-red-400 transition-colors">
-      Mainframe&reg;
+  <a
+    href="#"
+    class="flex flex-row items-center gap-2.5 no-underline group transition-colors"
+    [style.color]="navbarTheme().textColor"
+  >
+    <span
+      class="logo-text text-[15px] sm:text-[17px] font-bold tracking-tight transition-colors"
+      [class.group-hover:text-red-400]="!navbarTheme().isLight"
+      [class.group-hover:text-[#FF7A00]]="navbarTheme().isLight"
+    >
+      Prathak Soni
     </span>
-    <span class="logo-asterisk text-[25px] sm:text-[30px] text-[#ff2a3b] select-none transition-transform group-hover:rotate-45">
+    <span
+      class="logo-asterisk text-[17px] sm:text-[19px] select-none transition-transform group-hover:rotate-45"
+      [style.color]="navbarTheme().asteriskColor"
+    >
       ✳︎
     </span>
   </a>
 
-  <!-- Desktop nav links (center, hidden below md) -->
-  <nav class="hidden md:flex flex-row items-center text-[22px] text-white">
-    <a
-      href="#projects"
-      class="text-white no-underline hover:text-red-400 transition-colors"
-    >Projects</a>
-    <span class="whitespace-pre text-white/50">, </span>
-    @for (link of navLinks; track link; let last = $last) {
+  <!-- Desktop nav links (centered, hidden below md) -->
+  <nav class="hidden md:flex flex-row items-center text-[12.5px] lg:text-[13.5px] xl:text-[14px] font-medium tracking-wide absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap pointer-events-auto">
+    @for (link of navLinks; track link.label; let last = $last) {
       <a
-        href="#projects"
-        class="text-white no-underline hover:text-red-400 transition-colors"
-      >{{ link }}</a>
+        [href]="link.href"
+        class="no-underline transition-colors"
+        [style.color]="navbarTheme().textColor"
+        [class.hover:text-red-400]="!navbarTheme().isLight"
+        [class.hover:text-[#FF7A00]]="navbarTheme().isLight"
+      >{{ link.label }}</a>
       @if (!last) {
-        <span class="whitespace-pre text-white/50">, </span>
+        <span
+          class="mx-2 lg:mx-2.5 text-xs font-light select-none transition-colors"
+          [style.color]="navbarTheme().separatorColor"
+        >|</span>
       }
     }
   </nav>
-
-  <!-- Desktop CTA (right, hidden below md) -->
-  <a
-    href="#projects"
-    class="hidden md:inline-flex items-center gap-2 text-[20px] text-white underline underline-offset-4 decoration-red-500/60 hover:text-red-400 hover:decoration-red-400 transition-all"
-  >
-    <span>Explore Works</span>
-    <span class="text-xs text-red-400">↓</span>
-  </a>
 
   <!-- Mobile hamburger (visible below md) -->
   <button
@@ -57,57 +67,46 @@
     class="flex md:hidden flex-col justify-center items-center gap-[5px] bg-transparent border-0 p-2 cursor-pointer focus:outline-none"
   >
     <span
-      class="w-6 h-[2px] bg-white transition-all duration-300 origin-center"
+      class="w-5 h-[2px] transition-all duration-300 origin-center"
+      [style.background-color]="navbarTheme().hamburgerColor"
       [class.rotate-45]="isMobileMenuOpen()"
       [class.translate-y-[7px]]="isMobileMenuOpen()"
     ></span>
     <span
-      class="w-6 h-[2px] bg-white transition-all duration-300"
+      class="w-5 h-[2px] transition-all duration-300"
+      [style.background-color]="navbarTheme().hamburgerColor"
       [class.opacity-0]="isMobileMenuOpen()"
     ></span>
     <span
-      class="w-6 h-[2px] bg-white transition-all duration-300 origin-center"
+      class="w-5 h-[2px] transition-all duration-300 origin-center"
+      [style.background-color]="navbarTheme().hamburgerColor"
       [class.-rotate-45]="isMobileMenuOpen()"
       [class.-translate-y-[7px]]="isMobileMenuOpen()"
     ></span>
   </button>
 </header>
 
-<!-- MOBILE OVERLAY (z-index: 9, hidden on md+) -->
+<!-- MOBILE OVERLAY (z-index: 19, hidden on md+) -->
 <div
-  class="fixed inset-0 z-[9] bg-black/90 backdrop-blur-md flex flex-col justify-center items-start px-8 gap-8 md:hidden transition-opacity duration-300"
+  class="fixed inset-0 z-[19] bg-black/90 backdrop-blur-md flex flex-col justify-center items-start px-8 gap-8 md:hidden transition-opacity duration-300"
   [class.opacity-100]="isMobileMenuOpen()"
   [class.pointer-events-auto]="isMobileMenuOpen()"
   [class.opacity-0]="!isMobileMenuOpen()"
   [class.pointer-events-none]="!isMobileMenuOpen()"
 >
-  <a
-    href="#projects"
-    (click)="closeMobileMenu()"
-    class="text-[32px] font-medium text-white no-underline hover:text-red-400 transition-colors"
-  >
-    Projects
-  </a>
-  @for (link of navLinks; track link) {
+  @for (link of navLinks; track link.label) {
     <a
-      href="#projects"
+      [href]="link.href"
       (click)="closeMobileMenu()"
       class="text-[32px] font-medium text-white no-underline hover:text-red-400 transition-colors"
     >
-      {{ link }}
+      {{ link.label }}
     </a>
   }
-  <a
-    href="#projects"
-    (click)="closeMobileMenu()"
-    class="text-[32px] font-medium text-red-400 underline underline-offset-4 hover:text-white transition-colors"
-  >
-    Explore Works ↓
-  </a>
 </div>
 
 <!-- HERO SECTION (z-index: 1) -->
-<main class="relative z-[1] h-screen flex flex-col justify-end pb-12 md:justify-center md:pb-0 px-5 sm:px-8 md:px-10 overflow-hidden">
+<main id="about" class="relative z-[1] h-screen flex flex-col justify-end pb-12 md:justify-center md:pb-0 px-5 sm:px-8 md:px-10 overflow-hidden">
   <!-- Content container -->
   <div class="max-w-xl relative z-10">
     <!-- 1. Blurred intro label -->
@@ -180,17 +179,7 @@
     </div>
   </div>
 
-  <!-- Scroll indicator to discover projects -->
-  <a
-    href="#projects"
-    class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1.5 text-white/50 hover:text-red-400 transition-colors no-underline group select-none"
-    aria-label="Scroll down to featured projects"
-  >
-    <span class="text-[11px] uppercase tracking-widest font-medium">Scroll</span>
-    <svg class="w-4 h-4 animate-bounce text-[#ff2a3b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-    </svg>
-  </a>
+
 
   <!-- Mascot character (bottom-right corner) -->
   <aside class="mascot-container" aria-label="Mainframe Mascot">
@@ -229,7 +218,7 @@
 </section>
 
 <!-- FOOTER (z-index: 2, Paper Background with Line Border) -->
-<footer class="relative z-[2] bg-[var(--paper,#F6F6F4)] border-t border-[var(--line,#E4E4E7)] px-5 sm:px-8 md:px-12 py-12 flex flex-col sm:flex-row justify-between items-center gap-4 text-[var(--muted,#5B5F66)] text-sm">
+<footer id="contact" class="relative z-[2] bg-[var(--paper,#F6F6F4)] border-t border-[var(--line,#E4E4E7)] px-5 sm:px-8 md:px-12 py-12 flex flex-col sm:flex-row justify-between items-center gap-4 text-[var(--muted,#5B5F66)] text-sm">
   <div class="flex items-center gap-2">
     <span class="text-[var(--ink,#0C0C0C)] font-bold">Mainframe&reg;</span>
     <span class="text-[var(--orange,#FF7A00)] font-black">✳︎</span>

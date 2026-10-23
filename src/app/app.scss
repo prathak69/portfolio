@@ -10,6 +10,15 @@
   pointer-events: none;
 }
 
+// Dynamic adaptive navbar transition
+.nav-header {
+  transition:
+    background 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    color 0.35s ease;
+}
+
 // Logo styling
 .logo-text {
   font-family: var(--font-heading);

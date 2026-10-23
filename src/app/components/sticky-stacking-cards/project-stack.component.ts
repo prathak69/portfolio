@@ -184,16 +184,59 @@ export type { ProjectCard, ProjectAccent };
       box-shadow:
         0 14px 35px -10px rgba(12, 12, 12, 0.08),
         0 4px 12px -2px rgba(12, 12, 12, 0.04);
-      transition: box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s ease;
+      transition:
+        background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.4s ease,
+        box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.3s ease;
     }
 
-    /* On hover: Border radiates with a softer, lower-intensity shadow spreading outward */
+    /* On hover: Background smoothly transitions to the card's accent color (replaces glow effect) */
     .card:hover {
+      background-color: var(--accent);
+      border-color: var(--accent);
       box-shadow:
-        0 0 16px 1px color-mix(in srgb, var(--accent) 32%, transparent),
-        0 0 36px 4px color-mix(in srgb, var(--accent) 18%, transparent),
-        0 0 65px 8px color-mix(in srgb, var(--accent) 10%, transparent),
-        0 20px 40px -12px rgba(12, 12, 12, 0.1);
+        0 24px 48px -12px rgba(12, 12, 12, 0.22),
+        0 8px 18px -4px rgba(12, 12, 12, 0.12);
+    }
+
+    .card:hover .num {
+      color: var(--on-accent);
+    }
+
+    .card:hover .name {
+      color: var(--on-accent);
+    }
+
+    .card:hover .cat-pill {
+      background-color: var(--on-accent);
+      border-color: var(--on-accent);
+      color: var(--accent);
+    }
+
+    .card:hover .cat-dot {
+      background-color: var(--accent);
+    }
+
+    .card:hover .live {
+      background-color: var(--on-accent);
+      color: var(--accent);
+      border-color: var(--on-accent);
+      box-shadow: 0 6px 20px -3px rgba(0, 0, 0, 0.25);
+    }
+
+    .card:hover .live:hover {
+      transform: translateY(-2px);
+      filter: brightness(0.94);
+    }
+
+    .card:hover .accent-bar {
+      background-color: var(--on-accent);
+    }
+
+    .card:hover .img-frame {
+      border-color: var(--on-accent);
+      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.22);
     }
 
     @media (min-width: 640px) {
@@ -237,7 +280,7 @@ export type { ProjectCard, ProjectAccent };
       font-variant-numeric: tabular-nums;
       user-select: none;
       flex-shrink: 0;
-      transition: color 0.3s ease;
+      transition: color 0.4s ease;
     }
 
     .meta {
@@ -264,7 +307,7 @@ export type { ProjectCard, ProjectAccent };
       border: 2px solid var(--accent);
       color: var(--accent-text, var(--accent));
       box-shadow: 0 2px 6px rgba(12, 12, 12, 0.04);
-      transition: border-color 0.3s ease, color 0.3s ease;
+      transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
     }
 
     .cat-dot {
@@ -273,6 +316,7 @@ export type { ProjectCard, ProjectAccent };
       height: 7px;
       border-radius: 9999px;
       background-color: var(--accent);
+      transition: background-color 0.4s ease;
     }
 
     .cat {
@@ -288,6 +332,7 @@ export type { ProjectCard, ProjectAccent };
       font-size: clamp(1.2rem, 2.4vw, 2.3rem);
       letter-spacing: -0.01em;
       line-height: 1.1;
+      transition: color 0.4s ease;
     }
 
     /* "Live Project" Button filled with --accent, text in --on-accent */
@@ -309,7 +354,13 @@ export type { ProjectCard, ProjectAccent };
       color: var(--on-accent);
       border: 2px solid var(--accent);
       box-shadow: 0 4px 14px -3px rgba(12, 12, 12, 0.15);
-      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, filter 0.2s ease;
+      transition:
+        background-color 0.4s ease,
+        color 0.4s ease,
+        border-color 0.4s ease,
+        transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+        box-shadow 0.25s ease,
+        filter 0.2s ease;
     }
 
     .live-arrow {
@@ -345,6 +396,7 @@ export type { ProjectCard, ProjectAccent };
       border-radius: 9999px;
       margin-bottom: 1.25rem;
       opacity: 1;
+      transition: background-color 0.4s ease;
     }
 
     /* 40% / 60% Grid Layout */
@@ -396,7 +448,7 @@ export type { ProjectCard, ProjectAccent };
       border: 2px solid var(--accent);
       background-color: var(--bg, #FFFFFF);
       box-shadow: 0 4px 16px -2px rgba(12, 12, 12, 0.08);
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
     }
 
     .img-frame-a {

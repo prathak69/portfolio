@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { afterNextRender, Component, computed, ElementRef, HostListener, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { MatRipple } from '@angular/material/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -25,7 +25,14 @@ export class App implements OnInit, OnDestroy{
   private readonly snackBar = inject(MatSnackBar);
 
   // Navigation items
-  readonly navLinks = ['Labs', 'Studio', 'Openings', 'Shop'];
+  readonly navLinks = [
+    { label: 'About', href: '#about' },
+    { label: 'Skills', href: '#skills' },
+    { label: 'Experience', href: '#experience' },
+    { label: 'Projects', href: '#projects' },
+    { label: 'Certifications', href: '#certifications' },
+    { label: 'Contact', href: '#contact' }
+  ];
 
   // Action pill buttons
   readonly pillButtons = [
@@ -38,6 +45,50 @@ export class App implements OnInit, OnDestroy{
   // UI state signals
   readonly isMobileMenuOpen = signal<boolean>(false);
   readonly showPills = signal<boolean>(false);
+  readonly isScrolled = signal<boolean>(false);
+  readonly isOverLightSection = signal<boolean>(false);
+
+  // Dynamic theme for the fixed navbar based on scroll position / section
+  readonly navbarTheme = computed(() => {
+    const isLight = this.isOverLightSection();
+    const isMenuOpen = this.isMobileMenuOpen();
+
+    if (isLight) {
+      // Warm luminous accent shade over light/white sections (Projects, Footer)
+      return {
+        isLight: true,
+        bg: 'rgba(255, 247, 237, 0.94)',
+        backdropBlur: 'blur(12px)',
+        border: 'rgba(255, 122, 0, 0.22)',
+        shadow: '0 4px 20px -2px rgba(255, 122, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04)',
+        textColor: '#1C1917',
+        textHoverColor: '#FF7A00',
+        separatorColor: 'rgba(255, 122, 0, 0.35)',
+        asteriskColor: '#FF7A00',
+        hamburgerColor: isMenuOpen ? '#FFFFFF' : '#1C1917'
+      };
+    }
+
+    // Hero section: completely transparent with crisp white text
+    return {
+      isLight: false,
+      bg: 'transparent',
+      backdropBlur: 'none',
+      border: 'transparent',
+      shadow: 'none',
+      textColor: '#FFFFFF',
+      textHoverColor: '#F87171',
+      separatorColor: 'rgba(255, 255, 255, 0.35)',
+      asteriskColor: '#FF2A3B',
+      hamburgerColor: '#FFFFFF'
+    };
+  });
+
+  constructor() {
+    afterNextRender(() => {
+      this.checkScrollPosition();
+    });
+  }
 
   // Video mouse-scrubbing state
   private targetTime = 0;
@@ -57,7 +108,7 @@ export class App implements OnInit, OnDestroy{
     'https://res.cloudinary.com/prathaksoni/video/upload/ki_0.05/v1792591379/0e97306f-2b09-43d8-9101-c6d03ef9c936_ndhdmu.mp4';
     
   readonly fullText =
-    'Glad you stopped in. Good taste tends to find us. Now, what are we building?';
+    'Glad you stopped in. Good taste tends to find me. Now, what should we build together?';
 
   ngOnInit(): void {
     // Start typewriter (speed: 38ms, startDelay: 600ms)
@@ -87,6 +138,25 @@ export class App implements OnInit, OnDestroy{
 
   closeMobileMenu(): void {
     this.isMobileMenuOpen.set(false);
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    this.checkScrollPosition();
+  }
+
+  private checkScrollPosition(): void {
+    if (typeof window === 'undefined') return;
+    const scrollY = window.scrollY || document.documentElement.scrollTop;
+    this.isScrolled.set(scrollY > 20);
+
+    const projectsEl = document.getElementById('projects');
+    if (projectsEl) {
+      const rect = projectsEl.getBoundingClientRect();
+      this.isOverLightSection.set(rect.top <= 70);
+    } else {
+      this.isOverLightSection.set(scrollY > 450);
+    }
   }
 
   // Safe zone tracking around character's face
