@@ -3,14 +3,16 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { MatRipple } from '@angular/material/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Typewriter } from './services/typewriter';
+import { RandomSelectionHighlightService } from './services/random-selection-highlight.service';
 import { MASCOT_IMAGE_DATA } from './mascot-data';
 
 import { ProjectStackComponent } from './components/sticky-stacking-cards';
+import { DesignApproachComponent } from './components/design-approach';
 import { DEFAULT_PROJECTS } from './models/project-card.model';
 
 @Component({
   selector: 'app-root',
-  imports: [MatRipple, ProjectStackComponent],
+  imports: [MatRipple, ProjectStackComponent, DesignApproachComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
@@ -21,12 +23,14 @@ export class App implements OnInit, OnDestroy{
   readonly mascotImage = MASCOT_IMAGE_DATA;
 
   readonly typewriter = inject(Typewriter);
+  private readonly selectionHighlight = inject(RandomSelectionHighlightService);
   private readonly clipboard = inject(Clipboard);
   private readonly snackBar = inject(MatSnackBar);
 
   // Navigation items
   readonly navLinks = [
     { label: 'About', href: '#about' },
+    { label: 'Approach', href: '#approach' },
     { label: 'Skills', href: '#skills' },
     { label: 'Experience', href: '#experience' },
     { label: 'Projects', href: '#projects' },
@@ -111,6 +115,9 @@ export class App implements OnInit, OnDestroy{
     'Glad you stopped in. Good taste tends to find me. Now, what should we build together?';
 
   ngOnInit(): void {
+    // Initialize global dynamic random accent selection highlight
+    this.selectionHighlight.init();
+
     // Start typewriter (speed: 38ms, startDelay: 600ms)
     this.typewriter.start(this.fullText, 38, 600);
 
@@ -121,6 +128,7 @@ export class App implements OnInit, OnDestroy{
   }
 
   ngOnDestroy(): void {
+    this.selectionHighlight.destroy();
     this.typewriter.cleanup();
     if (this.pillsTimeoutId) {
       clearTimeout(this.pillsTimeoutId);
@@ -150,9 +158,9 @@ export class App implements OnInit, OnDestroy{
     const scrollY = window.scrollY || document.documentElement.scrollTop;
     this.isScrolled.set(scrollY > 20);
 
-    const projectsEl = document.getElementById('projects');
-    if (projectsEl) {
-      const rect = projectsEl.getBoundingClientRect();
+    const lightEl = document.getElementById('approach') || document.getElementById('projects');
+    if (lightEl) {
+      const rect = lightEl.getBoundingClientRect();
       this.isOverLightSection.set(rect.top <= 70);
     } else {
       this.isOverLightSection.set(scrollY > 450);

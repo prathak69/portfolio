@@ -7,8 +7,23 @@
 
 @use "tailwindcss";
 
+@import url('https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&display=swap');
+
+.cabin-sketch-regular {
+  font-family: "Cabin Sketch", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.cabin-sketch-bold {
+  font-family: "Cabin Sketch", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
 :root {
   --font-heading: 'HelveticaNowDisplay-Medium', 'Helvetica Neue', Arial, sans-serif;
+  --font-sketch: 'Cabin Sketch', sans-serif;
   --font-body: 'HelveticaNowDisplayW01-Rg', 'Helvetica Neue', Arial, sans-serif;
 
   /* Neutrals for White Background */
@@ -37,10 +52,27 @@
   --purple-text: #6D3BFF;
   --pink-text: #D91E75;
 
+  /* Dynamic Selection Highlight Colors */
+  --selection-bg: #FF7A00;
+  --selection-text: #0C0C0C;
+
   /* Swap per section or project card */
   --accent: var(--orange);
   --on-accent: var(--ink);
   --accent-text: var(--orange-text);
+}
+
+/* Global Dynamic Accent Text Selection Highlight */
+::selection,
+*::selection {
+  background-color: var(--selection-bg, #FF7A00) !important;
+  color: var(--selection-text, #0C0C0C) !important;
+}
+
+::-moz-selection,
+*::-moz-selection {
+  background-color: var(--selection-bg, #FF7A00) !important;
+  color: var(--selection-text, #0C0C0C) !important;
 }
 
 * {
