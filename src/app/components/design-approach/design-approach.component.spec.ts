@@ -65,4 +65,11 @@ describe('DesignApproachComponent', () => {
     component.onLineHover(5);
     expect(component.activeImageIndex()).toBe(2);
   });
+
+  it('should apply is-image-visible class on statement container when hovering', () => {
+    component.isHovering.set(true);
+    fixture.detectChanges();
+    const container = fixture.nativeElement.querySelector('.statement-container');
+    expect(container.classList.contains('is-image-visible')).toBe(true);
+  });
 });

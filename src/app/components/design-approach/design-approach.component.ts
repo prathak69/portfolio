@@ -36,6 +36,7 @@ import {
       <div
         #statementContainer
         class="statement-container relative cursor-default"
+        [class.is-image-visible]="isHovering()"
         (mouseenter)="onPointerEnter()"
         (mouseleave)="onPointerLeave()"
         (mousemove)="onPointerMove($event)"
@@ -61,14 +62,14 @@ import {
           [style.transform]="artTransform()"
           [style.opacity]="artOpacity()"
         >
-          <div class="artwork-card relative w-[260px] sm:w-[320px] aspect-[16/9] shadow-[0_24px_60px_rgba(12,12,12,0.22)] rounded-xl overflow-hidden border border-black/10 bg-[#141414]">
+          <div class="artwork-card relative w-[220px] sm:w-[250px] md:w-[270px] aspect-[9/16] shadow-[0_24px_60px_rgba(12,12,12,0.22)] rounded-2xl overflow-hidden border border-black/10 bg-[#141414]">
             @for (img of hoverImages; track img.url; let idx = $index) {
               <img
                 [src]="img.url"
                 [alt]="img.alt"
                 loading="eager"
                 draggable="false"
-                class="absolute inset-0 w-full h-full object-cover transition-all duration-300 ease-out select-none"
+                class="absolute inset-0 w-full h-full object-cover object-center transition-all duration-300 ease-out select-none"
                 [class.opacity-100]="activeImageIndex() === idx"
                 [class.opacity-0]="activeImageIndex() !== idx"
                 [class.scale-100]="activeImageIndex() === idx"
@@ -170,6 +171,14 @@ import {
       filter: blur(0px);
     }
 
+    /* When hover image appears, vanish the native cursor so the floating artwork acts as cursor */
+    .statement-container:hover,
+    .statement-container:hover *,
+    .statement-container.is-image-visible,
+    .statement-container.is-image-visible * {
+      cursor: none !important;
+    }
+
     /* Floating artwork card following pointer */
     .floating-artwork {
       will-change: transform, opacity;
@@ -246,7 +255,7 @@ export class DesignApproachComponent {
   private currentY = -9999;
   private currentScale = 0.94;
   private targetScale = 0.94;
-  private isHovering = false;
+  readonly isHovering = signal<boolean>(false);
   private rafId: number | null = null;
   private lastTime = 0;
 
@@ -292,7 +301,7 @@ export class DesignApproachComponent {
   onPointerEnter(): void {
     if (typeof window === 'undefined') return;
     if (window.matchMedia('(pointer: coarse)').matches) return;
-    this.isHovering = true;
+    this.isHovering.set(true);
     this.targetScale = 1.0;
     this.artOpacity.set(0.95);
     this.lastTime = performance.now();
@@ -300,7 +309,7 @@ export class DesignApproachComponent {
   }
 
   onPointerLeave(): void {
-    this.isHovering = false;
+    this.isHovering.set(false);
     this.targetScale = 0.94;
     this.artOpacity.set(0);
   }
@@ -315,9 +324,9 @@ export class DesignApproachComponent {
   }
 
   onPointerMove(e: MouseEvent): void {
-    if (!this.isHovering) return;
-    this.targetX = e.clientX - 160;
-    this.targetY = e.clientY - 190;
+    if (!this.isHovering()) return;
+    this.targetX = e.clientX - 125;
+    this.targetY = e.clientY - 215;
 
     if (this.currentX < -9000) {
       this.currentX = this.targetX;
@@ -363,7 +372,7 @@ export class DesignApproachComponent {
     );
 
     const dist = Math.hypot(this.targetX - this.currentX, this.targetY - this.currentY);
-    if ((dist > 0.1 || this.isHovering) && this.artOpacity() > 0.001) {
+    if ((dist > 0.1 || this.isHovering()) && this.artOpacity() > 0.001) {
       this.rafId = requestAnimationFrame(this.animateLoop);
     }
   };
