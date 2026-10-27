@@ -1,379 +1,229 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   ElementRef,
-  afterNextRender,
-  computed,
-  inject,
-  input,
-  signal,
-  viewChild,
+  NgZone,
+  OnDestroy,
+  ViewChildren,
+  QueryList,
+  signal
 } from '@angular/core';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
+interface Principle {
+  number: string;
+  title: string;
+  kicker: string;
+  body: string;
+  accent: string;
+  bg: string;
+  borderColor: string;
+  doodleId: string;
+}
 
 @Component({
   selector: 'app-design-approach',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <section
-      #sectionRef
-      class="approach-section relative z-[2] bg-[var(--bg,#FFFFFF)] text-[var(--ink,#0C0C0C)] rounded-t-[40px] sm:rounded-t-[50px] md:rounded-t-[60px] px-5 sm:px-8 md:px-[5%] pt-20 sm:pt-24 md:pt-28 pb-20 sm:pb-28 shadow-[0_-25px_60px_rgba(12,12,12,0.06)] border-t border-[var(--line,#E4E4E7)]"
-      [class.is-revealed]="isRevealed()"
-    >
-      <!-- Top Utility Header -->
-      <div class="flex items-center justify-between mb-12 sm:mb-16 select-none">
-        <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#FFF4EB] border border-[#FFD0B0] text-[var(--orange-text,#C74A00)] text-xs font-bold tracking-widest uppercase shadow-xs">
-          <span class="w-2 h-2 rounded-full bg-[var(--orange,#FF7A00)] animate-pulse"></span>
-          <span>{{ kicker() }}</span>
+    <section id="approach" class="approach-section relative z-[2] bg-[#FFF8F0] px-5 sm:px-8 md:px-[6%] py-24 sm:py-32 border-t border-[#E8DCCF]">
+      <!-- Section Header -->
+      <div class="max-w-6xl mx-auto mb-16 sm:mb-20 text-center">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF3FF] border border-[#C2D8FF] text-xs font-mono font-bold uppercase tracking-wider text-[#2F5BFF] shadow-xs mb-5">
+          <span class="w-2 h-2 rounded-full bg-[#2F5BFF] animate-pulse"></span>
+          <span>02 // PHILOSOPHY &amp; METHODS</span>
         </div>
-        <span class="text-xs font-mono text-[var(--muted,#5B5F66)] tracking-widest hidden sm:inline-block">
-          02 // STATEMENT
-        </span>
-      </div>
 
-      <!-- Main Statement with Pointer Tracking Hover Image -->
-      <div
-        #statementContainer
-        class="statement-container relative cursor-default"
-        [class.is-image-visible]="isHovering()"
-        (mouseenter)="onPointerEnter()"
-        (mouseleave)="onPointerLeave()"
-        (mousemove)="onPointerMove($event)"
-      >
-        <h2 class="statement-heading cabin-sketch-bold m-0 tracking-normal text-[var(--ink,#0C0C0C)] select-text cursor-text">
-          @for (line of statementLines(); track $index) {
-            <span class="line-mask block overflow-hidden leading-[1.08] pb-1 select-text">
-              <span
-                class="line-inner block will-change-transform text-[var(--ink,#0C0C0C)] select-text"
-                [style.--line-index]="$index"
-                (mouseenter)="onLineHover($index)"
-              >
-                {{ line }}
-              </span>
-            </span>
-          }
+        <h2 class="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-[#14110F] text-ink m-0">
+          Design <span class="cabin-sketch-bold text-[#2F5BFF]">Approach</span>
         </h2>
-
-        <!-- Interactive Floating Pointer-Follow Artwork (Clay Character Series) -->
-        <div
-          #artRef
-          class="floating-artwork pointer-events-none fixed top-0 left-0 z-30 transition-opacity duration-300 select-none"
-          [style.transform]="artTransform()"
-          [style.opacity]="artOpacity()"
-        >
-          <div class="artwork-card relative w-[220px] sm:w-[250px] md:w-[270px] aspect-[9/16] shadow-[0_24px_60px_rgba(12,12,12,0.22)] rounded-2xl overflow-hidden border border-black/10 bg-[#141414]">
-            @for (img of hoverImages; track img.url; let idx = $index) {
-              <img
-                [src]="img.url"
-                [alt]="img.alt"
-                loading="eager"
-                draggable="false"
-                class="absolute inset-0 w-full h-full object-cover object-center transition-all duration-300 ease-out select-none"
-                [class.opacity-100]="activeImageIndex() === idx"
-                [class.opacity-0]="activeImageIndex() !== idx"
-                [class.scale-100]="activeImageIndex() === idx"
-                [class.scale-105]="activeImageIndex() !== idx"
-              />
-            }
-          </div>
-        </div>
+        <p class="mt-4 text-base sm:text-lg text-[#6B6560] text-muted max-w-xl mx-auto font-normal leading-relaxed">
+          Four foundational principles guiding every interface, algorithm, and interactive canvas I build.
+        </p>
       </div>
 
-      <!-- Supporting Metadata & Disciplines (at least 80px separation on desktop) -->
-      <div class="metadata-row mt-16 sm:mt-24 md:mt-28 pt-8 border-t border-[var(--line,#E4E4E7)] flex flex-col md:flex-row justify-between items-start gap-10">
-        <!-- Left Supporting Copy -->
-        <div class="max-w-md">
-          <p class="text-[var(--muted,#5B5F66)] text-base sm:text-lg md:text-[18px] leading-relaxed font-normal m-0">
-            {{ supportingCopy() }}
-          </p>
-        </div>
+      <!-- Principles Grid / Sticky Cards -->
+      <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+        @for (item of principles; track item.number; let idx = $index) {
+          <div
+            class="principle-card group relative p-8 sm:p-10 rounded-3xl border-2 transition-all duration-300 shadow-[0_14px_36px_rgba(20,17,15,0.04)] hover:-translate-y-1.5 hover:shadow-[0_22px_45px_rgba(20,17,15,0.08)] flex flex-col justify-between"
+            [style.background]="item.bg"
+            [style.border-color]="item.borderColor"
+            [attr.data-cursor]="'0' + (idx + 1)"
+          >
+            <!-- Top Row: Number & Animated Doodle -->
+            <div>
+              <div class="flex items-start justify-between mb-8">
+                <span class="font-mono text-3xl sm:text-4xl font-black" [style.color]="item.accent">
+                  {{ item.number }}
+                </span>
 
-        <!-- Right Disciplines -->
-        <div class="flex flex-col items-start md:items-end gap-3 w-full md:w-auto">
-          <span class="text-xs font-mono uppercase tracking-widest text-[var(--muted,#5B5F66)] select-none">
-            Disciplines
-          </span>
-          <div class="flex flex-wrap gap-2.5">
-            @for (disc of disciplines(); track disc) {
-              <span
-                class="discipline-pill px-4 py-2 text-xs sm:text-sm font-semibold tracking-tight rounded-full bg-[var(--paper,#F6F6F4)] border border-[var(--line,#E4E4E7)] text-[var(--ink,#0C0C0C)] transition-all duration-200 cursor-default select-none hover:bg-[var(--orange,#FF7A00)] hover:text-white hover:border-[var(--orange,#FF7A00)] hover:scale-105 hover:shadow-md"
-              >
-                {{ disc }}
+                <!-- Self-drawing SVG Doodle -->
+                <div class="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center p-2 rounded-2xl bg-white/70 border border-black/5 shadow-xs">
+                  @switch (item.doodleId) {
+                    @case ('clarity') {
+                      <!-- Clarity: Clean compass & focus grid -->
+                      <svg #doodleSvg class="w-full h-full" viewBox="0 0 64 64" fill="none" stroke="currentColor" [style.color]="item.accent" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="32" cy="32" r="22" class="doodle-path" />
+                        <circle cx="32" cy="32" r="8" class="doodle-path" />
+                        <line x1="32" y1="4" x2="32" y2="14" class="doodle-path" />
+                        <line x1="32" y1="50" x2="32" y2="60" class="doodle-path" />
+                        <line x1="4" y1="32" x2="14" y2="32" class="doodle-path" />
+                        <line x1="50" y1="32" x2="60" y2="32" class="doodle-path" />
+                      </svg>
+                    }
+                    @case ('alive') {
+                      <!-- Data Alive: Sine wave & pulsing nodes -->
+                      <svg #doodleSvg class="w-full h-full" viewBox="0 0 64 64" fill="none" stroke="currentColor" [style.color]="item.accent" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 32 C14 16, 22 48, 32 32 C42 16, 50 48, 58 32" class="doodle-path" />
+                        <circle cx="19" cy="24" r="3" fill="currentColor" />
+                        <circle cx="32" cy="32" r="3" fill="currentColor" />
+                        <circle cx="45" cy="40" r="3" fill="currentColor" />
+                      </svg>
+                    }
+                    @case ('perf') {
+                      <!-- Performance: Lightning bolt & speed lines -->
+                      <svg #doodleSvg class="w-full h-full" viewBox="0 0 64 64" fill="none" stroke="currentColor" [style.color]="item.accent" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="36 6 16 34 32 34 28 58 48 30 32 30 36 6" class="doodle-path" />
+                        <line x1="8" y1="18" x2="16" y2="18" class="doodle-path" />
+                        <line x1="48" y1="46" x2="56" y2="46" class="doodle-path" />
+                      </svg>
+                    }
+                    @case ('details') {
+                      <!-- Details: Doodle stars & sparkling cursor -->
+                      <svg #doodleSvg class="w-full h-full" viewBox="0 0 64 64" fill="none" stroke="currentColor" [style.color]="item.accent" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- 4-point star -->
+                        <path d="M32 10 L36 26 L52 30 L36 34 L32 50 L28 34 L12 30 L28 26 Z" class="doodle-path" />
+                        <!-- Tiny sparkle -->
+                        <path d="M48 14 L50 20 L56 22 L50 24 L48 30 L46 24 L40 22 L46 20 Z" class="doodle-path" />
+                      </svg>
+                    }
+                  }
+                </div>
+              </div>
+
+              <!-- Title & Kicker -->
+              <span class="inline-block text-xs font-mono font-bold tracking-widest uppercase mb-2" [style.color]="item.accent">
+                {{ item.kicker }}
               </span>
-            }
+              <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#14110F] text-ink mb-4">
+                {{ item.title }}
+              </h3>
+
+              <!-- Body Description -->
+              <p class="text-base text-[#6B6560] text-muted leading-relaxed font-normal">
+                {{ item.body }}
+              </p>
+            </div>
+
+            <!-- Bottom Pill -->
+            <div class="mt-8 pt-5 border-t border-black/8 flex items-center justify-between">
+              <span class="cabin-sketch-bold text-sm tracking-wide text-[#14110F] text-ink">
+                Core Standard
+              </span>
+              <span class="w-2.5 h-2.5 rounded-full" [style.background]="item.accent"></span>
+            </div>
           </div>
-        </div>
+        }
       </div>
     </section>
-  `,
-  styles: [`
-    @import url('https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&display=swap');
-
-    :host {
-      display: block;
-      width: 100%;
-      container-type: inline-size;
-    }
-
-    .cabin-sketch-regular {
-      font-family: "Cabin Sketch", sans-serif;
-      font-weight: 400;
-      font-style: normal;
-    }
-
-    .cabin-sketch-bold {
-      font-family: "Cabin Sketch", sans-serif;
-      font-weight: 700;
-      font-style: normal;
-    }
-
-    .statement-heading {
-      font-family: "Cabin Sketch", sans-serif;
-      font-weight: 700;
-      font-style: normal;
-      font-size: clamp(30px, 7.2cqw, 98px);
-      line-height: 1.05;
-      letter-spacing: 0.015em;
-      user-select: text;
-      -webkit-user-select: text;
-      cursor: text;
-    }
-
-    /* Mask container for line-by-line reveal */
-    .line-mask {
-      display: block;
-      overflow: hidden;
-      padding-bottom: 0.12em;
-      user-select: text;
-      -webkit-user-select: text;
-    }
-
-    .line-inner {
-      user-select: text;
-      -webkit-user-select: text;
-      cursor: text;
-      transform: translateY(108%);
-      opacity: 0;
-      filter: blur(8px);
-      transition:
-        transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.75s ease-out,
-        filter 0.85s ease-out;
-      transition-delay: calc(var(--line-index, 0) * 110ms);
-    }
-
-    /* Revealed state applied via IntersectionObserver */
-    :host-context(.is-revealed) .line-inner,
-    .is-revealed .line-inner {
-      transform: translateY(0%);
-      opacity: 1;
-      filter: blur(0px);
-    }
-
-    /* When hover image appears, vanish the native cursor so the floating artwork acts as cursor */
-    .statement-container:hover,
-    .statement-container:hover *,
-    .statement-container.is-image-visible,
-    .statement-container.is-image-visible * {
-      cursor: none !important;
-    }
-
-    /* Floating artwork card following pointer */
-    .floating-artwork {
-      will-change: transform, opacity;
-      transform-origin: center center;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .line-inner {
-        transform: none !important;
-        opacity: 1 !important;
-        filter: none !important;
-        transition: none !important;
-      }
-      .floating-artwork {
-        display: none !important;
-      }
-      .discipline-pill:hover {
-        transform: none !important;
-      }
-    }
-  `]
+  `
 })
-export class DesignApproachComponent {
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly sectionRef = viewChild<ElementRef<HTMLElement>>('sectionRef');
+export class DesignApproachComponent implements AfterViewInit, OnDestroy {
+  @ViewChildren('doodleSvg') doodleSvgs!: QueryList<ElementRef<SVGElement>>;
 
-  // Configurable inputs
-  readonly kicker = input<string>('// DESIGN APPROACH');
-  // Hover images series (Clay Character)
-  readonly hoverImages = [
+  readonly principles: Principle[] = [
     {
-      url: 'https://res.cloudinary.com/prathaksoni/image/upload/v1793103627/wave_gxzd6k.jpg',
-      alt: 'Clay character waving hello'
+      number: '01',
+      title: 'Clarity First',
+      kicker: 'REDUCE NOISE',
+      body: 'Remove noise before adding motion. Every element must earn its visual weight and solve a human need before decoration enters.',
+      accent: '#2F5BFF',
+      bg: '#F5F8FF',
+      borderColor: '#D4E2FF',
+      doodleId: 'clarity'
     },
     {
-      url: 'https://res.cloudinary.com/prathaksoni/image/upload/v1793103624/Clay_man_thinking_thoughtfully_2K_20261027174737_uoglkq.jpg',
-      alt: 'Clay character thinking thoughtfully'
+      number: '02',
+      title: 'Data Should Feel Alive',
+      kicker: 'KINETIC INTUITION',
+      body: 'Static charts hide the pulse of systems. Spring physics, collision bounds, and organic easing turn abstract numbers into tactile stories.',
+      accent: '#5CC46B',
+      bg: '#F3FBF5',
+      borderColor: '#C6EDD0',
+      doodleId: 'alive'
     },
     {
-      url: 'https://res.cloudinary.com/prathaksoni/image/upload/v1793103626/Clay_man_giving_thumbs_up_2K_20261027174728_eab7ls.jpg',
-      alt: 'Clay character giving a thumbs up'
+      number: '03',
+      title: 'Performance Is Design',
+      kicker: '60FPS OR BUST',
+      body: "If an animation drops below 60fps, it's not delight—it's friction. Offload heavy loops outside Angular's zone and keep render trees lean.",
+      accent: '#FFC93C',
+      bg: '#FFFDF0',
+      borderColor: '#FFEFA6',
+      doodleId: 'perf'
+    },
+    {
+      number: '04',
+      title: 'Details Matter',
+      kicker: 'MICRO-DELIGHT',
+      body: 'The feeling of quality lives in the micro-seconds: the magnetic button resistance, dynamic selection colours, and responsive character gaze.',
+      accent: '#FF8FB1',
+      bg: '#FFF5F8',
+      borderColor: '#FFD3E1',
+      doodleId: 'details'
     }
-  ] as const;
+  ];
 
-  readonly activeImageIndex = signal<number>(0);
+  private scrollTriggers: ScrollTrigger[] = [];
 
-  readonly statementLines = computed(() => [
-    'I’m a frontend engineer',
-    'who builds scalable, data-rich',
-    'web applications, turning',
-    'complex requirements into',
-    'clean code and intuitive',
-    'user experiences.'
-  ]);
+  constructor(private readonly zone: NgZone) {}
 
-  readonly supportingCopy = input<string>(
-    'I connect strategy and expression through brand identities, editorial systems, and digital experiences designed to work as a whole.'
-  );
-
-  readonly disciplines = input<string[]>([
-    'Frontend Architecture',
-    '3D & Spatial Web',
-    'Kinetic Design Systems',
-    'Interactive Experiences'
-  ]);
-
-  // Reveal state
-  readonly isRevealed = signal<boolean>(false);
-
-  // Floating artwork state
-  private targetX = -9999;
-  private targetY = -9999;
-  private currentX = -9999;
-  private currentY = -9999;
-  private currentScale = 0.94;
-  private targetScale = 0.94;
-  readonly isHovering = signal<boolean>(false);
-  private rafId: number | null = null;
-  private lastTime = 0;
-
-  readonly artTransform = signal<string>('translate3d(-9999px, -9999px, 0) scale(0.94)');
-  readonly artOpacity = signal<number>(0);
-
-  constructor() {
-    afterNextRender(() => {
-      this.initIntersectionObserver();
-    });
-
-    this.destroyRef.onDestroy(() => {
-      if (this.rafId !== null) {
-        cancelAnimationFrame(this.rafId);
-      }
-    });
-  }
-
-  private initIntersectionObserver(): void {
-    const el = this.sectionRef()?.nativeElement;
-    if (!el || typeof IntersectionObserver === 'undefined') {
-      this.isRevealed.set(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            this.isRevealed.set(true);
-            observer.disconnect();
-            break;
-          }
-        }
-      },
-      { threshold: 0.18 }
-    );
-
-    observer.observe(el);
-    this.destroyRef.onDestroy(() => observer.disconnect());
-  }
-
-  onPointerEnter(): void {
+  ngAfterViewInit(): void {
     if (typeof window === 'undefined') return;
-    if (window.matchMedia('(pointer: coarse)').matches) return;
-    this.isHovering.set(true);
-    this.targetScale = 1.0;
-    this.artOpacity.set(0.95);
-    this.lastTime = performance.now();
-    this.startRaf();
+
+    this.zone.runOutsideAngular(() => {
+      this.initSelfDrawingDoodles();
+    });
   }
 
-  onPointerLeave(): void {
-    this.isHovering.set(false);
-    this.targetScale = 0.94;
-    this.artOpacity.set(0);
+  private initSelfDrawingDoodles(): void {
+    setTimeout(() => {
+      this.doodleSvgs.forEach((svgRef) => {
+        const svg = svgRef.nativeElement;
+        const paths = svg.querySelectorAll<SVGGeometryElement>('.doodle-path');
+
+        paths.forEach((path) => {
+          const length = path.getTotalLength ? path.getTotalLength() : 120;
+          path.style.strokeDasharray = `${length}`;
+          path.style.strokeDashoffset = `${length}`;
+
+          const st = ScrollTrigger.create({
+            trigger: svg,
+            start: 'top 85%',
+            once: true,
+            onEnter: () => {
+              gsap.to(path, {
+                strokeDashoffset: 0,
+                duration: 1.4,
+                ease: 'power2.out'
+              });
+            }
+          });
+          this.scrollTriggers.push(st);
+        });
+      });
+    }, 250);
   }
 
-  onLineHover(lineIndex: number): void {
-    // 6 lines grouped into intervals of 2:
-    // Lines 0, 1 -> Wave (0)
-    // Lines 2, 3 -> Thinking (1)
-    // Lines 4, 5 -> Thumbs up (2)
-    const imgIndex = Math.min(2, Math.floor(lineIndex / 2));
-    this.activeImageIndex.set(imgIndex);
+  ngOnDestroy(): void {
+    this.scrollTriggers.forEach((st) => st.kill());
+    this.scrollTriggers = [];
   }
-
-  onPointerMove(e: MouseEvent): void {
-    if (!this.isHovering()) return;
-    this.targetX = e.clientX - 125;
-    this.targetY = e.clientY - 215;
-
-    if (this.currentX < -9000) {
-      this.currentX = this.targetX;
-      this.currentY = this.targetY;
-    }
-
-    // Determine interval of space vertically within the statement container
-    const container = e.currentTarget as HTMLElement | null;
-    if (container) {
-      const rect = container.getBoundingClientRect();
-      if (rect.height > 0) {
-        const ratio = (e.clientY - rect.top) / rect.height;
-        if (ratio < 0.35) {
-          this.activeImageIndex.set(0);
-        } else if (ratio < 0.68) {
-          this.activeImageIndex.set(1);
-        } else {
-          this.activeImageIndex.set(2);
-        }
-      }
-    }
-
-    this.startRaf();
-  }
-
-  private startRaf(): void {
-    if (this.rafId !== null) return;
-    this.rafId = requestAnimationFrame(this.animateLoop);
-  }
-
-  private readonly animateLoop = (now: number): void => {
-    this.rafId = null;
-    const deltaMs = Math.min(now - (this.lastTime || now), 64);
-    this.lastTime = now;
-
-    const factor = 1 - Math.exp(-deltaMs / 140);
-    this.currentX += (this.targetX - this.currentX) * factor;
-    this.currentY += (this.targetY - this.currentY) * factor;
-    this.currentScale += (this.targetScale - this.currentScale) * factor;
-
-    this.artTransform.set(
-      `translate3d(${this.currentX.toFixed(2)}px, ${this.currentY.toFixed(2)}px, 0) scale(${this.currentScale.toFixed(3)})`
-    );
-
-    const dist = Math.hypot(this.targetX - this.currentX, this.targetY - this.currentY);
-    if ((dist > 0.1 || this.isHovering()) && this.artOpacity() > 0.001) {
-      this.rafId = requestAnimationFrame(this.animateLoop);
-    }
-  };
 }

@@ -1,8 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   ElementRef,
+  NgZone,
   afterNextRender,
   inject,
   input,
@@ -18,14 +18,6 @@ import {
 
 export type { ProjectCard, ProjectAccent };
 
-/**
- * Sticky-stacking project cards mapped to the official White Background palette.
- * - Background: Paper (#F6F6F4)
- * - Borders: Line (#E4E4E7)
- * - Text: Ink (#0C0C0C) & Muted (#5B5F66)
- * - Dynamic Accents: Each card binds its own --accent and --on-accent (Red, Green, Blue, etc.)
- *   for the massive card number, "Live Project" fill, and accent indicator.
- */
 @Component({
   selector: 'app-project-stack',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,13 +30,17 @@ export type { ProjectCard, ProjectAccent };
         >
           <div class="sticky-inner">
             <article
-              class="card"
+              #cardRef
+              class="card group"
               [style.--accent]="getAccent(p, i).fill"
               [style.--on-accent]="getAccent(p, i).onAccent"
               [style.--accent-text]="getAccent(p, i).textSafe"
               [style.transform]="'scale(' + scaleFor(i) + ')'"
+              data-cursor="VIEW"
+              (mousemove)="onCardTilt($event, cardRef)"
+              (mouseleave)="onCardReset(cardRef)"
             >
-              <!-- Top Row: Number, Meta (Category & Name), Live CTA -->
+              <!-- Top Row: Number, Meta (Category & Name), Live & GitHub CTAs -->
               <header class="top">
                 <span class="num">{{ pad(i + 1) }}</span>
 
@@ -56,36 +52,118 @@ export type { ProjectCard, ProjectAccent };
                   <h3 class="name">{{ p.name }}</h3>
                 </div>
 
-                <a
-                  class="live"
-                  [href]="p.liveUrl ?? '#'"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="View live project for {{ p.name }}"
-                >
-                  <span>Live Project</span>
-                  <svg
-                    class="live-arrow"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
+                <div class="flex items-center gap-2 sm:gap-3">
+                  @if (p.githubUrl) {
+                    <a
+                      class="github-btn"
+                      [href]="p.githubUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="View source code on GitHub"
+                      data-cursor="CODE"
+                    >
+                      <span>GitHub</span>
+                      <span>🐙</span>
+                    </a>
+                  }
+
+                  <a
+                    class="live"
+                    [href]="p.liveUrl ?? '#'"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="View live project for {{ p.name }}"
+                    data-cursor="LIVE"
                   >
-                    <path
-                      d="M4 12L12 4M12 4H6M12 4V10"
-                      stroke="currentColor"
-                      stroke-width="2.2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </a>
+                    <span>Live Project</span>
+                    <svg
+                      class="live-arrow"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M4 12L12 4M12 4H6M12 4V10"
+                        stroke="currentColor"
+                        stroke-width="2.2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </a>
+                </div>
               </header>
 
               <!-- Thick accent underline rule -->
               <div class="accent-bar" aria-hidden="true"></div>
+
+              <!-- Problem, Role & Description Context Banner -->
+              <div class="project-context-row mb-6 grid grid-cols-1 md:grid-cols-12 gap-4 text-xs font-mono">
+                <div class="md:col-span-8">
+                  <span class="font-bold uppercase tracking-wider block text-[#14110F] mb-1">
+                    Problem &amp; Innovation:
+                  </span>
+                  <p class="text-[#4A4643] text-muted m-0 leading-relaxed font-normal text-sm">
+                    {{ p.problem || p.description }}
+                  </p>
+                </div>
+                <div class="md:col-span-4 flex flex-col items-start md:items-end justify-between">
+                  <div>
+                    <span class="font-bold uppercase tracking-wider block text-[#14110F] mb-1">Role</span>
+                    <span class="text-[#14110F] text-ink font-semibold">{{ p.role || 'Lead Frontend Engineer' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Interactive Live Preview Widget Row -->
+              @if (p.widgetType) {
+                <div class="live-widget-box mb-6 p-4 rounded-2xl bg-white border border-black/10 flex items-center justify-between shadow-xs">
+                  @switch (p.widgetType) {
+                    @case ('line-chart') {
+                      <div class="flex items-center gap-3">
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#E5392F] animate-ping"></span>
+                        <span class="font-mono text-xs font-bold text-[#14110F] text-ink">Live Telemetry Simulation:</span>
+                        <span class="font-mono text-xs text-[#6B6560] text-muted">60fps tick rate &bull; 0ms latency</span>
+                      </div>
+                      <div class="w-36 h-8 flex items-center">
+                        <svg class="w-full h-full overflow-visible" viewBox="0 0 100 24">
+                          <path
+                            d="M0 16 Q20 4, 40 14 T80 8 T100 12"
+                            fill="none"
+                            stroke="var(--accent)"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            class="animate-pulse"
+                          />
+                        </svg>
+                      </div>
+                    }
+                    @case ('spatial-3d') {
+                      <div class="flex items-center gap-3">
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#2F5BFF] animate-ping"></span>
+                        <span class="font-mono text-xs font-bold text-[#14110F] text-ink">GLSL Displacement Shader:</span>
+                        <span class="font-mono text-xs text-[#6B6560] text-muted">Interactive 3D viewport ready</span>
+                      </div>
+                      <span class="font-mono text-xs font-bold text-[#2F5BFF] px-2.5 py-1 rounded-full bg-[#EBF3FF]">
+                        WebGL Active
+                      </span>
+                    }
+                    @case ('chat-typing') {
+                      <div class="flex items-center gap-3">
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#5CC46B] animate-ping"></span>
+                        <span class="font-mono text-xs font-bold text-[#14110F] text-ink">Living Kinetic Tokens:</span>
+                        <span class="font-mono text-xs text-[#6B6560] text-muted">Automated responsive scale</span>
+                      </div>
+                      <span class="cabin-sketch-bold text-sm text-[#0A7F3A]">
+                        Fluid Typography
+                      </span>
+                    }
+                  }
+                </div>
+              }
 
               <!-- Image Grid: 40% Left (2 Stacked) / 60% Right (Tall Hero) -->
               <div class="grid">
@@ -119,6 +197,20 @@ export type { ProjectCard, ProjectAccent };
                   </div>
                 </div>
               </div>
+
+              <!-- Tech Stack Chips (Hover pop-in) -->
+              @if (p.stack) {
+                <div class="stack-chips-row mt-6 pt-4 border-t border-black/8 flex flex-wrap gap-2">
+                  @for (tech of p.stack; track tech; let sIdx = $index) {
+                    <span
+                      class="stack-chip px-3 py-1 rounded-lg text-xs font-mono font-bold bg-white border border-black/10 text-[#14110F] text-ink shadow-xs transition-transform duration-200"
+                      [style.transition-delay]="(sIdx * 40) + 'ms'"
+                    >
+                      {{ tech }}
+                    </span>
+                  }
+                </div>
+              }
             </article>
           </div>
         </div>
@@ -129,7 +221,6 @@ export type { ProjectCard, ProjectAccent };
     :host {
       --radius: 36px;
       --sticky-top: 5.5rem;
-
       display: block;
       width: 100%;
     }
@@ -169,389 +260,230 @@ export type { ProjectCard, ProjectAccent };
     .sticky-inner {
       position: relative;
       width: 100%;
+      perspective: 900px;
     }
 
-    /* Card Shell: Solid colored border present at all times with Paper background */
     .card {
       position: relative;
       transform-origin: top center;
       will-change: transform;
-      border: 2px solid var(--accent);
+      border: 3px solid var(--accent);
       border-radius: var(--radius);
-      background-color: var(--paper, #F6F6F4);
-      padding: 1.25rem;
+      background-color: #FFFFFF;
+      padding: 1.5rem;
       overflow: hidden;
-      box-shadow:
-        0 14px 35px -10px rgba(12, 12, 12, 0.08),
-        0 4px 12px -2px rgba(12, 12, 12, 0.04);
-      transition:
-        background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-        border-color 0.4s ease,
-        box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.3s ease;
+      box-shadow: 0 16px 40px -10px rgba(20, 17, 15, 0.08);
+      transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.2s ease-out;
     }
 
-    /* On hover: Background smoothly transitions to the card's accent color (replaces glow effect) */
     .card:hover {
-      background-color: var(--accent);
       border-color: var(--accent);
-      box-shadow:
-        0 24px 48px -12px rgba(12, 12, 12, 0.22),
-        0 8px 18px -4px rgba(12, 12, 12, 0.12);
-    }
-
-    .card:hover .num {
-      color: var(--on-accent);
-    }
-
-    .card:hover .name {
-      color: var(--on-accent);
-    }
-
-    .card:hover .cat-pill {
-      background-color: var(--on-accent);
-      border-color: var(--on-accent);
-      color: var(--accent);
-    }
-
-    .card:hover .cat-dot {
-      background-color: var(--accent);
+      box-shadow: 0 28px 60px -12px rgba(20, 17, 15, 0.16);
     }
 
     .card:hover .live {
-      background-color: var(--on-accent);
+      transform: scale(1.05);
+    }
+
+    .card:hover .github-btn {
+      transform: scale(1.05);
+      border-color: var(--accent);
       color: var(--accent);
-      border-color: var(--on-accent);
-      box-shadow: 0 6px 20px -3px rgba(0, 0, 0, 0.25);
     }
 
-    .card:hover .live:hover {
+    .card:hover .stack-chip {
       transform: translateY(-2px);
-      filter: brightness(0.94);
+      border-color: var(--accent);
     }
 
-    .card:hover .accent-bar {
-      background-color: var(--on-accent);
-    }
-
-    .card:hover .img-frame {
-      border-color: var(--on-accent);
-      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.22);
-    }
-
-    @media (min-width: 640px) {
-      .card {
-        padding: 1.75rem;
-      }
-    }
-
-    @media (min-width: 768px) {
-      .card {
-        padding: 2.25rem;
-      }
-    }
-
-    /* Top Row */
     .top {
-      position: relative;
-      z-index: 1;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
     }
 
-    @media (min-width: 640px) {
-      .top {
-        margin-bottom: 1.25rem;
-        flex-wrap: nowrap;
-      }
-    }
-
-    /* Massive Card Number styled with Project Accent */
     .num {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 5vw, 3.5rem);
       font-weight: 900;
-      line-height: 0.9;
+      line-height: 1;
       color: var(--accent);
-      font-size: clamp(2.75rem, 8vw, 120px);
-      letter-spacing: -0.04em;
-      font-variant-numeric: tabular-nums;
-      user-select: none;
-      flex-shrink: 0;
-      transition: color 0.4s ease;
+      transition: color 0.35s ease;
     }
 
     .meta {
-      flex: 1;
+      flex: 1 1 auto;
       min-width: 200px;
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
     }
 
-    /* Category / Project Name Capsule with Coloured Border */
     .cat-pill {
       display: inline-flex;
       align-items: center;
-      gap: 0.45rem;
-      width: fit-content;
-      padding: 0.25rem 0.85rem;
+      gap: 0.5rem;
+      padding: 0.25rem 0.75rem;
       border-radius: 9999px;
-      font-size: clamp(0.72rem, 1.1vw, 0.88rem);
+      background: #FFFFFF;
+      border: 1px solid var(--line, #E4E4E7);
+      color: var(--accent-text);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
       font-weight: 700;
-      letter-spacing: 0.1em;
       text-transform: uppercase;
-      background-color: var(--bg, #FFFFFF);
-      border: 2px solid var(--accent);
-      color: var(--accent-text, var(--accent));
-      box-shadow: 0 2px 6px rgba(12, 12, 12, 0.04);
-      transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+      transition: background-color 0.35s ease, color 0.35s ease;
     }
 
     .cat-dot {
-      display: inline-block;
-      width: 7px;
-      height: 7px;
-      border-radius: 9999px;
-      background-color: var(--accent);
-      transition: background-color 0.4s ease;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
     }
 
-    .cat {
-      display: block;
-    }
-
-    /* Project Heading in solid Ink (#0C0C0C) */
     .name {
+      font-family: var(--font-heading);
+      font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #14110F;
       margin: 0;
-      color: var(--ink, #0C0C0C);
-      font-weight: 700;
-      text-transform: uppercase;
-      font-size: clamp(1.2rem, 2.4vw, 2.3rem);
-      letter-spacing: -0.01em;
-      line-height: 1.1;
-      transition: color 0.4s ease;
+      transition: color 0.35s ease;
     }
 
-    /* "Live Project" Button filled with --accent, text in --on-accent */
-    .live {
+    .live, .github-btn {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
       gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
       border-radius: 9999px;
-      padding: 0.75rem 1.8rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-size: 0.85rem;
       text-decoration: none;
-      white-space: nowrap;
-      cursor: pointer;
-      background-color: var(--accent);
-      color: var(--on-accent);
-      border: 2px solid var(--accent);
-      box-shadow: 0 4px 14px -3px rgba(12, 12, 12, 0.15);
-      transition:
-        background-color 0.4s ease,
-        color 0.4s ease,
-        border-color 0.4s ease,
-        transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
-        box-shadow 0.25s ease,
-        filter 0.2s ease;
+      transition: all 0.25s ease;
     }
 
-    .live-arrow {
-      transition: transform 0.25s ease;
+    .live {
+      background: var(--accent);
+      color: #FFFFFF;
+      border: 1px solid var(--accent);
     }
 
-    .live:hover {
-      transform: translateY(-2px);
-      filter: brightness(1.06);
-      box-shadow: 0 8px 22px -4px rgba(12, 12, 12, 0.25);
+    .github-btn {
+      background: #FFFFFF;
+      color: #14110F;
+      border: 1.5px solid #14110F;
     }
 
-    .live:hover .live-arrow {
-      transform: translate(2px, -2px);
-    }
-
-    .live:active {
-      transform: scale(0.97);
-    }
-
-    @media (min-width: 640px) {
-      .live {
-        padding: 0.85rem 2.2rem;
-        font-size: 0.925rem;
-      }
-    }
-
-    /* Thick accent underline rule */
     .accent-bar {
       width: 100%;
       height: 3px;
-      background-color: var(--accent);
+      background: var(--accent);
       border-radius: 9999px;
-      margin-bottom: 1.25rem;
-      opacity: 1;
-      transition: background-color 0.4s ease;
+      margin-bottom: 1.5rem;
+      transition: background-color 0.35s ease;
     }
 
-    /* 40% / 60% Grid Layout */
     .grid {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0.85rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
     }
 
-    @media (min-width: 640px) {
+    @media (min-width: 768px) {
       .grid {
-        flex-direction: row;
-        gap: 1rem;
+        grid-template-columns: 2fr 3fr;
+        gap: 1.25rem;
       }
     }
 
     .col-left {
-      width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 0.85rem;
-    }
-
-    @media (min-width: 640px) {
-      .col-left {
-        width: 40%;
-        gap: 1rem;
-      }
+      gap: 1rem;
     }
 
     .col-right {
-      width: 100%;
+      display: flex;
     }
 
-    @media (min-width: 640px) {
-      .col-right {
-        width: 60%;
-      }
-    }
-
-    /* Project Images with Coloured Border */
     .img-frame {
       position: relative;
       width: 100%;
+      border-radius: calc(var(--radius) - 16px);
       overflow: hidden;
-      border-radius: calc(var(--radius) - 10px);
-      border: 2px solid var(--accent);
-      background-color: var(--bg, #FFFFFF);
-      box-shadow: 0 4px 16px -2px rgba(12, 12, 12, 0.08);
-      transition: border-color 0.4s ease, box-shadow 0.4s ease;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      background: #111;
+      aspect-ratio: 16 / 10;
+      transition: border-color 0.35s ease;
     }
 
-    .img-frame-a {
-      height: clamp(140px, 16vw, 230px);
-    }
-
-    .img-frame-b {
-      height: clamp(170px, 22vw, 340px);
-    }
-
-    .img-frame-c {
-      height: 240px;
-    }
-
-    @media (min-width: 640px) {
+    @media (min-width: 768px) {
       .img-frame-c {
+        aspect-ratio: auto;
         height: 100%;
-        min-height: 100%;
+        min-height: 380px;
       }
     }
 
     .img {
-      display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .img-frame:hover .img {
+    .card:hover .img {
       transform: scale(1.04);
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .card {
-        transform: none !important;
-      }
-      .img {
-        transition: none !important;
-      }
-    }
-  `,
+  `
 })
 export class ProjectStackComponent {
   readonly projects = input<ProjectCard[]>(DEFAULT_PROJECTS);
+  readonly OFFSET_PX = 28;
+  readonly listRef = viewChild<ElementRef<HTMLElement>>('list');
+  readonly scrollY = signal<number>(0);
 
-  protected readonly OFFSET_PX = 28;
-  private readonly STEP = 0.032;
-
-  private readonly list = viewChild.required<ElementRef<HTMLElement>>('list');
-  private readonly progress = signal(0);
-  private readonly destroyRef = inject(DestroyRef);
+  private readonly zone = inject(NgZone);
 
   constructor() {
     afterNextRender(() => {
-      let ticking = false;
-
-      const update = () => {
-        ticking = false;
-        const el = this.list().nativeElement;
-        const rect = el.getBoundingClientRect();
-        const stickyOffset = 100;
-        const scrollable = rect.height - window.innerHeight;
-        const p = scrollable > 0 ? (stickyOffset - rect.top) / scrollable : 0;
-        this.progress.set(Math.min(1, Math.max(0, p)));
-      };
-
-      const onScroll = () => {
-        if (!ticking) {
-          ticking = true;
-          requestAnimationFrame(update);
-        }
-      };
-
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll, { passive: true });
-      update();
-
-      this.destroyRef.onDestroy(() => {
-        window.removeEventListener('scroll', onScroll);
-        window.removeEventListener('resize', onScroll);
+      this.zone.runOutsideAngular(() => {
+        const handler = () => this.scrollY.set(window.scrollY);
+        window.addEventListener('scroll', handler, { passive: true });
       });
     });
   }
 
-  protected getAccent(p: ProjectCard, index: number): ProjectAccent {
+  pad(n: number): string {
+    return n.toString().padStart(2, '0');
+  }
+
+  getAccent(p: ProjectCard, idx: number): ProjectAccent {
     if (p.accent) return p.accent;
-    const accentKeys = ['red', 'green', 'blue', 'orange', 'purple', 'cyan', 'pink'];
-    const key = accentKeys[index % accentKeys.length];
-    return PALETTE_ACCENTS[key] ?? PALETTE_ACCENTS['red'];
+    const keys = Object.keys(PALETTE_ACCENTS);
+    return PALETTE_ACCENTS[keys[idx % keys.length]];
   }
 
-  protected scaleFor(i: number): number {
-    const total = this.projects().length;
-    if (total <= 1) return 1;
-
-    const target = 1 - (total - 1 - i) * this.STEP;
-    const start = i / total;
-    const t = Math.min(1, Math.max(0, (this.progress() - start) / (1 - start)));
-    return +(1 - t * (1 - target)).toFixed(4);
+  scaleFor(idx: number): number {
+    return 1 - (this.projects().length - 1 - idx) * 0.02;
   }
 
-  protected pad(n: number): string {
-    return String(n).padStart(2, '0');
+  onCardTilt(e: MouseEvent, cardEl: HTMLElement): void {
+    const rect = cardEl.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const rx = ((y - rect.height / 2) / (rect.height / 2)) * -4;
+    const ry = ((x - rect.width / 2) / (rect.width / 2)) * 4;
+    cardEl.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale(${this.scaleFor(0)})`;
+  }
+
+  onCardReset(cardEl: HTMLElement): void {
+    cardEl.style.transform = `scale(${this.scaleFor(0)})`;
   }
 }

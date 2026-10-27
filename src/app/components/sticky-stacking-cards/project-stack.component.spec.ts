@@ -45,17 +45,17 @@ describe('ProjectStackComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const cards = compiled.querySelectorAll<HTMLElement>('.card');
     
-    // Card 1: Red accent (#E5252A with white text)
-    expect(cards[0].style.getPropertyValue('--accent')).toBe('#E5252A');
+    // Card 1: Red accent (#E5392F with white text)
+    expect(cards[0].style.getPropertyValue('--accent')).toBe('#E5392F');
     expect(cards[0].style.getPropertyValue('--on-accent')).toBe('#FFFFFF');
 
-    // Card 2: Green accent (#22C55E with Ink text)
-    expect(cards[1].style.getPropertyValue('--accent')).toBe('#22C55E');
-    expect(cards[1].style.getPropertyValue('--on-accent')).toBe('#0C0C0C');
+    // Card 2: Blue accent (#2F5BFF with white text)
+    expect(cards[1].style.getPropertyValue('--accent')).toBe('#2F5BFF');
+    expect(cards[1].style.getPropertyValue('--on-accent')).toBe('#FFFFFF');
 
-    // Card 3: Blue accent (#1F5BFF with white text)
-    expect(cards[2].style.getPropertyValue('--accent')).toBe('#1F5BFF');
-    expect(cards[2].style.getPropertyValue('--on-accent')).toBe('#FFFFFF');
+    // Card 3: Green accent (#5CC46B with Ink text)
+    expect(cards[2].style.getPropertyValue('--accent')).toBe('#5CC46B');
+    expect(cards[2].style.getPropertyValue('--on-accent')).toBe('#0C0C0C');
   });
 
   it('should render project name capsules and image frames with accent border classes', () => {

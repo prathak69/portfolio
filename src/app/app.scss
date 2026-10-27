@@ -1,4 +1,4 @@
-// Full-screen background video
+// Full-screen background video for keyframe scrubbed character head
 .bg-video {
   position: fixed;
   inset: 0;
@@ -6,8 +6,24 @@
   height: 100%;
   z-index: 0;
   object-fit: cover;
-  object-position: 70% center;
+  object-position: 72% center;
   pointer-events: none;
+}
+
+// Parallax Doodle Layer
+.parallax-doodle-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.doodle-star {
+  position: absolute;
+  color: var(--accent);
+  transition: transform 0.25s ease-out;
+  opacity: 0.65;
 }
 
 // Dynamic adaptive navbar transition
@@ -37,12 +53,12 @@
   filter: blur(4px);
 }
 
-// 2. Typewriter text
+// 2. Typewriter text & headline
 .typewriter-text {
-  font-size: clamp(18px, 4vw, 26px);
+  font-size: clamp(20px, 4.2vw, 28px);
   line-height: 1.35;
-  font-weight: 400;
-  min-height: 54px;
+  font-weight: 500;
+  min-height: 60px;
 }
 
 // 3. Action pill buttons fade-in + slide-up transition
@@ -57,47 +73,26 @@
   }
 }
 
-// Mascot Character (Bottom-Right Corner)
-.mascot-container {
-  position: fixed;
-  right: 14px;
-  bottom: 8px;
-  left: auto;
-  z-index: 10;
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-drag: none;
-  animation: mascot-float 3.6s ease-in-out infinite;
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+// Magnetic pill button hover interaction
+.magnetic-btn {
+  will-change: transform;
 
-  @media (max-width: 640px) {
-    right: 8px;
-    bottom:6px;
+  .spin-icon {
+    display: inline-block;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  &:hover {
-    transform: translateY(-8px) scale(1.08) rotate(-3deg);
-    filter: drop-shadow(0 16px 28px rgba(0, 0, 0, 0.6));
-  }
-
-  &:active {
-    transform: translateY(-2px) scale(0.98);
+  &:hover .spin-icon {
+    transform: rotate(45deg) scale(1.15);
   }
 }
 
-.mascot-img {
-  display: block;
-  width: clamp(70px, 12vw, 90px);
-  height: auto;
-  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.55));
-  pointer-events: auto;
-}
+// Hand-drawn bouncing scroll hint
+.scroll-hint-wrapper {
+  animation: scroll-bounce 2.2s ease-in-out infinite;
 
-@keyframes mascot-float {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-6px) rotate(1.5deg);
+  @keyframes scroll-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
   }
 }

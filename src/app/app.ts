@@ -1,31 +1,73 @@
-import { afterNextRender, Component, computed, ElementRef, HostListener, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
-import { Clipboard } from '@angular/cdk/clipboard';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  computed,
+  inject,
+  signal
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MatRipple } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Typewriter } from './services/typewriter';
-import { RandomSelectionHighlightService } from './services/random-selection-highlight.service';
-import { MASCOT_IMAGE_DATA } from './mascot-data';
+import { annotate } from 'rough-notation';
+import gsap from 'gsap';
+import confetti from 'canvas-confetti';
 
-import { ProjectStackComponent } from './components/sticky-stacking-cards';
-import { DesignApproachComponent } from './components/design-approach';
+import { Typewriter } from './services/typewriter';
+import { ToastService } from './services/toast.service';
+import { SmoothScrollService } from './services/smooth-scroll.service';
+import { AccentThemeService } from './services/accent-theme.service';
+import { AvatarGazeService } from './services/avatar-gaze.service';
 import { DEFAULT_PROJECTS } from './models/project-card.model';
+
+import { CustomCursorComponent } from './components/custom-cursor/custom-cursor.component';
+import { CurtainLoaderComponent } from './components/curtain-loader/curtain-loader.component';
+import { AboutBentoComponent } from './components/about-bento/about-bento.component';
+import { DesignApproachComponent } from './components/design-approach/design-approach.component';
+import { SkillsPlaygroundComponent } from './components/skills-playground/skills-playground.component';
+import { ExperienceTimelineComponent } from './components/experience-timeline/experience-timeline.component';
+import { ProjectStackComponent } from './components/sticky-stacking-cards/project-stack.component';
+import { CertificationsCardsComponent } from './components/certifications-cards/certifications-cards.component';
+import { ContactSectionComponent } from './components/contact-section/contact-section.component';
+import { AriaAssistantComponent } from './components/aria-assistant/aria-assistant.component';
 
 @Component({
   selector: 'app-root',
-  imports: [MatRipple, ProjectStackComponent, DesignApproachComponent],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatRipple,
+    CustomCursorComponent,
+    CurtainLoaderComponent,
+    AboutBentoComponent,
+    DesignApproachComponent,
+    SkillsPlaygroundComponent,
+    ExperienceTimelineComponent,
+    ProjectStackComponent,
+    CertificationsCardsComponent,
+    ContactSectionComponent,
+    AriaAssistantComponent
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App implements OnInit, OnDestroy{
+export class App implements OnInit, AfterViewInit, OnDestroy {
   readonly projects = DEFAULT_PROJECTS;
-  @ViewChild('bgVideo', { static: true }) bgVideoRef!: ElementRef<HTMLVideoElement>;
 
-  readonly mascotImage = MASCOT_IMAGE_DATA;
+  @ViewChild('bgVideo', { static: true }) bgVideoRef!: ElementRef<HTMLVideoElement>;
+  @ViewChild('wordMe') wordMeRef?: ElementRef<HTMLElement>;
+  @ViewChild('wordBuild') wordBuildRef?: ElementRef<HTMLElement>;
 
   readonly typewriter = inject(Typewriter);
-  private readonly selectionHighlight = inject(RandomSelectionHighlightService);
-  private readonly clipboard = inject(Clipboard);
-  private readonly snackBar = inject(MatSnackBar);
+  readonly toast = inject(ToastService);
+  readonly smoothScroll = inject(SmoothScrollService);
+  readonly accentTheme = inject(AccentThemeService);
+  readonly avatarGaze = inject(AvatarGazeService);
+  private readonly zone = inject(NgZone);
 
   // Navigation items
   readonly navLinks = [
@@ -39,11 +81,11 @@ export class App implements OnInit, OnDestroy{
   ];
 
   // Action pill buttons
-  readonly pillButtons = [
-    'Pitch us an idea',
-    'Come work here',
-    'Send a brief hello',
-    'See how we operate'
+  readonly heroPills = [
+    { label: 'Explore Works', icon: '↗', target: '#projects' },
+    { label: 'Test D3 Skills', icon: '⚡️', target: '#skills' },
+    { label: 'View Career', icon: '📍', target: '#experience' },
+    { label: 'Design Philosophy', icon: '✳︎', target: '#approach' }
   ];
 
   // UI state signals
@@ -51,6 +93,8 @@ export class App implements OnInit, OnDestroy{
   readonly showPills = signal<boolean>(false);
   readonly isScrolled = signal<boolean>(false);
   readonly isOverLightSection = signal<boolean>(false);
+  readonly parallaxX = signal<number>(0);
+  readonly parallaxY = signal<number>(0);
 
   // Dynamic theme for the fixed navbar based on scroll position / section
   readonly navbarTheme = computed(() => {
@@ -58,22 +102,21 @@ export class App implements OnInit, OnDestroy{
     const isMenuOpen = this.isMobileMenuOpen();
 
     if (isLight) {
-      // Warm luminous accent shade over light/white sections (Projects, Footer)
       return {
         isLight: true,
-        bg: 'rgba(255, 247, 237, 0.94)',
+        bg: 'rgba(255, 248, 240, 0.94)',
         backdropBlur: 'blur(12px)',
-        border: 'rgba(255, 122, 0, 0.22)',
-        shadow: '0 4px 20px -2px rgba(255, 122, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04)',
-        textColor: '#1C1917',
-        textHoverColor: '#FF7A00',
-        separatorColor: 'rgba(255, 122, 0, 0.35)',
-        asteriskColor: '#FF7A00',
-        hamburgerColor: isMenuOpen ? '#FFFFFF' : '#1C1917'
+        border: 'rgba(20, 17, 15, 0.12)',
+        shadow: '0 4px 20px -2px rgba(20, 17, 15, 0.05)',
+        textColor: '#14110F',
+        textHoverColor: 'var(--accent)',
+        separatorColor: 'rgba(20, 17, 15, 0.25)',
+        asteriskColor: 'var(--accent)',
+        hamburgerColor: isMenuOpen ? '#FFFFFF' : '#14110F'
       };
     }
 
-    // Hero section: completely transparent with crisp white text
+    // Hero section: transparent with crisp white text
     return {
       isLight: false,
       bg: 'transparent',
@@ -81,63 +124,121 @@ export class App implements OnInit, OnDestroy{
       border: 'transparent',
       shadow: 'none',
       textColor: '#FFFFFF',
-      textHoverColor: '#F87171',
+      textHoverColor: '#FF8FB1',
       separatorColor: 'rgba(255, 255, 255, 0.35)',
-      asteriskColor: '#FF2A3B',
+      asteriskColor: '#E5392F',
       hamburgerColor: '#FFFFFF'
     };
   });
-
-  constructor() {
-    afterNextRender(() => {
-      this.checkScrollPosition();
-    });
-  }
 
   // Video mouse-scrubbing state
   private targetTime = 0;
   private currentRenderTime = 0.001;
   private isRafRunning = false;
   private rafId: number | null = null;
+  private gazeCheckInterval: any = null;
   private pillsTimeoutId?: ReturnType<typeof setTimeout>;
 
-  // Head tracking mode:
-  // true = natural gaze tracking (center = forward, right = look right, left = look left)
-  // false = linear scrub from start (0s) to end (10s) across screen
-  readonly headTrackingMode = true;
-
-  // Optimized Cloudinary URL with keyframe-interval transformation (ki_0.05).
-  // Generates keyframes on every frame so video scrubbing follows cursor instantly without decoder lag.
   readonly videoUrl =
     'https://res.cloudinary.com/prathaksoni/video/upload/ki_0.05/v1792591379/0e97306f-2b09-43d8-9101-c6d03ef9c936_ndhdmu.mp4';
-    
+
   readonly fullText =
     'Glad you stopped in. Good taste tends to find me. Now, what should we build together?';
 
   ngOnInit(): void {
-    // Initialize global dynamic random accent selection highlight
-    this.selectionHighlight.init();
+    // 1. Initialize Lenis smooth scrolling & GSAP ticker outside zone
+    this.smoothScroll.init();
 
-    // Start typewriter (speed: 38ms, startDelay: 600ms)
-    this.typewriter.start(this.fullText, 38, 600);
+    // 2. Initialize dynamic section accent takeover, selection palette & easter eggs
+    this.accentTheme.init();
 
-    // Reveal action pill buttons 400ms after load (independent of typewriter)
+    // 3. Start typewriter
+    this.typewriter.start(this.fullText, 36, 500);
+
+    // 4. Reveal hero pill buttons
     this.pillsTimeoutId = setTimeout(() => {
       this.showPills.set(true);
-    }, 400);
+    }, 450);
+
+    // 5. Connect avatar gaze coordination with video scrub tracking
+    this.initAvatarGazeBridge();
+  }
+
+  private lenisScrollListener: any = null;
+
+  ngAfterViewInit(): void {
+    if (typeof window === 'undefined') return;
+
+    // Run initial scroll check to set navbar theme correctly even on refreshed scrolled state
+    this.checkScrollPosition();
+    setTimeout(() => this.checkScrollPosition(), 100);
+
+    // Sync with Lenis smooth scroll updates
+    this.lenisScrollListener = () => this.checkScrollPosition();
+    window.addEventListener('lenis-scroll', this.lenisScrollListener);
+
+    // Initialize Rough Notation highlights on hero headline keywords ("me" & "build")
+    setTimeout(() => {
+      if (this.wordMeRef?.nativeElement) {
+        const annotMe = annotate(this.wordMeRef.nativeElement, {
+          type: 'circle',
+          color: '#E5392F',
+          strokeWidth: 2.2,
+          padding: 8,
+          iterations: 2
+        });
+        annotMe.show();
+      }
+
+      if (this.wordBuildRef?.nativeElement) {
+        const annotBuild = annotate(this.wordBuildRef.nativeElement, {
+          type: 'highlight',
+          color: 'rgba(255, 201, 60, 0.4)',
+          padding: 3
+        });
+        annotBuild.show();
+      }
+    }, 1800);
   }
 
   ngOnDestroy(): void {
-    this.selectionHighlight.destroy();
     this.typewriter.cleanup();
-    if (this.pillsTimeoutId) {
-      clearTimeout(this.pillsTimeoutId);
+    this.smoothScroll.destroy();
+    this.accentTheme.destroy();
+    this.avatarGaze.destroy();
+
+    if (this.lenisScrollListener && typeof window !== 'undefined') {
+      window.removeEventListener('lenis-scroll', this.lenisScrollListener);
     }
+    if (this.pillsTimeoutId) clearTimeout(this.pillsTimeoutId);
+    if (this.gazeCheckInterval) clearInterval(this.gazeCheckInterval);
     if (this.rafId !== null) {
       cancelAnimationFrame(this.rafId);
       this.rafId = null;
     }
     this.isRafRunning = false;
+  }
+
+  /**
+   * Bridges AvatarGazeService with Cloudinary keyframe scrubbing.
+   * When avatar reacts to selection, contact form typing, or A.R.I.A chat,
+   * the video head physically rotates towards the target!
+   */
+  private initAvatarGazeBridge(): void {
+    this.zone.runOutsideAngular(() => {
+      let lastMood = this.avatarGaze.mood();
+
+      this.gazeCheckInterval = setInterval(() => {
+        const mood = this.avatarGaze.mood();
+        if (mood === 'approving' || mood === 'typing' || mood === 'curious') {
+          const target = this.avatarGaze.targetGaze();
+          const clientX = (target.x * (window.innerWidth * 0.5)) + (window.innerWidth * 0.5);
+          const clientY = (target.y * (window.innerHeight * 0.5)) + (window.innerHeight * 0.42);
+          this.updateTargetByCursor(clientX, clientY);
+        }
+        lastMood = mood;
+      }, 50);
+    });
   }
 
   toggleMobileMenu(): void {
@@ -146,6 +247,12 @@ export class App implements OnInit, OnDestroy{
 
   closeMobileMenu(): void {
     this.isMobileMenuOpen.set(false);
+  }
+
+  scrollToSection(href: string, e?: Event): void {
+    if (e) e.preventDefault();
+    this.closeMobileMenu();
+    this.smoothScroll.scrollTo(href);
   }
 
   @HostListener('window:scroll')
@@ -158,22 +265,27 @@ export class App implements OnInit, OnDestroy{
     const scrollY = window.scrollY || document.documentElement.scrollTop;
     this.isScrolled.set(scrollY > 20);
 
-    const lightEl = document.getElementById('approach') || document.getElementById('projects');
+    const lightEl = document.getElementById('about');
     if (lightEl) {
       const rect = lightEl.getBoundingClientRect();
-      this.isOverLightSection.set(rect.top <= 70);
+      this.isOverLightSection.set(rect.top <= 80 || scrollY > 200);
     } else {
-      this.isOverLightSection.set(scrollY > 450);
+      this.isOverLightSection.set(scrollY > 200);
     }
   }
 
   // Safe zone tracking around character's face
   private isInsideSafeZone = false;
 
-  // Listen to 2D mouse movement to steer character gaze direction in real time
   @HostListener('window:mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
     this.updateTargetByCursor(event.clientX, event.clientY);
+
+    // Parallax drifting values (-1 to 1)
+    const px = (event.clientX / window.innerWidth) - 0.5;
+    const py = (event.clientY / window.innerHeight) - 0.5;
+    this.parallaxX.set(px);
+    this.parallaxY.set(py);
   }
 
   @HostListener('window:touchmove', ['$event'])
@@ -183,7 +295,6 @@ export class App implements OnInit, OnDestroy{
     }
   }
 
-  // When cursor leaves the browser window, character calmly looks straight ahead
   @HostListener('window:mouseleave')
   onMouseLeave(): void {
     this.isInsideSafeZone = true;
@@ -197,8 +308,6 @@ export class App implements OnInit, OnDestroy{
       return;
     }
 
-    // Character's face center on screen:
-    // Horizontally centered (50%), vertically around eyes/nose level (42% from top)
     const centerX = window.innerWidth * 0.5;
     const centerY = window.innerHeight * 0.42;
 
@@ -206,11 +315,9 @@ export class App implements OnInit, OnDestroy{
     const dy = clientY - centerY;
     const dist = Math.hypot(dx, dy);
 
-    // Safe distance around the face: inside this radius, the character looks straight/front at the user.
-    // Scales with viewport size (minimum 125px, up to ~18% of smaller screen dimension).
     const baseSafeRadius = Math.max(125, Math.min(window.innerWidth, window.innerHeight) * 0.18);
     const enterRadius = baseSafeRadius;
-    const exitRadius = baseSafeRadius + 25; // Hysteresis buffer to completely eliminate edge jitter
+    const exitRadius = baseSafeRadius + 25;
 
     if (this.isInsideSafeZone) {
       if (dist < exitRadius) {
@@ -228,26 +335,18 @@ export class App implements OnInit, OnDestroy{
       }
     }
 
-    // Outside the safe distance: head follows the cursor
-    // Angle in degrees relative to STRAIGHT UP (12 o'clock = 0°, RIGHT = +90°, DOWN = ±180°, LEFT = -90°)
     const angleFromUp = (Math.atan2(dx, -dy) * 180) / Math.PI;
 
     let angleTime = 0;
     if (Math.abs(angleFromUp) <= 32) {
-      // UP cone (-32° to +32°): Navbar links (Labs, Studio, Openings, Shop)
-      // Character looks straight UP at ~1.0s (chin raised, eyes up towards navbar)
       angleTime = 1.0 + (angleFromUp / 32) * 0.25;
     } else if (angleFromUp > 32 && angleFromUp <= 90) {
-      // UP-RIGHT to RIGHT (+32° to +90°): 1.25s -> 3.8s
       angleTime = 1.25 + ((angleFromUp - 32) / 58) * 2.55;
     } else if (angleFromUp > 90) {
-      // RIGHT to DOWN (+90° to +180°): 3.8s -> 5.5s
       angleTime = 3.8 + ((angleFromUp - 90) / 90) * 1.7;
     } else if (angleFromUp < -32 && angleFromUp >= -90) {
-      // UP-LEFT to LEFT (-32° to -90°): 9.2s -> 8.0s
       angleTime = 9.2 - ((Math.abs(angleFromUp) - 32) / 58) * 1.2;
     } else {
-      // LEFT to DOWN (-90° to -180°): 8.0s -> 5.5s
       angleTime = 8.0 - ((Math.abs(angleFromUp) - 90) / 90) * 2.5;
     }
 
@@ -255,11 +354,6 @@ export class App implements OnInit, OnDestroy{
     this.startSmoothLoop();
   }
 
-  /**
-   * Silky smooth circular head rotation loop.
-   * Interpolates current video time towards targetTime along the shortest circular path
-   * on the 10-second loop with organic human-like easing.
-   */
   private startSmoothLoop(): void {
     if (this.isRafRunning) return;
     this.isRafRunning = true;
@@ -274,13 +368,11 @@ export class App implements OnInit, OnDestroy{
 
       const duration = video.duration || 10.005;
 
-      // Shortest circular delta on the 10-second loop
       let diff = this.targetTime - this.currentRenderTime;
       while (diff > duration / 2) diff -= duration;
       while (diff < -duration / 2) diff += duration;
 
       if (Math.abs(diff) < 0.015) {
-        // Settled exactly at target position
         this.currentRenderTime = this.targetTime;
         video.currentTime = this.currentRenderTime;
         this.isRafRunning = false;
@@ -288,8 +380,6 @@ export class App implements OnInit, OnDestroy{
         return;
       }
 
-      // Smooth exponential easing with speed clamp for silky smooth head rotation
-      // 0.12 factor gives ~250-300ms natural easing transition
       const proportionalStep = Math.abs(diff) * 0.12;
       const stepMagnitude = Math.min(Math.max(proportionalStep, 0.015), 0.08);
       const step = Math.sign(diff) * Math.min(stepMagnitude, Math.abs(diff));
@@ -325,7 +415,6 @@ export class App implements OnInit, OnDestroy{
   onMetadataLoaded(): void {
     const video = this.bgVideoRef?.nativeElement;
     if (video) {
-      // Paint forward-facing frame immediately on load
       this.currentRenderTime = 0.001;
       this.targetTime = 0.0;
       video.currentTime = 0.001;
@@ -333,17 +422,15 @@ export class App implements OnInit, OnDestroy{
   }
 
   copyEmail(): void {
-    const email = 'prathaksoni.19@gmail.com';
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(email);
-    } else {
-      this.clipboard.copy(email);
-    }
-
-    this.snackBar.open('Copied prathaksoni.19@gmail.com to clipboard', '', {
-      duration: 2000,
-      horizontalPosition: 'center',
-      verticalPosition: 'bottom'
+    navigator.clipboard.writeText('prathaksoni.19@gmail.com').then(() => {
+      this.toast.show('Copied to clipboard ✂️', '🎉', 2400);
+      confetti({
+        particleCount: 70,
+        spread: 80,
+        origin: { y: 0.8 },
+        colors: ['#E5392F', '#2F5BFF', '#5CC46B', '#FFC93C', '#FF8FB1']
+      });
+      this.avatarGaze.triggerWink();
     });
   }
 }

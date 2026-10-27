@@ -1,130 +1,369 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
+// Include theming for Angular Material
 @use '@angular/material' as mat;
-
 @use "tailwindcss";
 
 @import url('https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&display=swap');
 
-.cabin-sketch-regular {
-  font-family: "Cabin Sketch", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.cabin-sketch-bold {
-  font-family: "Cabin Sketch", sans-serif;
-  font-weight: 700;
-  font-style: normal;
+@theme {
+  --color-cream: #FFF8F0;
+  --color-ink: #14110F;
+  --color-red: #E5392F;
+  --color-blue: #2F5BFF;
+  --color-green: #5CC46B;
+  --color-yellow: #FFC93C;
+  --color-pink: #FF8FB1;
+  --color-cyan: #38BDF8;
+  --color-purple: #8B5CF6;
+  --color-paper: #F7EFE5;
+  --color-line: #E8DCCF;
+  --color-muted: #6B6560;
+  --color-accent: var(--accent);
+  --color-sel: var(--sel);
 }
 
 :root {
-  --font-heading: 'HelveticaNowDisplay-Medium', 'Helvetica Neue', Arial, sans-serif;
-  --font-sketch: 'Cabin Sketch', sans-serif;
-  --font-body: 'HelveticaNowDisplayW01-Rg', 'Helvetica Neue', Arial, sans-serif;
+  /* Core Clay & Loud Colour Block Palette */
+  --cream: #FFF8F0;
+  --ink: #14110F;
+  --red: #E5392F;
+  --blue: #2F5BFF;
+  --green: #5CC46B;
+  --yellow: #FFC93C;
+  --pink: #FF8FB1;
+  --cyan: #38BDF8;
+  --purple: #8B5CF6;
 
-  /* Neutrals for White Background */
-  --bg: #FFFFFF;
-  --paper: #F6F6F4;
-  --line: #E4E4E7;
-  --muted: #5B5F66;
-  --ink: #0C0C0C;
+  /* Neutrals */
+  --bg: #FFF8F0;
+  --paper: #F7EFE5;
+  --card-bg: #FFFFFF;
+  --line: #E8DCCF;
+  --muted: #6B6560;
 
-  /* Accent Fills */
-  --red: #E5252A;
-  --orange: #FF7A00;
-  --yellow: #FFC400;
-  --green: #22C55E;
-  --cyan: #06B6D4;
-  --blue: #1F5BFF;
-  --purple: #6D3BFF;
-  --pink: #FF4D94;
+  /* Active Accent & Selection (Dynamically updated via ScrollTrigger & user interactions) */
+  --accent: #E5392F;
+  --sel: #FFC93C;
 
-  /* Text-safe on White */
-  --red-text: #E5252A;
-  --orange-text: #C74A00;
-  --green-text: #0A7F3A;
-  --cyan-text: #0A7C9C;
-  --blue-text: #1F5BFF;
-  --purple-text: #6D3BFF;
-  --pink-text: #D91E75;
-
-  /* Dynamic Selection Highlight Colors */
-  --selection-bg: #FF7A00;
-  --selection-text: #0C0C0C;
-
-  /* Swap per section or project card */
-  --accent: var(--orange);
-  --on-accent: var(--ink);
-  --accent-text: var(--orange-text);
+  /* Typography */
+  --font-heading: 'Plus Jakarta Sans', 'HelveticaNowDisplay-Medium', system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans', 'HelveticaNowDisplayW01-Rg', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sketch: 'Cabin Sketch', cursive, sans-serif;
 }
 
-/* Global Dynamic Accent Text Selection Highlight */
-::selection,
-*::selection {
-  background-color: var(--selection-bg, #FF7A00) !important;
-  color: var(--selection-text, #0C0C0C) !important;
-}
-
-::-moz-selection,
-*::-moz-selection {
-  background-color: var(--selection-bg, #FF7A00) !important;
-  color: var(--selection-text, #0C0C0C) !important;
-}
-
+/* Base resets & typography */
 * {
   box-sizing: border-box;
 }
 
 html {
-  scroll-behavior: smooth;
+  scrollbar-color: var(--accent) var(--cream);
+  background-color: #FFF8F0;
+  color: #14110F;
+  font-family: var(--font-body);
 }
 
-html, body {
+body {
   margin: 0;
   padding: 0;
   width: 100%;
   min-height: 100%;
-  background-color: #000;
-  color: #fff;
+  background-color: #FFF8F0;
+  color: #14110F;
   font-family: var(--font-body);
   overflow-x: clip;
 }
 
-/* Transparent Scrollbar - No White Strip */
+/* Fallback High-Contrast Utility Classes */
+.text-ink, [class~="text-ink"], .text-charcoal {
+  color: #14110F !important;
+}
+
+.text-muted, [class~="text-muted"] {
+  color: #6B6560 !important;
+}
+
+.text-cream, [class~="text-cream"] {
+  color: #FFF8F0 !important;
+}
+
+.text-accent, [class~="text-accent"] {
+  color: var(--accent) !important;
+}
+
+.text-sel, [class~="text-sel"] {
+  color: var(--sel) !important;
+}
+
+.bg-cream, [class~="bg-cream"] {
+  background-color: #FFF8F0 !important;
+}
+
+.bg-paper, [class~="bg-paper"] {
+  background-color: #F7EFE5 !important;
+}
+
+.bg-ink, [class~="bg-ink"] {
+  background-color: #14110F !important;
+}
+
+.border-line, [class~="border-line"] {
+  border-color: #E8DCCF !important;
+}
+
+.border-ink, [class~="border-ink"] {
+  border-color: #14110F !important;
+}
+
+/* Section Typography Rules: crisp, dark ink on all light content sections */
+#about, #approach, #skills, #experience, #projects, #certifications, #contact {
+  color: #14110F;
+  background-color: #FFF8F0;
+}
+
+#about h1, #about h2, #about h3, #about h4,
+#approach h1, #approach h2, #approach h3, #approach h4,
+#skills h1, #skills h2, #skills h3, #skills h4,
+#experience h1, #experience h2, #experience h3, #experience h4,
+#projects h1, #projects h2, #projects h3, #projects h4,
+#certifications h1, #certifications h2, #certifications h3, #certifications h4,
+#contact h1, #contact h2, #contact h3, #contact h4 {
+  color: #14110F !important;
+}
+
+#about p, #approach p, #skills p, #experience p, #projects p, #certifications p, #contact p {
+  color: #6B6560;
+}
+
+/* Hero section retains dark overlay styling for video background */
+#hero {
+  color: #FFFFFF;
+}
+
+#hero h1, #hero .typewriter-text {
+  color: #FFFFFF !important;
+}
+
+/* Global Dynamic Accent Text Selection Highlight */
+::selection,
+*::selection {
+  background: var(--sel, #FFC93C) !important;
+  color: var(--ink, #14110F) !important;
+}
+
+::-moz-selection,
+*::-moz-selection {
+  background: var(--sel, #FFC93C) !important;
+  color: var(--ink, #14110F) !important;
+}
+
+/* Section Specific Selection Accents */
+.section-blue ::selection, .section-blue *::selection {
+  background: #FFFFFF !important;
+  color: var(--blue) !important;
+}
+.section-red ::selection, .section-red *::selection {
+  background: #FFFFFF !important;
+  color: var(--red) !important;
+}
+.section-green ::selection, .section-green *::selection {
+  background: #FFFFFF !important;
+  color: var(--green) !important;
+}
+.section-yellow ::selection, .section-yellow *::selection {
+  background: var(--ink) !important;
+  color: var(--yellow) !important;
+}
+.section-pink ::selection, .section-pink *::selection {
+  background: var(--ink) !important;
+  color: var(--pink) !important;
+}
+
+/* Cabin sketch doodle type utility */
+.cabin-sketch-regular {
+  font-family: var(--font-sketch);
+  font-weight: 400;
+  font-style: normal;
+}
+
+.cabin-sketch-bold {
+  font-family: var(--font-sketch);
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* Custom Scrollbar styled with section accent */
 ::-webkit-scrollbar {
-  width: 6px;
-  background: transparent;
+  width: 8px;
+  background: var(--cream);
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cream);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(229, 9, 20, 0.4);
+  background: var(--accent);
   border-radius: 9999px;
+  border: 2px solid var(--cream);
+  transition: background-color 0.4s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(229, 9, 20, 0.8);
+  filter: brightness(0.9);
 }
 
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(229, 9, 20, 0.4) transparent;
-}
+/* Custom Cursor */
+.custom-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 18px;
+  height: 18px;
+  margin: -9px;
+  border-radius: 50%;
+  background: var(--accent);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate3d(-100px, -100px, 0);
+  transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              margin 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.5s ease,
+              border-radius 0.28s ease,
+              box-shadow 0.28s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-@keyframes blink {
-  0%, 100% {
-    opacity: 1;
+  &.cursor-hover {
+    width: 48px;
+    height: 48px;
+    margin: -24px;
+    background: rgba(20, 17, 15, 0.85);
+    mix-blend-mode: normal;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   }
-  50% {
+
+  &.cursor-badge {
+    width: 62px;
+    height: 62px;
+    margin: -31px;
+    background: var(--ink);
+    mix-blend-mode: normal;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  }
+
+  .cursor-text {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--yellow);
     opacity: 0;
+    transform: scale(0.65);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
   }
+
+  &.cursor-badge .cursor-text {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Doodle Ink Trail Canvas */
+#ink-trail-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9997;
+}
+
+/* Hide custom cursor and ink trail on touch devices */
+@media (pointer: coarse) {
+  .custom-cursor,
+  #ink-trail-canvas {
+    display: none !important;
+  }
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  #ink-trail-canvas {
+    display: none !important;
+  }
+  .custom-cursor {
+    display: none !important;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Interactive Party Mode (Triggered via Konami Code easter egg) */
+body.party-mode {
+  animation: party-bg 4s linear infinite;
+
+  @keyframes party-bg {
+    0%   { --accent: var(--red); }
+    20%  { --accent: var(--blue); }
+    40%  { --accent: var(--green); }
+    60%  { --accent: var(--yellow); }
+    80%  { --accent: var(--pink); }
+    100% { --accent: var(--red); }
+  }
+}
+
+/* Toast Notification (Copy & Easter Egg) */
+.craft-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: var(--cream);
+  padding: 10px 20px;
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  box-shadow: 0 16px 36px rgba(20, 17, 15, 0.28), 0 0 0 1px rgba(255, 248, 240, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &.toast-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .toast-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+}
+
+/* Cursor blink */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
 .animate-cursor-blink {

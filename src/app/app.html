@@ -1,4 +1,10 @@
-<!-- BACKGROUND VIDEO (mouse-scrub controlled, z-index: 0) -->
+<!-- TOP LEVEL THREE-COLOR CURTAIN WIPES LOADER -->
+<app-curtain-loader />
+
+<!-- CUSTOM LAG CURSOR, BADGE LABELS & DOODLE INK TRAIL CANVAS -->
+<app-custom-cursor />
+
+<!-- BACKGROUND VIDEO (Keyframe mouse-scrub controlled character head, z-index: 0) -->
 <video
   #bgVideo
   class="bg-video"
@@ -21,14 +27,14 @@
 >
   <!-- Logo (left) -->
   <a
-    href="#"
-    class="flex flex-row items-center gap-2.5 no-underline group transition-colors"
+    href="#hero"
+    (click)="scrollToSection('#hero', $event)"
+    class="flex flex-row items-center gap-2.5 no-underline group transition-colors select-none"
     [style.color]="navbarTheme().textColor"
+    data-cursor="HOME"
   >
     <span
-      class="logo-text text-[15px] sm:text-[17px] font-bold tracking-tight transition-colors"
-      [class.group-hover:text-red-400]="!navbarTheme().isLight"
-      [class.group-hover:text-[#FF7A00]]="navbarTheme().isLight"
+      class="logo-text text-[15px] sm:text-[17px] font-bold tracking-tight transition-colors group-hover:text-[var(--accent)]"
     >
       Prathak Soni
     </span>
@@ -40,31 +46,44 @@
     </span>
   </a>
 
-  <!-- Desktop nav links (centered, hidden below md) -->
-  <nav class="hidden md:flex flex-row items-center text-[12.5px] lg:text-[13.5px] xl:text-[14px] font-medium tracking-wide absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap pointer-events-auto">
+  <!-- Desktop nav links (centered, hidden below lg) -->
+  <nav class="hidden lg:flex flex-row items-center text-[12.5px] xl:text-[13.5px] font-mono font-bold tracking-wider uppercase absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap pointer-events-auto">
     @for (link of navLinks; track link.label; let last = $last) {
       <a
         [href]="link.href"
-        class="no-underline transition-colors"
+        (click)="scrollToSection(link.href, $event)"
+        class="no-underline transition-colors hover:text-[var(--accent)]"
         [style.color]="navbarTheme().textColor"
-        [class.hover:text-red-400]="!navbarTheme().isLight"
-        [class.hover:text-[#FF7A00]]="navbarTheme().isLight"
+        data-cursor="GO"
       >{{ link.label }}</a>
       @if (!last) {
         <span
-          class="mx-2 lg:mx-2.5 text-xs font-light select-none transition-colors"
+          class="mx-2 lg:mx-3 text-xs font-light select-none transition-colors"
           [style.color]="navbarTheme().separatorColor"
-        >|</span>
+        >&bull;</span>
       }
     }
   </nav>
 
-  <!-- Mobile hamburger (visible below md) -->
+  <!-- Right Pill (Status badge) -->
+  <div class="hidden sm:flex items-center gap-2">
+    <a
+      href="#contact"
+      (click)="scrollToSection('#contact', $event)"
+      class="magnetic-btn px-3.5 py-1.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-white/80 hover:bg-white text-[var(--ink)] border border-black/10 shadow-xs transition-all select-none"
+      data-cursor="HELLO"
+    >
+      <span>Let's Talk</span>
+      <span class="spin-icon ml-1">&nearr;</span>
+    </a>
+  </div>
+
+  <!-- Mobile hamburger (visible below lg) -->
   <button
     type="button"
     (click)="toggleMobileMenu()"
     aria-label="Toggle Menu"
-    class="flex md:hidden flex-col justify-center items-center gap-[5px] bg-transparent border-0 p-2 cursor-pointer focus:outline-none"
+    class="flex lg:hidden flex-col justify-center items-center gap-[5px] bg-transparent border-0 p-2 cursor-pointer focus:outline-none"
   >
     <span
       class="w-5 h-[2px] transition-all duration-300 origin-center"
@@ -86,9 +105,9 @@
   </button>
 </header>
 
-<!-- MOBILE OVERLAY (z-index: 19, hidden on md+) -->
+<!-- MOBILE OVERLAY (z-index: 19, hidden on lg+) -->
 <div
-  class="fixed inset-0 z-[19] bg-black/90 backdrop-blur-md flex flex-col justify-center items-start px-8 gap-8 md:hidden transition-opacity duration-300"
+  class="fixed inset-0 z-[19] bg-[#14110F]/95 backdrop-blur-md flex flex-col justify-center items-start px-8 gap-6 lg:hidden transition-opacity duration-300"
   [class.opacity-100]="isMobileMenuOpen()"
   [class.pointer-events-auto]="isMobileMenuOpen()"
   [class.opacity-0]="!isMobileMenuOpen()"
@@ -97,8 +116,8 @@
   @for (link of navLinks; track link.label) {
     <a
       [href]="link.href"
-      (click)="closeMobileMenu()"
-      class="text-[32px] font-medium text-white no-underline hover:text-red-400 transition-colors"
+      (click)="scrollToSection(link.href, $event)"
+      class="text-3xl font-extrabold text-[#FFF8F0] no-underline hover:text-[#E5392F] transition-colors font-mono"
     >
       {{ link.label }}
     </a>
@@ -106,128 +125,147 @@
 </div>
 
 <!-- HERO SECTION (z-index: 1) -->
-<main id="about" class="relative z-[1] h-screen flex flex-col justify-end pb-12 md:justify-center md:pb-0 px-5 sm:px-8 md:px-10 overflow-hidden">
-  <!-- Content container -->
-  <div class="max-w-xl relative z-10">
+<main id="hero" class="relative z-[1] min-h-screen flex flex-col justify-end pb-16 md:justify-center md:pb-0 px-5 sm:px-8 md:px-12 overflow-hidden">
+  <!-- Parallax Floating Doodle Stars & Blobs -->
+  <div class="parallax-doodle-layer">
+    <!-- Star 1 (Top Left) -->
+    <div
+      class="doodle-star text-2xl"
+      [style.left]="'12%'"
+      [style.top]="'20%'"
+      [style.transform]="'translate3d(' + (parallaxX() * 28) + 'px, ' + (parallaxY() * 28) + 'px, 0)'"
+    >
+      ✦
+    </div>
+    <!-- Star 2 (Middle Right) -->
+    <div
+      class="doodle-star text-3xl"
+      [style.right]="'18%'"
+      [style.top]="'28%'"
+      [style.transform]="'translate3d(' + (parallaxX() * -36) + 'px, ' + (parallaxY() * -36) + 'px, 0)'"
+    >
+      ✳︎
+    </div>
+    <!-- Star 3 (Bottom Left) -->
+    <div
+      class="doodle-star text-xl"
+      [style.left]="'32%'"
+      [style.bottom]="'22%'"
+      [style.transform]="'translate3d(' + (parallaxX() * 18) + 'px, ' + (parallaxY() * 18) + 'px, 0)'"
+    >
+      ✧
+    </div>
+  </div>
+
+  <!-- Content container (Balanced on left side so character head stays clear on right) -->
+  <div class="max-w-xl lg:max-w-2xl relative z-10 pt-24 sm:pt-0">
     <!-- 1. Blurred intro label -->
-    <div class="blurred-intro pointer-events-none select-none mb-5 sm:mb-6">
+    <div class="blurred-intro pointer-events-none select-none mb-4 sm:mb-5">
       Want to meet someone cool?<br>
       You came to right place
     </div>
 
-    <!-- 2. Typewriter text -->
-    <p class="typewriter-text text-white mb-5 sm:mb-6">
-      <span>{{ typewriter.displayed() }}</span>
-      @if (!typewriter.done()) {
-        <span class="inline-block w-[2px] h-[1.1em] bg-white align-middle ml-[2px] animate-cursor-blink"></span>
-      }
-    </p>
+    <!-- 2. Typewriter & Highlighted Headline -->
+    <h1 class="typewriter-text text-white mb-6 sm:mb-8 font-normal leading-[1.3] m-0">
+      Glad you stopped in. Good taste tends to find
+      <span #wordMe class="relative inline-block font-extrabold text-[var(--sel)]">me</span>.
+      Now, what should we
+      <span #wordBuild class="relative inline-block font-extrabold text-white">build</span>
+      together?
+    </h1>
 
-    <!-- 3. Action pill buttons -->
+    <!-- 3. Magnetic Action Pill Buttons -->
     <div
-      class="pills-container flex flex-wrap gap-y-1"
+      class="pills-container flex flex-wrap gap-2.5 sm:gap-3 items-center"
       [class.pills-visible]="showPills()"
     >
-      <!-- 4 White Pill Buttons -->
-      @for (label of pillButtons; track label) {
-        <button
-          type="button"
+      <!-- Navigation Pills -->
+      @for (pill of heroPills; track pill.label) {
+        <a
+          [href]="pill.target"
+          (click)="scrollToSection(pill.target, $event)"
           matRipple
-          [matRippleColor]="'rgba(255, 255, 255, 0.15)'"
-          class="inline-flex items-center justify-center bg-white text-black border border-black/10 rounded-full text-[13px] sm:text-[15px] px-4 sm:px-5 py-[0.3em] mx-[0.2em] mb-[0.4em] whitespace-nowrap hover:bg-black hover:text-white transition-colors duration-200 cursor-pointer"
+          class="magnetic-btn inline-flex items-center gap-2 bg-white text-black border border-black/10 rounded-full text-[13px] sm:text-[14px] font-mono font-bold px-4 sm:px-5 py-2.5 shadow-md hover:bg-[var(--accent)] hover:text-white transition-colors duration-200 cursor-pointer select-none no-underline"
+          data-cursor="EXPLORE"
         >
-          {{ label }}
-        </button>
+          <span>{{ pill.label }}</span>
+          <span class="spin-icon text-xs">{{ pill.icon }}</span>
+        </a>
       }
 
-      <!-- 1 Outline Pill Button (Copy Email) -->
+      <!-- Outline Copy Email Button with Confetti Explosion -->
       <button
         type="button"
         matRipple
-        [matRippleColor]="'rgba(0, 0, 0, 0.1)'"
         (click)="copyEmail()"
-        class="inline-flex items-center justify-center gap-2 sm:gap-3 text-white bg-transparent border border-white rounded-full text-[13px] sm:text-[15px] px-4 sm:px-5 py-[0.3em] mx-[0.2em] mb-[0.4em] whitespace-nowrap hover:bg-white hover:text-black transition-colors duration-200 cursor-pointer"
+        class="magnetic-btn inline-flex items-center gap-2 text-white bg-transparent border-2 border-white/80 rounded-full text-[13px] sm:text-[14px] font-mono font-bold px-4 sm:px-5 py-2 hover:bg-white hover:text-black transition-colors duration-200 cursor-pointer select-none"
+        data-cursor="COPY"
       >
-        <span>
-          Reach at: <span class="underline underline-offset-1">prathaksoni.19&#64;gmail.com</span>
-        </span>
-        <!-- 12x12 inline SVG of two overlapping rectangles -->
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="shrink-0"
-        >
-          <rect
-            x="4"
-            y="4"
-            width="6.5"
-            height="6.5"
-            rx="1"
-            stroke="currentColor"
-            stroke-width="1.2"
-          />
-          <path
-            d="M2.5 8H2C1.44772 8 1 7.55228 1 7V2C1 1.44772 1.44772 1 2 1H7C7.55228 1 8 1.44772 8 2V2.5"
-            stroke="currentColor"
-            stroke-width="1.2"
-          />
-        </svg>
+        <span>Reach at: <span class="underline underline-offset-2">prathaksoni.19&#64;gmail.com</span></span>
+        <span class="spin-icon">✂️</span>
       </button>
     </div>
   </div>
 
-
-
-  <!-- Mascot character (bottom-right corner) -->
-  <aside class="mascot-container" aria-label="Mainframe Mascot">
-    <img
-      [src]="mascotImage"
-      alt="A.R.I.A Robot Assistant"
-      class="mascot-img"
-      draggable="false"
-    />
-  </aside>
+  <!-- Hand-drawn Bouncing Scroll Hint Arrow (Bottom Left) -->
+  <div class="scroll-hint-wrapper absolute left-6 sm:left-12 bottom-6 z-10 flex items-center gap-2 text-white/80 select-none pointer-events-none">
+    <!-- Hand-drawn arrow SVG -->
+    <svg width="20" height="24" viewBox="0 0 20 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10 2 V18" />
+      <path d="M4 12 L10 18 L16 12" />
+    </svg>
+    <span class="text-xs font-mono uppercase tracking-widest text-white/70">scroll</span>
+  </div>
 </main>
 
-<!-- DESIGN APPROACH STATEMENT (z-index: 2, Signature White Theme) -->
-<app-design-approach id="approach" />
+<!-- 01 // ABOUT STATEMENT & BENTO GRID -->
+<app-about-bento />
 
-<!-- PROJECTS STACK SECTION (z-index: 2, Pure White Background) -->
-<section id="projects" class="relative z-[2] bg-[var(--bg,#FFFFFF)] text-[var(--ink,#0C0C0C)] px-5 sm:px-8 md:px-12 pt-16 md:pt-24 pb-44">
-  <!-- Section Header -->
+<!-- 02 // DESIGN APPROACH (Numbered Sticky Cards with Self-Drawing Doodles) -->
+<app-design-approach />
+
+<!-- 03 // SKILLS D3 PHYSICS PLAYGROUND -->
+<app-skills-playground />
+
+<!-- 04 // EXPERIENCE TIMELINE (Self-Drawing Path, Walking Avatar & Mini D3 Charts) -->
+<app-experience-timeline />
+
+<!-- 05 // FEATURED WORKS (Sticky Stacked Cards with 3D Tilt & Live Widgets) -->
+<section id="projects" class="relative z-[2] bg-[#FFF8F0] text-[#14110F] px-5 sm:px-8 md:px-12 pt-20 md:pt-28 pb-44 border-t border-[#E8DCCF]">
   <div class="relative z-10 max-w-6xl mx-auto mb-16 md:mb-24 text-center">
-    <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#FFF4EB] border border-[#FFD0B0] text-[var(--orange-text,#C74A00)] text-xs sm:text-sm font-bold uppercase tracking-widest mb-5 shadow-xs">
-      <span class="w-2 h-2 rounded-full bg-[var(--orange,#FF7A00)] animate-pulse"></span>
-      <span>Selected Archive</span>
+    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFF0F6] border border-[#FFD0E2] text-[#D91E75] text-xs font-mono font-bold uppercase tracking-wider mb-5 shadow-xs">
+      <span class="w-2 h-2 rounded-full bg-[#E5392F] animate-pulse"></span>
+      <span>SELECTED ARCHIVE</span>
     </div>
 
-    <!-- Solid Ink Heading -->
-    <h2 class="text-4xl sm:text-6xl md:text-8xl font-black uppercase tracking-tight text-[var(--ink,#0C0C0C)] m-0">
-      Featured <span class="text-[var(--orange-text,#C74A00)]">Works</span>
+    <h2 class="text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight text-[#14110F] text-ink m-0">
+      Featured <span class="cabin-sketch-bold text-[#E5392F]">Works</span>
     </h2>
 
-    <p class="mt-4 text-[var(--muted,#5B5F66)] text-sm sm:text-base md:text-lg max-w-xl mx-auto font-normal leading-relaxed">
-      A curated collection of spatial 3D environments, kinetic design systems, and digital interactive experiences.
+    <p class="mt-4 text-[#6B6560] text-muted text-base sm:text-lg max-w-xl mx-auto font-normal leading-relaxed">
+      Curated spatial 3D environments, kinetic design systems, and real-time financial telemetry applications.
     </p>
   </div>
 
-  <!-- The Sticky Project Stack Component -->
   <div class="relative z-10 max-w-6xl mx-auto">
     <app-project-stack [projects]="projects" />
   </div>
 </section>
 
-<!-- FOOTER (z-index: 2, Paper Background with Line Border) -->
-<footer id="contact" class="relative z-[2] bg-[var(--paper,#F6F6F4)] border-t border-[var(--line,#E4E4E7)] px-5 sm:px-8 md:px-12 py-12 flex flex-col sm:flex-row justify-between items-center gap-4 text-[var(--muted,#5B5F66)] text-sm">
-  <div class="flex items-center gap-2">
-    <span class="text-[var(--ink,#0C0C0C)] font-bold">Mainframe&reg;</span>
-    <span class="text-[var(--orange,#FF7A00)] font-black">✳︎</span>
-    <span class="text-[var(--muted,#5B5F66)] font-medium">3D Creator & Interactive Design</span>
+<!-- 06 // HOLOGRAPHIC CERTIFICATIONS TRADING CARDS -->
+<app-certifications-cards />
+
+<!-- 07 // CONTACT & VELOCITY MARQUEE FOOTER -->
+<app-contact-section />
+
+<!-- PART 5: AVATAR-POWERED ROBOT ASSISTANT (A.R.I.A) -->
+<app-aria-assistant />
+
+<!-- GLOBAL TOAST NOTIFICATION -->
+@if (toast.message(); as msg) {
+  <div class="craft-toast toast-visible">
+    <span class="text-base">{{ toast.icon() }}</span>
+    <span>{{ msg }}</span>
+    <span class="toast-dot"></span>
   </div>
-  <div class="text-xs text-[var(--muted,#5B5F66)]">
-    Crafted with Angular 21 &bull; Signature White Palette Edition
-  </div>
-</footer>
+}
