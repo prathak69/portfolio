@@ -185,29 +185,24 @@ export class AriaAssistantComponent {
 
   readonly quickChips = [
     {
-      q: 'Current Role & Impact?',
-      a: 'Prathak is a System Engineer at TCS in Pune, building frontend platforms for Unilever (serving 3.4B consumers across 190 countries) and architecting the SPC app across 20+ manufacturing sites.',
-      link: { label: 'View Career Trajectory', target: '#experience' }
+      q: 'Show me Unilever work',
+      a: 'Prathak architected the Statistical Process Control (SPC) frontend at TCS for client Unilever (serving 3.4B consumers across 190 countries), used by 500+ quality engineers across 20+ manufacturing sites.',
+      link: { label: 'View Unilever SPC Experience', target: '#experience' }
     },
     {
-      q: 'Core Tech Stack?',
-      a: 'Prathak specializes in Angular, TypeScript, D3.js data visualizations, ReactJS, Next.js, Python (Scikit-Learn), SQL, and Unreal Engine 4.',
-      link: { label: 'Jump to Skills Section', target: '#skills' }
+      q: 'How was the D3 physics built?',
+      a: 'The skills arena uses D3 force simulation with custom collision forces, velocity damping, and mouse-repulsion physics running 60fps outside NgZone.',
+      link: { label: 'Inspect D3 Physics Playground', target: '#skills' }
     },
     {
-      q: 'Featured Projects?',
-      a: 'Explore his core projects: Unilever Statistical Process Control (SPC), Talk-A-Tive (real-time MERN chat), Dead by Shot (Unreal Engine 4 FPS), and Gold Price Prediction (Random Forest).',
-      link: { label: 'View Featured Works', target: '#projects' }
+      q: 'Can he do 3D?',
+      a: 'Yes! He builds 3D environments and games with Unreal Engine 4 and Blender, including "Dead by Shot"—a realistic first-person shooter with custom weapon mechanics.',
+      link: { label: 'Explore Dead by Shot Project', target: '#projects' }
     },
     {
-      q: 'Education & Degree?',
-      a: 'Prathak graduated from LNCT Group of Colleges, Bhopal (2020-2024) with a B.Tech in Computer Science & Engineering (82.80% aggregate).',
-      link: { label: 'Explore About Statement', target: '#about' }
-    },
-    {
-      q: 'Contact & Phone?',
-      a: 'Reach Prathak directly via email at prathaksoni.19@gmail.com or call him at +91 7000558459!',
-      link: { label: 'Go to Contact Section', target: '#contact' }
+      q: 'Get in touch',
+      a: 'Reach Prathak directly via email at prathaksoni.19@gmail.com, or connect on LinkedIn and GitHub.',
+      link: { label: 'Jump to Contact Form', target: '#contact' }
     }
   ];
 
@@ -278,8 +273,8 @@ export class AriaAssistantComponent {
       } else if (lower.includes('project') || lower.includes('portfolio')) {
         reply = 'Explore his featured works below—including Unilever SPC & Causal Impact, Talk-A-Tive, Dead by Shot, and Gold Price Prediction!';
         link = { label: 'See Featured Works', target: '#projects' };
-      } else if (lower.includes('contact') || lower.includes('email') || lower.includes('hire') || lower.includes('phone')) {
-        reply = 'You can reach Prathak at prathaksoni.19@gmail.com or call him at +91 7000558459!';
+      } else if (lower.includes('contact') || lower.includes('email') || lower.includes('hire') || lower.includes('reach')) {
+        reply = 'You can reach Prathak directly at prathaksoni.19@gmail.com, or use the contact form below!';
         link = { label: 'Jump to Contact Form', target: '#contact' };
       }
 
@@ -300,6 +295,15 @@ export class AriaAssistantComponent {
   navigateTo(target: string): void {
     this.smoothScroll.scrollTo(target);
     this.isOpen.set(false);
+
+    // Spotlight highlight on target element
+    setTimeout(() => {
+      const el = document.querySelector(target);
+      if (el) {
+        el.classList.add('aria-spotlight-active');
+        setTimeout(() => el.classList.remove('aria-spotlight-active'), 2500);
+      }
+    }, 600);
   }
 
   private scrollToBottom(): void {

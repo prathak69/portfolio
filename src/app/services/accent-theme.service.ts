@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, signal } from '@angular/core';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import confetti from 'canvas-confetti';
@@ -14,6 +14,7 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
 })
 export class AccentThemeService {
   readonly selectionPalette = ['#FFC93C', '#7CF29A', '#7FB2FF', '#FF8FB1', '#5CC46B', '#38BDF8'];
+  readonly isNightShift = signal<boolean>(false);
   private paletteIndex = 0;
   private scrollTriggers: ScrollTrigger[] = [];
   private isInitialized = false;
@@ -36,10 +37,39 @@ export class AccentThemeService {
     if (this.isInitialized || typeof window === 'undefined') return;
     this.isInitialized = true;
 
+    // Auto-detect Night Shift based on time of day (8 PM to 6 AM)
+    const currentHour = new Date().getHours();
+    if (currentHour >= 20 || currentHour < 6) {
+      this.isNightShift.set(true);
+      document.documentElement.classList.add('night-shift');
+    }
+
     this.zone.runOutsideAngular(() => {
       this.setupSelectionListeners();
       this.setupSectionTakeover();
       this.setupKonamiCode();
+      this.setupNightShiftHotkey();
+    });
+  }
+
+  toggleNightShift(): void {
+    const next = !this.isNightShift();
+    this.isNightShift.set(next);
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.toggle('night-shift', next);
+    }
+    this.toast.show(next ? 'Night Shift: Active 🌙' : 'Day Shift: Active ☀️');
+  }
+
+  private setupNightShiftHotkey(): void {
+    window.addEventListener('keydown', (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
+        return;
+      }
+      if (e.key === 'n' || e.key === 'N') {
+        this.zone.run(() => this.toggleNightShift());
+      }
     });
   }
 

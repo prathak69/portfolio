@@ -1,3 +1,6 @@
+<!-- STATISTICAL PROCESS CONTROL (SPC) SCROLL TELEMETRY PROGRESS -->
+<app-spc-telemetry />
+
 <!-- TOP LEVEL THREE-COLOR CURTAIN WIPES LOADER -->
 <app-curtain-loader />
 
@@ -70,8 +73,17 @@
     }
   </nav>
 
-  <!-- Right Pill (Status badge) -->
+  <!-- Right Pill (Status badge & Night Shift toggle) -->
   <div class="hidden sm:flex items-center gap-2">
+    <button
+      type="button"
+      (click)="accentTheme.toggleNightShift()"
+      [attr.aria-label]="accentTheme.isNightShift() ? 'Switch to Day Shift' : 'Switch to Night Shift'"
+      class="px-2.5 py-1.5 rounded-full text-xs font-mono font-bold bg-white/80 hover:bg-white text-[var(--ink)] border border-black/10 shadow-xs transition-all cursor-pointer select-none"
+      data-cursor="SHIFT"
+    >
+      <span>{{ accentTheme.isNightShift() ? '🌙' : '☀️' }}</span>
+    </button>
     <a
       href="#contact"
       (click)="scrollToSection('#contact', $event)"
@@ -251,6 +263,9 @@
 
 <!-- PART 5: AVATAR-POWERED ROBOT ASSISTANT (A.R.I.A) -->
 <app-aria-assistant />
+
+<!-- SIGNATURE PERFORMANCE & TELEMETRY HUD (Easter egg on pressing 'P') -->
+<app-performance-hud />
 
 <!-- GLOBAL TOAST NOTIFICATION -->
 @if (toast.message(); as msg) {

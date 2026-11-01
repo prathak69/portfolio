@@ -417,3 +417,59 @@ body.party-mode {
 .animate-cursor-blink {
   animation: blink 1s step-end infinite;
 }
+
+/* A.R.I.A Co-Pilot Spotlight Scroll Target */
+.aria-spotlight-active {
+  animation: ariaSpotlightPulse 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes ariaSpotlightPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(232, 74, 63, 0.8), 0 0 20px rgba(232, 74, 63, 0.4);
+    transform: scale(1.01);
+  }
+  50% {
+    box-shadow: 0 0 0 16px rgba(232, 74, 63, 0.2), 0 0 35px rgba(232, 74, 63, 0.3);
+    transform: scale(1.015);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(232, 74, 63, 0), 0 0 0 rgba(232, 74, 63, 0);
+    transform: scale(1);
+  }
+}
+
+/* Night Shift Ambient Palette Mode */
+html.night-shift {
+  --cream: #171715;
+  --paper: #1c1c19;
+  --ink: #F7F4EE;
+  --muted: #9E9B94;
+  --card-bg: #22211D;
+  --line: rgba(255, 255, 255, 0.12);
+  background-color: #171715;
+  color: #F7F4EE;
+
+  body {
+    background-color: #171715;
+    color: #F7F4EE;
+  }
+
+  #about, #approach, #skills, #experience, #projects, #education, #contact {
+    background-color: #171715 !important;
+    color: #F7F4EE !important;
+  }
+
+  #about h1, #about h2, #about h3,
+  #approach h1, #approach h2, #approach h3,
+  #skills h1, #skills h2, #skills h3,
+  #experience h1, #experience h2, #experience h3,
+  #projects h1, #projects h2, #projects h3,
+  #education h1, #education h2, #education h3,
+  #contact h1, #contact h2, #contact h3 {
+    color: #F7F4EE !important;
+  }
+
+  #about p, #approach p, #skills p, #experience p, #projects p, #education p, #contact p {
+    color: #9E9B94 !important;
+  }
+}

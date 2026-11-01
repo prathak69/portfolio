@@ -189,6 +189,78 @@
   list-style: none;
 }
 
+// Live Signature Miniature Badge inside media container
+.miniature-badge {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  background: rgba(23, 23, 21, 0.88);
+  backdrop-filter: blur(8px);
+  color: #FFF8F0;
+  border-radius: 99px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font: 700 0.68rem / 1 var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #5CC46B;
+    box-shadow: 0 0 8px #5CC46B;
+    animation: blink 1.2s infinite;
+  }
+
+  .mini-network {
+    width: 44px;
+    height: 18px;
+
+    .pulse-node {
+      transform-origin: 50px 25px;
+      animation: nodePulse 1.6s infinite ease-in-out;
+    }
+  }
+
+  .mini-radar {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid #5CC46B;
+    overflow: hidden;
+
+    .radar-sweep {
+      position: absolute;
+      inset: 0;
+      background: conic-gradient(from 0deg, transparent 70%, rgba(92, 196, 107, 0.8) 100%);
+      animation: radarSpin 2s linear infinite;
+    }
+  }
+
+  .mini-sparkline {
+    width: 32px;
+    height: 14px;
+  }
+}
+
+@keyframes nodePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+}
+
+@keyframes radarSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .chip {
   padding: 0.45rem 0.85rem;
   border-radius: 99px;

@@ -86,6 +86,45 @@ export const createProject = (
                     </div>
                   }
                 </div>
+
+                <!-- Signature Live Miniature Widget -->
+                @switch (p.id) {
+                  @case ('spc') {
+                    <div class="miniature-badge spc-badge">
+                      <svg class="mini-network" viewBox="0 0 100 50">
+                        <line x1="20" y1="25" x2="50" y2="25" stroke="rgba(255,255,255,0.7)" stroke-dasharray="2,2" />
+                        <line x1="50" y1="25" x2="80" y2="25" stroke="rgba(255,255,255,0.7)" stroke-dasharray="2,2" />
+                        <circle cx="20" cy="25" r="7" fill="#E84A3F" />
+                        <circle cx="50" cy="25" r="9" fill="#FFC93C" class="pulse-node" />
+                        <circle cx="80" cy="25" r="7" fill="#5CC46B" />
+                      </svg>
+                      <span>Causal Tree</span>
+                    </div>
+                  }
+                  @case ('talk') {
+                    <div class="miniature-badge talk-badge">
+                      <span class="live-dot"></span>
+                      <span>Socket.io // 60fps</span>
+                    </div>
+                  }
+                  @case ('deadbyshot') {
+                    <div class="miniature-badge radar-badge">
+                      <div class="mini-radar">
+                        <div class="radar-sweep"></div>
+                      </div>
+                      <span>UE4 Radar</span>
+                    </div>
+                  }
+                  @case ('gold') {
+                    <div class="miniature-badge gold-badge">
+                      <svg class="mini-sparkline" viewBox="0 0 60 24">
+                        <path d="M2,20 L15,14 L30,17 L45,6 L58,9" fill="none" stroke="#FFC93C" stroke-width="2.5" stroke-linecap="round" />
+                      </svg>
+                      <span>R² 98.2%</span>
+                    </div>
+                  }
+                }
+
                 <ul class="chips">
                   @for (t of p.tags.slice(0, 3); track t) {
                     <li class="chip">{{ t }}</li>

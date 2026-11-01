@@ -34,6 +34,8 @@ import { FeaturedShowcaseComponent } from './components/featured-showcase/featur
 import { CertificationsCardsComponent } from './components/certifications-cards/certifications-cards.component';
 import { ContactSectionComponent } from './components/contact-section/contact-section.component';
 import { AriaAssistantComponent } from './components/aria-assistant/aria-assistant.component';
+import { SpcTelemetryComponent } from './components/spc-telemetry/spc-telemetry.component';
+import { PerformanceHudComponent } from './components/performance-hud/performance-hud.component';
 
 @Component({
   selector: 'app-root',
@@ -50,7 +52,9 @@ import { AriaAssistantComponent } from './components/aria-assistant/aria-assista
     FeaturedShowcaseComponent,
     CertificationsCardsComponent,
     ContactSectionComponent,
-    AriaAssistantComponent
+    AriaAssistantComponent,
+    SpcTelemetryComponent,
+    PerformanceHudComponent
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'

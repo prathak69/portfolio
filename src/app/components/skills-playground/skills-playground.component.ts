@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  HostListener,
   NgZone,
   OnDestroy,
   ViewChild,
@@ -64,70 +65,136 @@ export interface SkillNode extends d3.SimulationNodeDatum {
             </button>
           }
         </div>
-      </div>
 
-      <!-- Physics Simulation Container (Desktop & Tablet) -->
-      <div
-        #playgroundContainer
-        class="relative max-w-6xl mx-auto h-[520px] sm:h-[600px] rounded-3xl bg-white border-2 border-[#E8DCCF] shadow-[0_20px_50px_rgba(20,17,15,0.06)] overflow-hidden hidden md:block select-none"
-        data-cursor="DRAG"
-        (mousemove)="onContainerMouseMove($event)"
-        (mouseleave)="onContainerMouseLeave()"
-      >
-        <!-- Floating hint -->
-        <div class="absolute top-4 left-6 pointer-events-none z-10 flex items-center gap-2 text-xs font-mono text-[#6B6560] text-muted">
-          <span class="w-2 h-2 rounded-full bg-[#5CC46B]"></span>
-          <span>Collide &bull; Drag &bull; Click bubble for experience breakdown</span>
+        <!-- View Mode Switcher: Gravity Physics vs Clean Matrix (for recruiters in a hurry) -->
+        <div class="flex items-center justify-center gap-2 mt-6">
+          <button
+            type="button"
+            (click)="viewMode.set('physics')"
+            class="px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer"
+            [class.bg-[#14110F]]="viewMode() === 'physics'"
+            [class.text-[#FFF8F0]]="viewMode() === 'physics'"
+            [class.shadow-md]="viewMode() === 'physics'"
+            [class.bg-white]="viewMode() !== 'physics'"
+            [class.text-[#14110F]]="viewMode() !== 'physics'"
+            [class.border]="viewMode() !== 'physics'"
+            [class.border-[#E8DCCF]]="viewMode() !== 'physics'"
+            data-cursor="MODE"
+          >
+            ⚛️ Gravity Physics
+          </button>
+          <button
+            type="button"
+            (click)="viewMode.set('matrix')"
+            class="px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer"
+            [class.bg-[#14110F]]="viewMode() === 'matrix'"
+            [class.text-[#FFF8F0]]="viewMode() === 'matrix'"
+            [class.shadow-md]="viewMode() === 'matrix'"
+            [class.bg-white]="viewMode() !== 'matrix'"
+            [class.text-[#14110F]]="viewMode() !== 'matrix'"
+            [class.border]="viewMode() !== 'matrix'"
+            [class.border-[#E8DCCF]]="viewMode() !== 'matrix'"
+            data-cursor="MODE"
+          >
+            📋 Clean Matrix
+          </button>
         </div>
-
-        <!-- Rendered HTML Bubble Nodes -->
-        @for (node of nodes; track node.id) {
-          <div
-            #bubbleEl
-            [id]="'node-' + node.id"
-            class="skill-bubble absolute top-0 left-0 rounded-full flex flex-col items-center justify-center text-center cursor-grab active:cursor-grabbing border-2 transition-[opacity,scale] duration-300 shadow-sm hover:shadow-lg hover:z-20 will-change-transform"
-            [style.width.px]="node.r * 2"
-            [style.height.px]="node.r * 2"
-            [style.margin-left.px]="-node.r"
-            [style.margin-top.px]="-node.r"
-            [style.background]="node.bg"
-            [style.border-color]="node.color"
-            [style.color]="node.color"
-            [class.opacity-25]="selectedCategory() !== 'All' && selectedCategory() !== node.category"
-            [class.scale-75]="selectedCategory() !== 'All' && selectedCategory() !== node.category"
-            [class.scale-105]="selectedCategory() === node.category"
-            (click)="selectSkill(node)"
-          >
-            <span class="font-extrabold text-sm tracking-tight text-[#14110F] text-ink pointer-events-none">
-              {{ node.name }}
-            </span>
-            <span class="text-[10px] font-mono opacity-80 pointer-events-none" [style.color]="node.color">
-              {{ node.category }}
-            </span>
-          </div>
-        }
       </div>
 
-      <!-- Fallback Clean Responsive Grid (Mobile / Touch) -->
-      <div class="max-w-6xl mx-auto md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4">
-        @for (node of filteredMobileNodes(); track node.id) {
-          <div
-            class="p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer"
-            [style.background]="node.bg"
-            [style.border-color]="node.color"
-            (click)="selectSkill(node)"
-          >
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-mono font-bold uppercase tracking-wider" [style.color]="node.color">
+      <!-- Physics Simulation Container (Desktop when in physics mode) -->
+      @if (viewMode() === 'physics') {
+        <div
+          #playgroundContainer
+          class="relative max-w-6xl mx-auto h-[520px] sm:h-[600px] rounded-3xl bg-white border-2 border-[#E8DCCF] shadow-[0_20px_50px_rgba(20,17,15,0.06)] overflow-hidden hidden md:block select-none"
+          data-cursor="DRAG"
+          (mousemove)="onContainerMouseMove($event)"
+          (mouseleave)="onContainerMouseLeave()"
+        >
+          <!-- Floating hint -->
+          <div class="absolute top-4 left-6 pointer-events-none z-10 flex items-center gap-2 text-xs font-mono text-[#6B6560] text-muted">
+            <span class="w-2 h-2 rounded-full bg-[#5CC46B]"></span>
+            <span>Collide &bull; Drag &bull; Click bubble for experience breakdown</span>
+          </div>
+
+          <!-- Rendered HTML Bubble Nodes -->
+          @for (node of nodes; track node.id) {
+            <div
+              #bubbleEl
+              [id]="'node-' + node.id"
+              class="skill-bubble absolute top-0 left-0 rounded-full flex flex-col items-center justify-center text-center cursor-grab active:cursor-grabbing border-2 transition-[opacity,scale] duration-300 shadow-sm hover:shadow-lg hover:z-20 will-change-transform"
+              [style.width.px]="node.r * 2"
+              [style.height.px]="node.r * 2"
+              [style.margin-left.px]="-node.r"
+              [style.margin-top.px]="-node.r"
+              [style.background]="node.bg"
+              [style.border-color]="node.color"
+              [style.color]="node.color"
+              [class.opacity-25]="selectedCategory() !== 'All' && selectedCategory() !== node.category"
+              [class.scale-75]="selectedCategory() !== 'All' && selectedCategory() !== node.category"
+              [class.scale-105]="selectedCategory() === node.category"
+              (click)="selectSkill(node)"
+            >
+              <span class="font-extrabold text-sm tracking-tight text-[#14110F] text-ink pointer-events-none">
+                {{ node.name }}
+              </span>
+              <span class="text-[10px] font-mono opacity-80 pointer-events-none" [style.color]="node.color">
                 {{ node.category }}
               </span>
-              <span class="text-xs font-mono text-[#6B6560] text-muted">{{ node.level }}</span>
             </div>
-            <h4 class="text-lg font-bold text-[#14110F] text-ink mb-1">{{ node.name }}</h4>
-            <p class="text-xs text-[#6B6560] text-muted leading-relaxed m-0">{{ node.note }}</p>
-          </div>
-        }
-      </div>
+          }
+        </div>
+      }
+
+      <!-- Clean Matrix Grid (Recruiters Matrix View) -->
+      @if (viewMode() === 'matrix') {
+        <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (node of filteredMobileNodes(); track node.id) {
+            <div
+              class="p-6 rounded-2xl border-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-md bg-white flex flex-col justify-between"
+              [style.border-color]="node.color"
+              (click)="selectSkill(node)"
+            >
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-xs font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full" [style.background]="node.bg" [style.color]="node.color">
+                    {{ node.category }}
+                  </span>
+                  <span class="text-xs font-mono text-[#6B6560] font-semibold">{{ node.level }}</span>
+                </div>
+                <h4 class="text-xl font-extrabold text-[#14110F] text-ink mb-2">{{ node.name }}</h4>
+                <p class="text-sm text-[#6B6560] text-muted leading-relaxed mb-4">{{ node.note }}</p>
+              </div>
+              <div class="pt-3 border-t border-[#E8DCCF]/60 flex items-center justify-between text-xs font-mono text-[#6B6560]">
+                <span>Verified Evidence</span>
+                <span class="text-[#0A7F3A] font-bold">&check;</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Fallback Clean Responsive Grid (Mobile / Touch in physics mode) -->
+      @if (viewMode() === 'physics') {
+        <div class="max-w-6xl mx-auto md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4">
+          @for (node of filteredMobileNodes(); track node.id) {
+            <div
+              class="p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer"
+              [style.background]="node.bg"
+              [style.border-color]="node.color"
+              (click)="selectSkill(node)"
+            >
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-mono font-bold uppercase tracking-wider" [style.color]="node.color">
+                  {{ node.category }}
+                </span>
+                <span class="text-xs font-mono text-[#6B6560] text-muted">{{ node.level }}</span>
+              </div>
+              <h4 class="text-lg font-bold text-[#14110F] text-ink mb-1">{{ node.name }}</h4>
+              <p class="text-xs text-[#6B6560] text-muted leading-relaxed m-0">{{ node.note }}</p>
+            </div>
+          }
+        </div>
+      }
 
       <!-- Skill Detail Drawer / Modal -->
       @if (activeSkill(); as skill) {
@@ -176,6 +243,14 @@ export class SkillsPlaygroundComponent implements AfterViewInit, OnDestroy {
   readonly categories = ['All', 'Frontend', 'Data Viz', '3D & Design', 'Tools'] as const;
   readonly selectedCategory = signal<string>('All');
   readonly activeSkill = signal<SkillNode | null>(null);
+  readonly viewMode = signal<'physics' | 'matrix'>('physics');
+
+  @HostListener('window:keydown.escape')
+  onEscapeKey(): void {
+    if (this.activeSkill()) {
+      this.activeSkill.set(null);
+    }
+  }
 
   readonly nodes: SkillNode[] = SKILLS.map((s) => ({
     id: s.id,
