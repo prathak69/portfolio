@@ -116,4 +116,21 @@ describe('FeaturedShowcaseComponent', () => {
     expect(pills.length).toBe(4);
     expect(pills[0]?.textContent).toContain('VIEW CASE →');
   });
+
+  it('should open and close case study modal drawer', () => {
+    expect(component.activeCaseStudy()).toBeNull();
+    component.openCaseStudy(component.projects[0], new MouseEvent('click'));
+    fixture.detectChanges();
+
+    expect(component.activeCaseStudy()).not.toBeNull();
+    const modal = fixture.nativeElement.querySelector('.case-study-modal');
+    expect(modal).toBeTruthy();
+    expect(modal.textContent).toContain('Causal & Impact');
+    expect(modal.textContent).toContain('The Problem');
+    expect(modal.textContent).toContain('System Architecture Flow');
+
+    component.closeCaseStudy();
+    fixture.detectChanges();
+    expect(component.activeCaseStudy()).toBeNull();
+  });
 });

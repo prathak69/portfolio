@@ -63,7 +63,8 @@ export class App implements OnInit, AfterViewInit, OnDestroy {
   readonly projects = DEFAULT_PROJECTS;
 
   @ViewChild('bgVideo', { static: true }) bgVideoRef!: ElementRef<HTMLVideoElement>;
-  @ViewChild('wordMe') wordMeRef?: ElementRef<HTMLElement>;
+  @ViewChild('wordFrontend') wordFrontendRef?: ElementRef<HTMLElement>;
+  @ViewChild('wordUnilever') wordUnileverRef?: ElementRef<HTMLElement>;
   @ViewChild('wordBuild') wordBuildRef?: ElementRef<HTMLElement>;
 
   readonly typewriter = inject(Typewriter);
@@ -199,17 +200,26 @@ export class App implements OnInit, AfterViewInit, OnDestroy {
     this.lenisScrollListener = () => this.checkScrollPosition();
     window.addEventListener('lenis-scroll', this.lenisScrollListener);
 
-    // Initialize Rough Notation highlights on hero headline keywords ("me" & "build")
+    // Initialize Rough Notation highlights on hero headline keywords ("Frontend", "Unilever", "build")
     setTimeout(() => {
-      if (this.wordMeRef?.nativeElement) {
-        const annotMe = annotate(this.wordMeRef.nativeElement, {
-          type: 'circle',
-          color: '#E5392F',
-          strokeWidth: 2.2,
-          padding: 8,
-          iterations: 2
+      if (this.wordFrontendRef?.nativeElement) {
+        const annotFrontend = annotate(this.wordFrontendRef.nativeElement, {
+          type: 'underline',
+          color: '#E84A3F',
+          strokeWidth: 2.5,
+          padding: 2
         });
-        annotMe.show();
+        annotFrontend.show();
+      }
+
+      if (this.wordUnileverRef?.nativeElement) {
+        const annotUnilever = annotate(this.wordUnileverRef.nativeElement, {
+          type: 'circle',
+          color: '#2F5BFF',
+          strokeWidth: 2,
+          padding: 4
+        });
+        annotUnilever.show();
       }
 
       if (this.wordBuildRef?.nativeElement) {

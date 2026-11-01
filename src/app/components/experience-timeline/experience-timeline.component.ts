@@ -249,6 +249,44 @@ export class ExperienceTimelineComponent implements AfterViewInit, OnDestroy {
           .attr('cy', yScale(data[data.length - 1]))
           .attr('r', 4)
           .attr('fill', exp.accent);
+
+        // Interactive SPC Threshold Scrubber Line
+        let initialThreshold = 35;
+        const thresholdLine = svg.append('line')
+          .attr('x1', 0)
+          .attr('x2', width)
+          .attr('y1', yScale(initialThreshold))
+          .attr('y2', yScale(initialThreshold))
+          .attr('stroke', '#E84A3F')
+          .attr('stroke-width', 1.5)
+          .attr('stroke-dasharray', '3,3')
+          .style('cursor', 'ns-resize');
+
+        const thresholdText = svg.append('text')
+          .attr('x', width)
+          .attr('y', yScale(initialThreshold) - 4)
+          .attr('text-anchor', 'end')
+          .attr('font-family', 'var(--font-mono)')
+          .attr('font-size', '9px')
+          .attr('fill', '#E84A3F')
+          .attr('font-weight', '700')
+          .text('UCL: 35 (3 spikes)');
+
+        svg.style('cursor', 'crosshair')
+          .on('mousemove', (event: MouseEvent) => {
+            const [, my] = d3.pointer(event);
+            const clampedY = Math.max(4, Math.min(height - 4, my));
+            const val = Math.round(yScale.invert(clampedY));
+            const spikes = data.filter((d) => d > val).length;
+
+            thresholdLine
+              .attr('y1', clampedY)
+              .attr('y2', clampedY);
+
+            thresholdText
+              .attr('y', Math.max(10, clampedY - 4))
+              .text(`UCL: ${val} (${spikes} spikes)`);
+          });
       } else {
         const bars = [14, 28, 45, 32, 58, 48, 62, 54, 75];
         const barW = (width / bars.length) - 3;

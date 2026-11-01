@@ -470,3 +470,23 @@ h3 {
     top: 0;
   }
 }
+
+// Case Study Modal Drawer
+.case-study-backdrop {
+  z-index: 10000;
+}
+
+.case-study-modal {
+  animation: modalScaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalScaleUp {
+  0% {
+    transform: scale(0.94) translateY(16px);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}

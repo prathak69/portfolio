@@ -3,6 +3,7 @@ import {
   Component,
   DestroyRef,
   ElementRef,
+  HostListener,
   NgZone,
   afterNextRender,
   computed,
@@ -10,6 +11,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PROJECTS, ProjectRecord } from '../../data/portfolio.data';
@@ -17,11 +19,17 @@ import { PROJECTS, ProjectRecord } from '../../data/portfolio.data';
 export interface Project {
   id: string;
   title: string;
+  subtitle: string;
   tags: string[];
   accent: string;
   href: string;
   slides: string[];
   preview: string;
+  problem: string;
+  role: string;
+  description: string;
+  stack: string[];
+  metrics: { label: string; value: string }[];
 }
 
 // Prathak Soni's real portfolio work from resume:
@@ -37,11 +45,17 @@ export const createProject = (
 ): Project => ({
   id,
   title,
+  subtitle: title,
   tags,
   accent,
   href: `https://github.com/prathaksoni`,
   slides: [1, 2, 3].map((n) => `/assets/projects/${id}-${n}.webp`),
   preview: `/assets/projects/${id}-preview.webp`,
+  problem: 'Enterprise optimization and low-latency interaction challenge.',
+  role: 'Frontend Engineer',
+  description: 'Production architecture delivering high performance.',
+  stack: tags,
+  metrics: []
 });
 
 @Component({
@@ -149,8 +163,7 @@ export const createProject = (
                   <a
                     class="view-case-square"
                     [href]="p.href"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    (click)="openCaseStudy(p, $event)"
                     [attr.aria-label]="'Open case study: ' + p.title"
                     data-cursor="OPEN"
                   >
@@ -164,6 +177,144 @@ export const createProject = (
           </article>
         }
       </div>
+
+      <!-- Case Study Drawer / Modal -->
+      @if (activeCaseStudy(); as cs) {
+        <div
+          class="case-study-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+          (click)="closeCaseStudy()"
+        >
+          <div
+            class="case-study-modal relative w-full max-w-2xl max-h-[90vh] bg-white rounded-3xl p-6 sm:p-8 border-2 border-[#14110F] shadow-[0_30px_70px_rgba(0,0,0,0.35)] overflow-y-auto"
+            (click)="$event.stopPropagation()"
+            role="dialog"
+            aria-modal="true"
+            [attr.aria-label]="cs.title"
+          >
+            <!-- Close Button -->
+            <button
+              type="button"
+              (click)="closeCaseStudy()"
+              class="modal-close-btn absolute top-5 right-5 w-8 h-8 rounded-full bg-[#F7EFE5] hover:bg-[#E8DCCF] flex items-center justify-center font-bold text-base cursor-pointer"
+              aria-label="Close Case Study"
+            >
+              &times;
+            </button>
+
+            <!-- Eyebrow & Category -->
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-2.5 h-2.5 rounded-full" [style.background]="cs.accent"></span>
+              <span class="text-xs font-mono font-bold uppercase tracking-wider text-[#6B6560]">
+                {{ cs.subtitle }}
+              </span>
+            </div>
+
+            <!-- Title -->
+            <h3 class="text-2xl sm:text-3xl font-black text-[#14110F] text-ink mb-2">
+              {{ cs.title }}
+            </h3>
+
+            <!-- Role Badge -->
+            <div class="mb-6">
+              <span class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#F7EFE5] text-[#14110F] border border-black/10">
+                Role: {{ cs.role }}
+              </span>
+            </div>
+
+            <!-- Problem & Solution Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              <div class="p-4 rounded-2xl bg-[#FFF8F0] border border-[#E8DCCF]">
+                <h4 class="text-xs font-mono uppercase tracking-wider text-[#E84A3F] font-bold mb-1">
+                  The Problem
+                </h4>
+                <p class="text-xs sm:text-sm text-[#6B6560] leading-relaxed m-0">
+                  {{ cs.problem }}
+                </p>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-[#FFF8F0] border border-[#E8DCCF]">
+                <h4 class="text-xs font-mono uppercase tracking-wider text-[#2F5BFF] font-bold mb-1">
+                  The Solution
+                </h4>
+                <p class="text-xs sm:text-sm text-[#6B6560] leading-relaxed m-0">
+                  {{ cs.description }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Architecture Diagram -->
+            <div class="p-5 rounded-2xl bg-[#171715] text-[#F7F4EE] mb-6 border border-black/20">
+              <div class="flex items-center justify-between mb-3 text-xs font-mono text-[#F7F4EE]/70 uppercase tracking-wider">
+                <span>System Architecture Flow</span>
+                <span class="text-[10px] text-[#5CC46B] font-bold">Verified</span>
+              </div>
+              <div class="flex items-center justify-between text-center gap-2 font-mono text-[11px] sm:text-xs">
+                @switch (cs.id) {
+                  @case ('spc') {
+                    <div class="flex-1 p-2 rounded bg-white/10">Config Dashboards (5+)</div>
+                    <span class="text-[#2F5BFF] font-bold">&rarr;</span>
+                    <div class="flex-1 p-2 rounded bg-white/10">D3 Causal Tree Graph</div>
+                    <span class="text-[#2F5BFF] font-bold">&rarr;</span>
+                    <div class="flex-1 p-2 rounded bg-white/10">500+ Engineers (20+ Sites)</div>
+                  }
+                  @case ('talk') {
+                    <div class="flex-1 p-2 rounded bg-white/10">React Client</div>
+                    <span class="text-[#16A34A] font-bold">&rarr;</span>
+                    <div class="flex-1 p-2 rounded bg-white/10">Socket.io Gateway</div>
+                    <span class="text-[#16A34A] font-bold">&rarr;</span>
+                    <div class="flex-1 p-2 rounded bg-white/10">Express / MongoDB (&lt;100ms)</div>
+                  }
+                  @case ('deadbyshot') {
+                    <div class="flex-1 p-2 rounded bg-white/10">Blender 3D Modeling</div>
+                    <span class="text-[#8B5CF6] font-bold">&rarr;</span>
+                    <div class="flex-1 p-2 rounded bg-white/10">Unreal Engine 4 Core</div>
+                    <span class="text-[#8B5CF6] font-bold">&rarr;</span>
+                    <div class="flex-1 p-2 rounded bg-white/10">100+ Active Players</div>
+                  }
+                  @case ('gold') {
+                    <div class="flex-1 p-2 rounded bg-white/10">13-Yr Dataset (2008-2021)</div>
+                    <span class="text-[#EAB308] font-bold">&rarr;</span>
+                    <div class="flex-1 p-2 rounded bg-white/10">Scikit-Learn Random Forest</div>
+                    <span class="text-[#EAB308] font-bold">&rarr;</span>
+                    <div class="flex-1 p-2 rounded bg-white/10">R² = 98.2% Accuracy</div>
+                  }
+                }
+              </div>
+            </div>
+
+            <!-- Key Verified Metrics -->
+            <div class="flex flex-wrap gap-4 mb-6">
+              @for (m of cs.metrics; track m.label) {
+                <div class="px-4 py-2.5 rounded-xl bg-[#F7EFE5] border border-[#E8DCCF]">
+                  <span class="text-xl font-mono font-black text-[#14110F] block">{{ m.value }}</span>
+                  <span class="text-[10px] font-mono text-[#6B6560] uppercase tracking-wider">{{ m.label }}</span>
+                </div>
+              }
+            </div>
+
+            <!-- Tech Stack & Links -->
+            <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-[#E8DCCF]">
+              <div class="flex flex-wrap gap-1.5">
+                @for (t of cs.stack; track t) {
+                  <span class="px-2.5 py-1 rounded-md text-[11px] font-mono bg-[#F7EFE5] text-[#14110F] font-semibold border border-black/5">
+                    {{ t }}
+                  </span>
+                }
+              </div>
+
+              <a
+                [href]="cs.href"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-4 py-2 rounded-full bg-[#14110F] hover:bg-[#E84A3F] text-white text-xs font-mono font-bold tracking-wider uppercase transition-colors inline-flex items-center gap-1.5 no-underline"
+              >
+                <span>GitHub Repository</span>
+                <span>&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      }
     </section>
   `,
 })
@@ -176,16 +327,39 @@ export class FeaturedShowcaseComponent {
   readonly projects: Project[] = PROJECTS.map((p) => ({
     id: p.id,
     title: p.title,
+    subtitle: p.subtitle,
     tags: p.tags,
     accent: p.accent,
     href: p.githubUrl || p.liveUrl,
     slides: p.slides,
-    preview: p.previewImage
+    preview: p.previewImage,
+    problem: p.problem,
+    role: p.role,
+    description: p.description,
+    stack: p.stack,
+    metrics: p.metrics.map((m) => ({ label: m.label, value: m.value }))
   }));
 
   readonly active = signal(0);
   readonly current = computed(() => this.projects[this.active()]);
+  readonly activeCaseStudy = signal<Project | null>(null);
   pad = (n: number) => String(n).padStart(2, '0');
+
+  openCaseStudy(p: Project, e: Event): void {
+    e.preventDefault();
+    this.activeCaseStudy.set(p);
+  }
+
+  closeCaseStudy(): void {
+    this.activeCaseStudy.set(null);
+  }
+
+  @HostListener('window:keydown.escape')
+  onEscapeKey(): void {
+    if (this.activeCaseStudy()) {
+      this.closeCaseStudy();
+    }
+  }
 
   constructor() {
     afterNextRender(() => this.zone.runOutsideAngular(() => this.init()));
