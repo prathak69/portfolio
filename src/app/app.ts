@@ -93,13 +93,30 @@ export class App implements OnInit, AfterViewInit, OnDestroy {
   readonly showPills = signal<boolean>(false);
   readonly isScrolled = signal<boolean>(false);
   readonly isOverLightSection = signal<boolean>(false);
+  readonly isOverDarkProjectsSection = signal<boolean>(false);
   readonly parallaxX = signal<number>(0);
   readonly parallaxY = signal<number>(0);
 
   // Dynamic theme for the fixed navbar based on scroll position / section
   readonly navbarTheme = computed(() => {
+    const isDarkProjects = this.isOverDarkProjectsSection();
     const isLight = this.isOverLightSection();
     const isMenuOpen = this.isMobileMenuOpen();
+
+    if (isDarkProjects) {
+      return {
+        isLight: false,
+        bg: 'rgba(17, 16, 13, 0.94)',
+        backdropBlur: 'blur(12px)',
+        border: 'rgba(207, 197, 171, 0.16)',
+        shadow: '0 4px 20px -2px rgba(0, 0, 0, 0.5)',
+        textColor: '#cfc5ab',
+        textHoverColor: '#0066ff',
+        separatorColor: 'rgba(207, 197, 171, 0.25)',
+        asteriskColor: '#0066ff',
+        hamburgerColor: isMenuOpen ? '#FFFFFF' : '#cfc5ab'
+      };
+    }
 
     if (isLight) {
       return {
@@ -264,6 +281,17 @@ export class App implements OnInit, AfterViewInit, OnDestroy {
     if (typeof window === 'undefined') return;
     const scrollY = window.scrollY || document.documentElement.scrollTop;
     this.isScrolled.set(scrollY > 20);
+
+    const projectsEl = document.getElementById('projects');
+    if (projectsEl) {
+      const pRect = projectsEl.getBoundingClientRect();
+      if (pRect.top <= 70 && pRect.bottom >= 70) {
+        this.isOverDarkProjectsSection.set(true);
+        this.isOverLightSection.set(false);
+        return;
+      }
+    }
+    this.isOverDarkProjectsSection.set(false);
 
     const lightEl = document.getElementById('about');
     if (lightEl) {
