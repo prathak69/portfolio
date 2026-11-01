@@ -104,9 +104,9 @@ export class FeaturedShowcaseComponent {
   readonly letters = 'FEATURED'.split('');
   readonly projects: Project[] = [
     createProject('spc', 'Causal & Impact dashboards used by 500+ quality engineers', ['Enterprise', 'Data Visualisation', 'Angular', 'D3.js'], '#2F5BFF'),
-    createProject('talk', 'Talk-A-Tive: real-time chat with sub-100ms delivery', ['Full-stack', 'MERN', 'Socket.io'], '#1F8A5B'),
-    createProject('deadbyshot', 'Dead by Shot: an Unreal Engine FPS played by 100+ people', ['Game', 'Unreal Engine 4', 'Blender'], '#6A3BA8'),
-    createProject('gold', 'Gold Price Prediction on 13 years of market data', ['Machine Learning', 'Python', 'Scikit-Learn'], '#B8861B'),
+    createProject('talk', 'Talk-A-Tive: real-time chat with sub-100ms delivery', ['Full-stack', 'MERN', 'Socket.io'], '#16A34A'),
+    createProject('deadbyshot', 'Dead by Shot: an Unreal Engine FPS played by 100+ people', ['Game', 'Unreal Engine 4', 'Blender'], '#8B5CF6'),
+    createProject('gold', 'Gold Price Prediction on 13 years of market data', ['Machine Learning', 'Python', 'Scikit-Learn'], '#D97706'),
   ];
 
   readonly active = signal(0);

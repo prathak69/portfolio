@@ -281,16 +281,6 @@ export class App implements OnInit, AfterViewInit, OnDestroy {
     if (typeof window === 'undefined') return;
     const scrollY = window.scrollY || document.documentElement.scrollTop;
     this.isScrolled.set(scrollY > 20);
-
-    const projectsEl = document.getElementById('projects');
-    if (projectsEl) {
-      const pRect = projectsEl.getBoundingClientRect();
-      if (pRect.top <= 70 && pRect.bottom >= 70) {
-        this.isOverDarkProjectsSection.set(true);
-        this.isOverLightSection.set(false);
-        return;
-      }
-    }
     this.isOverDarkProjectsSection.set(false);
 
     const lightEl = document.getElementById('about');
