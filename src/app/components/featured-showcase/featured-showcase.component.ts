@@ -32,11 +32,6 @@ export interface Project {
   metrics: { label: string; value: string }[];
 }
 
-// Prathak Soni's real portfolio work from resume:
-// 1. Statistical Process Control (SPC) & Causal Impact ML Module (TCS / Unilever)
-// 2. Talk-A-Tive Real-time Chat (MERN + Socket.io)
-// 3. Dead by Shot FPS Game (Unreal Engine 4 + Blender)
-// 4. Gold Price Prediction (Machine Learning + Scikit-Learn)
 export const createProject = (
   id: string,
   title: string,
@@ -62,9 +57,11 @@ export const createProject = (
   selector: 'app-featured-showcase',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule],
   styleUrl: './featured-showcase.component.scss',
   template: `
     <section class="featured" id="projects" #root [style.--accent]="current().accent">
+      <!-- Top Editorial Header (Marcus Lorenzet Design) -->
       <header class="head">
         <div class="head-left">
           <div class="eyebrow-row">
@@ -80,16 +77,28 @@ export const createProject = (
         <span class="label">[ CASE STUDIES ]</span>
       </header>
 
-      <div class="list">
+      <!-- Stacking Accordion Cards List -->
+      <div class="list" #projectList>
         @for (p of projects; track p.id; let i = $index; let last = $last) {
-          <article class="item" [attr.data-index]="i" [style.--accent]="p.accent" [style.z-index]="i + 1">
+          <article
+            class="item"
+            [attr.data-index]="i"
+            [style.--accent]="p.accent"
+            [style.--item-index]="i"
+            [style.z-index]="i + 1"
+            (mouseenter)="onItemMouseEnter($event, i)"
+            (mousemove)="onItemMouseMove($event, i)"
+            (mouseleave)="onItemMouseLeave()"
+          >
             <div class="inner">
-              <!-- Left Column: Media Card with Animated Slides Carousel & Chips -->
-              <a
+              <!-- Left Column: Media Card with Animated Slides Carousel, Signature Badge & Chips -->
+              <div
                 class="media"
-                [href]="p.href"
-                target="_blank"
-                rel="noopener noreferrer"
+                role="button"
+                tabindex="0"
+                (click)="openCaseStudy(p, $event)"
+                (keydown.enter)="openCaseStudy(p, $event)"
+                (keydown.space)="openCaseStudy(p, $event)"
                 [attr.aria-label]="'View case study: ' + p.title"
                 data-cursor="CASE"
               >
@@ -144,28 +153,40 @@ export const createProject = (
                     <li class="chip">{{ t }}</li>
                   }
                 </ul>
-              </a>
+              </div>
 
-              <!-- Right Column: Info & Interactive Reveal Square -->
+              <!-- Right Column: Info & Contextual Navigation -->
               <div class="info">
                 <span class="num">{{ pad(i + 1) }}</span>
 
                 <div class="info-layout">
                   <div class="info-main">
-                    <h3>{{ p.title }}</h3>
+                    <h3
+                      class="project-title"
+                      (click)="openCaseStudy(p, $event)"
+                      role="button"
+                      tabindex="0"
+                      (keydown.enter)="openCaseStudy(p, $event)"
+                      (keydown.space)="openCaseStudy(p, $event)"
+                    >
+                      {{ p.title }}
+                    </h3>
                     <p class="meta">{{ p.tags.join(', ') }}</p>
-                    <a class="cue" [href]="last ? '#contact' : '#projects'">
+                    <a
+                      class="cue"
+                      [href]="last ? '#contact' : '#projects'"
+                      (click)="onCueClick(last, $event)"
+                    >
                       {{ last ? 'Contact' : 'Next project' }} ↘
                     </a>
                   </div>
 
-                  <!-- THE "VIEW CASE →" SQUARE: Hidden by default, smoothly pops in on card hover! -->
+                  <!-- Inline Fallback for Tests & Mobile Viewports -->
                   <a
-                    class="view-case-square"
+                    class="view-case-square inline-fallback"
                     [href]="p.href"
                     (click)="openCaseStudy(p, $event)"
                     [attr.aria-label]="'Open case study: ' + p.title"
-                    data-cursor="OPEN"
                   >
                     <img class="view-case-img" [src]="p.preview" alt="" loading="lazy" />
                     <div class="view-case-overlay"></div>
@@ -175,6 +196,35 @@ export const createProject = (
               </div>
             </div>
           </article>
+        }
+      </div>
+
+      <!-- FLOATING MAGNETIC PREVIEW SQUARE (Exact Marcus Lorenzet Experience): -->
+      <!-- Initially hidden / not there when first scrolling to section; -->
+      <!-- Smoothly pops in with spring momentum only when hovering a project card! -->
+      <div
+        class="floating-view-case"
+        [class.active]="isFollowerActive() && hoveredProject() !== null"
+        [style.transform]="
+          'translate3d(' + followerX() + 'px, ' + followerY() + 'px, 0) ' +
+          'translate(-50%, -50%) ' +
+          'rotate(' + followerTilt() + 'deg) ' +
+          (isFollowerActive() ? 'scale(1)' : 'scale(0)')
+        "
+        (click)="onFollowerClick($event)"
+        role="button"
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        @if (hoveredProject(); as hp) {
+          <div class="floating-preview-card" [style.--accent]="hp.accent">
+            <img class="floating-img" [src]="hp.preview" alt="" />
+            <div class="floating-overlay"></div>
+            <div class="floating-pill">
+              <span>VIEW CASE</span>
+              <span class="floating-arrow">&rarr;</span>
+            </div>
+          </div>
         }
       </div>
 
@@ -248,68 +298,78 @@ export const createProject = (
                 <span>System Architecture Flow</span>
                 <span class="text-[10px] text-[#5CC46B] font-bold">Verified</span>
               </div>
-              <div class="flex items-center justify-between text-center gap-2 font-mono text-[11px] sm:text-xs">
-                @switch (cs.id) {
-                  @case ('spc') {
-                    <div class="flex-1 p-2 rounded bg-white/10">Config Dashboards (5+)</div>
-                    <span class="text-[#2F5BFF] font-bold">&rarr;</span>
-                    <div class="flex-1 p-2 rounded bg-white/10">D3 Causal Tree Graph</div>
-                    <span class="text-[#2F5BFF] font-bold">&rarr;</span>
-                    <div class="flex-1 p-2 rounded bg-white/10">500+ Engineers (20+ Sites)</div>
-                  }
-                  @case ('talk') {
-                    <div class="flex-1 p-2 rounded bg-white/10">React Client</div>
-                    <span class="text-[#16A34A] font-bold">&rarr;</span>
-                    <div class="flex-1 p-2 rounded bg-white/10">Socket.io Gateway</div>
-                    <span class="text-[#16A34A] font-bold">&rarr;</span>
-                    <div class="flex-1 p-2 rounded bg-white/10">Express / MongoDB (&lt;100ms)</div>
-                  }
-                  @case ('deadbyshot') {
-                    <div class="flex-1 p-2 rounded bg-white/10">Blender 3D Modeling</div>
-                    <span class="text-[#8B5CF6] font-bold">&rarr;</span>
-                    <div class="flex-1 p-2 rounded bg-white/10">Unreal Engine 4 Core</div>
-                    <span class="text-[#8B5CF6] font-bold">&rarr;</span>
-                    <div class="flex-1 p-2 rounded bg-white/10">100+ Active Players</div>
-                  }
-                  @case ('gold') {
-                    <div class="flex-1 p-2 rounded bg-white/10">13-Yr Dataset (2008-2021)</div>
-                    <span class="text-[#EAB308] font-bold">&rarr;</span>
-                    <div class="flex-1 p-2 rounded bg-white/10">Scikit-Learn Random Forest</div>
-                    <span class="text-[#EAB308] font-bold">&rarr;</span>
-                    <div class="flex-1 p-2 rounded bg-white/10">R² = 98.2% Accuracy</div>
-                  }
-                }
-              </div>
+              <svg viewBox="0 0 500 120" class="w-full h-auto">
+                <rect x="10" y="35" width="100" height="50" rx="8" fill="#232320" stroke="#3A3A35" stroke-width="1.5" />
+                <text x="60" y="65" fill="#F7F4EE" font-size="11" font-family="monospace" text-anchor="middle" font-weight="bold">
+                  {{ cs.id === 'spc' ? 'Unilever DB' : (cs.id === 'talk' ? 'React Client' : (cs.id === 'deadbyshot' ? 'Blender Assets' : 'Market CSV')) }}
+                </text>
+
+                <path d="M 110 60 L 160 60" stroke="#78756E" stroke-width="2" stroke-dasharray="3,3" />
+                <polygon points="160,60 152,56 152,64" fill="#78756E" />
+
+                <rect x="165" y="25" width="170" height="70" rx="10" [attr.fill]="cs.accent + '22'" [attr.stroke]="cs.accent" stroke-width="2" />
+                <text x="250" y="55" fill="#FFFFFF" font-size="12" font-family="monospace" text-anchor="middle" font-weight="bold">
+                  {{ cs.id === 'spc' ? 'SPC Causal Engine' : (cs.id === 'talk' ? 'Socket.io Core' : (cs.id === 'deadbyshot' ? 'UE4 Game Physics' : 'RandomForest Reg.')) }}
+                </text>
+                <text x="250" y="75" fill="#F7F4EE" font-size="9" font-family="monospace" text-anchor="middle" opacity="0.8">
+                  {{ cs.id === 'spc' ? '500+ Engineers' : (cs.id === 'talk' ? '<100ms Latency' : (cs.id === 'deadbyshot' ? '60fps Hit Reg' : '500 Estimators')) }}
+                </text>
+
+                <path d="M 335 60 L 385 60" stroke="#78756E" stroke-width="2" stroke-dasharray="3,3" />
+                <polygon points="385,60 377,56 377,64" fill="#78756E" />
+
+                <rect x="390" y="35" width="100" height="50" rx="8" fill="#232320" stroke="#3A3A35" stroke-width="1.5" />
+                <text x="440" y="65" fill="#5CC46B" font-size="11" font-family="monospace" text-anchor="middle" font-weight="bold">
+                  {{ cs.id === 'spc' ? 'D3.js Vis UI' : (cs.id === 'talk' ? 'Realtime UI' : (cs.id === 'deadbyshot' ? '100+ Players' : 'R² 98.2% Pred')) }}
+                </text>
+              </svg>
             </div>
 
-            <!-- Key Verified Metrics -->
-            <div class="flex flex-wrap gap-4 mb-6">
-              @for (m of cs.metrics; track m.label) {
-                <div class="px-4 py-2.5 rounded-xl bg-[#F7EFE5] border border-[#E8DCCF]">
-                  <span class="text-xl font-mono font-black text-[#14110F] block">{{ m.value }}</span>
-                  <span class="text-[10px] font-mono text-[#6B6560] uppercase tracking-wider">{{ m.label }}</span>
+            <!-- Verified Key Metrics -->
+            @if (cs.metrics.length > 0) {
+              <div class="mb-6">
+                <h4 class="text-xs font-mono uppercase tracking-wider text-[#6B6560] font-bold mb-3">
+                  Verified Engineering Metrics
+                </h4>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  @for (m of cs.metrics; track m.label) {
+                    <div class="p-3 rounded-xl bg-[#F7EFE5] border border-black/5">
+                      <div class="text-xl sm:text-2xl font-black text-[#14110F]">
+                        {{ m.value }}
+                      </div>
+                      <div class="text-[10px] sm:text-xs font-mono text-[#6B6560] uppercase mt-0.5">
+                        {{ m.label }}
+                      </div>
+                    </div>
+                  }
                 </div>
-              }
-            </div>
+              </div>
+            }
 
-            <!-- Tech Stack & Links -->
-            <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-[#E8DCCF]">
+            <!-- Tech Stack Chips -->
+            <div class="mb-6">
+              <h4 class="text-xs font-mono uppercase tracking-wider text-[#6B6560] font-bold mb-2">
+                Technologies
+              </h4>
               <div class="flex flex-wrap gap-1.5">
                 @for (t of cs.stack; track t) {
-                  <span class="px-2.5 py-1 rounded-md text-[11px] font-mono bg-[#F7EFE5] text-[#14110F] font-semibold border border-black/5">
+                  <span class="px-2.5 py-1 rounded-full text-xs font-mono bg-[#FFF8F0] border border-[#E8DCCF] text-[#14110F]">
                     {{ t }}
                   </span>
                 }
               </div>
+            </div>
 
+            <!-- Action Button -->
+            <div class="flex justify-end gap-3 pt-4 border-t border-[#E8DCCF]">
               <a
                 [href]="cs.href"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="px-4 py-2 rounded-full bg-[#14110F] hover:bg-[#E84A3F] text-white text-xs font-mono font-bold tracking-wider uppercase transition-colors inline-flex items-center gap-1.5 no-underline"
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#14110F] text-[#FFF8F0] hover:bg-[#E84A3F] transition-colors text-xs font-mono font-bold tracking-wider uppercase no-underline shadow-md"
               >
-                <span>GitHub Repository</span>
-                <span>&rarr;</span>
+                <span>View on GitHub</span>
+                <span>↗</span>
               </a>
             </div>
           </div>
@@ -319,114 +379,231 @@ export const createProject = (
   `,
 })
 export class FeaturedShowcaseComponent {
-  private zone = inject(NgZone);
-  private destroyRef = inject(DestroyRef);
-  private root = viewChild.required<ElementRef<HTMLElement>>('root');
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly zone = inject(NgZone);
+
+  readonly rootRef = viewChild<ElementRef<HTMLElement>>('root');
+  readonly projectListRef = viewChild<ElementRef<HTMLElement>>('projectList');
 
   readonly letters = 'FEATURED'.split('');
-  readonly projects: Project[] = PROJECTS.map((p) => ({
+  readonly activeIndex = signal(0);
+  readonly activeCaseStudy = signal<Project | null>(null);
+
+  // Floating Cursor Follower State (Marcus Lorenzet Design)
+  readonly hoveredProject = signal<Project | null>(null);
+  readonly isFollowerActive = signal<boolean>(false);
+  readonly followerX = signal<number>(-300);
+  readonly followerY = signal<number>(-300);
+  readonly followerTilt = signal<number>(0);
+
+  private targetX = -300;
+  private targetY = -300;
+  private currentX = -300;
+  private currentY = -300;
+  private velocityX = 0;
+  private rafId: number | null = null;
+
+  // Real resume projects from portfolio.data.ts
+  readonly projects: Project[] = PROJECTS.map((p: ProjectRecord) => ({
     id: p.id,
     title: p.title,
     subtitle: p.subtitle,
     tags: p.tags,
     accent: p.accent,
-    href: p.githubUrl || p.liveUrl,
+    href: p.githubUrl || p.liveUrl || 'https://github.com/prathaksoni',
     slides: p.slides,
     preview: p.previewImage,
     problem: p.problem,
     role: p.role,
     description: p.description,
     stack: p.stack,
-    metrics: p.metrics.map((m) => ({ label: m.label, value: m.value }))
+    metrics: p.metrics.map((m) => ({ label: m.label, value: m.value })),
   }));
 
-  readonly active = signal(0);
-  readonly current = computed(() => this.projects[this.active()]);
-  readonly activeCaseStudy = signal<Project | null>(null);
-  pad = (n: number) => String(n).padStart(2, '0');
+  readonly current = computed(() => this.projects[this.activeIndex()] ?? this.projects[0]);
 
-  openCaseStudy(p: Project, e: Event): void {
-    e.preventDefault();
-    this.activeCaseStudy.set(p);
+  constructor() {
+    afterNextRender(() => {
+      this.initAnimations();
+    });
+
+    this.destroyRef.onDestroy(() => {
+      if (this.rafId) {
+        cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      }
+    });
+  }
+
+  @HostListener('window:keydown.escape')
+  onEscape(): void {
+    if (this.activeCaseStudy()) {
+      this.closeCaseStudy();
+    }
+  }
+
+  pad(n: number): string {
+    return n.toString().padStart(2, '0');
+  }
+
+  setActive(i: number): void {
+    if (i >= 0 && i < this.projects.length) {
+      this.activeIndex.set(i);
+    }
+  }
+
+  openCaseStudy(project: Project, e?: Event): void {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    this.activeCaseStudy.set(project);
+    this.isFollowerActive.set(false);
   }
 
   closeCaseStudy(): void {
     this.activeCaseStudy.set(null);
   }
 
-  @HostListener('window:keydown.escape')
-  onEscapeKey(): void {
-    if (this.activeCaseStudy()) {
-      this.closeCaseStudy();
+  onCueClick(last: boolean, e: MouseEvent): void {
+    e.preventDefault();
+    if (last) {
+      const target = document.querySelector('#contact');
+      target?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      const nextIdx = this.activeIndex() + 1;
+      const items = this.rootRef()?.nativeElement?.querySelectorAll<HTMLElement>('.item');
+      if (items && items[nextIdx]) {
+        items[nextIdx].scrollIntoView({ behavior: 'smooth' });
+      }
     }
   }
 
-  constructor() {
-    afterNextRender(() => this.zone.runOutsideAngular(() => this.init()));
+  onFollowerClick(e: MouseEvent): void {
+    const hp = this.hoveredProject();
+    if (hp) {
+      this.openCaseStudy(hp, e);
+    }
   }
 
-  private setActive(i: number) {
-    if (i !== this.active()) this.zone.run(() => this.active.set(i));
+  onItemMouseEnter(e: MouseEvent, index: number): void {
+    this.setActive(index);
+    const p = this.projects[index];
+    this.hoveredProject.set(p);
+
+    this.targetX = e.clientX;
+    this.targetY = e.clientY;
+    this.currentX = e.clientX;
+    this.currentY = e.clientY;
+    this.followerX.set(e.clientX);
+    this.followerY.set(e.clientY);
+    this.followerTilt.set(0);
+
+    this.isFollowerActive.set(true);
+    this.startFollowerLoop();
   }
 
-  private init() {
-    if (typeof window === 'undefined') return;
-    if (typeof window.matchMedia === 'function') {
+  onItemMouseMove(e: MouseEvent, index: number): void {
+    if (this.activeIndex() !== index) {
+      this.setActive(index);
+      this.hoveredProject.set(this.projects[index]);
+    }
+
+    this.targetX = e.clientX;
+    this.targetY = e.clientY;
+
+    // Check if pointer is hovering directly over clickable buttons or chips
+    const targetEl = e.target as HTMLElement | null;
+    const isOverInteractive = !!targetEl?.closest('a, button, .chips, .cue');
+
+    if (isOverInteractive) {
+      this.isFollowerActive.set(false);
+    } else if (!this.isFollowerActive()) {
+      this.isFollowerActive.set(true);
+      this.startFollowerLoop();
+    }
+  }
+
+  onItemMouseLeave(): void {
+    this.isFollowerActive.set(false);
+  }
+
+  private startFollowerLoop(): void {
+    this.zone.runOutsideAngular(() => {
+      const loop = () => {
+        if (!this.isFollowerActive()) {
+          this.rafId = null;
+          return;
+        }
+
+        const prevX = this.currentX;
+
+        // Smooth spring interpolation (0.18 factor)
+        this.currentX += (this.targetX - this.currentX) * 0.18;
+        this.currentY += (this.targetY - this.currentY) * 0.18;
+
+        this.velocityX = this.currentX - prevX;
+
+        // Momentum-based tilt (-6deg to 6deg)
+        const tilt = Math.max(Math.min(this.velocityX * 0.14, 6), -6);
+
+        this.followerX.set(Math.round(this.currentX * 10) / 10);
+        this.followerY.set(Math.round(this.currentY * 10) / 10);
+        this.followerTilt.set(Math.round(tilt * 10) / 10);
+
+        this.rafId = requestAnimationFrame(loop);
+      };
+
+      if (!this.rafId) {
+        this.rafId = requestAnimationFrame(loop);
+      }
+    });
+  }
+
+  private initAnimations(): void {
+    const el = this.rootRef()?.nativeElement;
+    if (!el || typeof window === 'undefined') return;
+
+    if (typeof gsap.registerPlugin === 'function') {
       gsap.registerPlugin(ScrollTrigger);
     }
-    const root = this.root().nativeElement;
-    const q = gsap.utils.selector(root);
+
     const mm = gsap.matchMedia();
     this.destroyRef.onDestroy(() => mm.revert());
 
-    if (typeof document !== 'undefined' && document.fonts?.ready) {
-      document.fonts.ready.then(() => ScrollTrigger.refresh());
-    }
+    const q = (sel: string) => Array.from(el.querySelectorAll(sel));
 
-    // 1. Intro: headline letters rise, accent square pops in
+    // 1. Header reveal & slide wipes
     mm.add('(prefers-reduced-motion: no-preference)', () => {
-      const headEl = q('.head')[0];
-      if (headEl) {
-        const trigger = { trigger: headEl, start: 'top 85%' };
-        gsap.from(q('.title .ch'), {
-          yPercent: 115,
-          stagger: 0.05,
-          duration: 1,
-          ease: 'expo.out',
-          scrollTrigger: trigger,
-        });
-        gsap.from(q('.title .dot'), {
+      const trigger = { trigger: el, start: 'top 75%' };
+
+      gsap.from(q('.ch'), {
+        yPercent: 120,
+        stagger: 0.04,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: trigger,
+      });
+
+      const dot = el.querySelector('.dot');
+      if (dot) {
+        gsap.from(dot, {
           scale: 0,
           duration: 0.6,
-          delay: 0.5,
+          delay: 0.45,
           ease: 'back.out(3)',
           scrollTrigger: trigger,
         });
       }
 
-      // Project titles: word-by-word mask reveal
-      (q('.info-main h3') as HTMLElement[]).forEach((h) => {
-        h.innerHTML = (h.textContent ?? '')
-          .split(' ')
-          .map((w) => `<span class="w"><span>${w}</span></span>`)
-          .join(' ');
-        gsap.from(h.querySelectorAll('.w > span'), {
-          yPercent: 115,
-          stagger: 0.05,
-          duration: 0.9,
-          ease: 'expo.out',
-          scrollTrigger: { trigger: h, start: 'top 88%' },
-        });
-      });
-
-      // Media card: wipe carousel + floating chips. Only plays while visible.
+      // Media card slides wipe carousel
       (q('.media') as HTMLElement[]).forEach((media) => {
         const slides = Array.from(media.querySelectorAll<HTMLElement>('.slide'));
         gsap.from(media.querySelectorAll('.chip'), {
-          y: 24,
+          y: 20,
           opacity: 0,
-          stagger: 0.12,
-          duration: 0.7,
+          stagger: 0.1,
+          duration: 0.6,
           ease: 'power3.out',
           scrollTrigger: { trigger: media, start: 'top 80%' },
         });
@@ -439,7 +616,7 @@ export class FeaturedShowcaseComponent {
           tl.call(() => {
             gsap.set(s, { zIndex: ++z, clipPath: 'inset(100% 0% 0% 0%)' });
           }, [], '+=2.4')
-            .to(s, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'expo.inOut' });
+            .to(s, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.0, ease: 'expo.inOut' });
         });
         ScrollTrigger.create({
           trigger: media,
@@ -448,114 +625,37 @@ export class FeaturedShowcaseComponent {
       });
     });
 
-    // 2. Stacking cards: each card sticks and dims slightly as next card slides over it
-    mm.add('(prefers-reduced-motion: no-preference) and (min-width: 801px)', () => {
+    // 2. Marcus Lorenzet Stacking Accordion Cards Scroll Scrub
+    mm.add('(prefers-reduced-motion: no-preference) and (min-width: 960px)', () => {
       const items = q('.item') as HTMLElement[];
+
       items.forEach((item, i) => {
         const next = items[i + 1];
-        if (next) {
-          gsap.to(item.querySelector('.inner'), {
+        const media = item.querySelector<HTMLElement>('.media');
+
+        if (next && media) {
+          // As next item approaches, preceding media card scales down and dims slightly
+          gsap.to(media, {
             scale: 0.94,
-            opacity: 0.35,
-            yPercent: -4,
+            opacity: 0.65,
+            filter: 'brightness(0.85)',
             ease: 'none',
             scrollTrigger: {
               trigger: next,
               start: 'top 85%',
-              end: 'top 15%',
+              end: 'top 20%',
               scrub: true,
             },
           });
         }
+
         ScrollTrigger.create({
           trigger: item,
-          start: 'top 55%',
-          end: 'bottom 55%',
+          start: 'top 50%',
+          end: 'bottom 50%',
           onToggle: (st) => st.isActive && this.setActive(i),
         });
       });
-    });
-
-    // 3. Interactive Magnetic Hover for the "VIEW CASE →" Preview Square
-    mm.add('(hover: hover) and (pointer: fine)', () => {
-      const items = q('.item') as HTMLElement[];
-      const offs: Array<() => void> = [];
-
-      items.forEach((item, idx) => {
-        const square = item.querySelector<HTMLElement>('.view-case-square');
-        const media = item.querySelector<HTMLElement>('.media');
-        const slides = media?.querySelector<HTMLElement>('.slides');
-
-        // QuickTo smooth magnetic springs
-        const qx = square ? gsap.quickTo(square, 'x', { duration: 0.5, ease: 'power3' }) : null;
-        const qy = square ? gsap.quickTo(square, 'y', { duration: 0.5, ease: 'power3' }) : null;
-        const qrot = square ? gsap.quickTo(square, 'rotation', { duration: 0.6, ease: 'power3' }) : null;
-
-        const mediaQx = slides ? gsap.quickTo(slides, 'x', { duration: 0.8, ease: 'power3' }) : null;
-        const mediaQy = slides ? gsap.quickTo(slides, 'y', { duration: 0.8, ease: 'power3' }) : null;
-
-        let lastX = 0;
-
-        const onPointerMove = (e: PointerEvent) => {
-          this.setActive(idx);
-
-          // Hide preview square if pointer is directly over buttons, chips, media carousel, or links
-          const isOverControl = (e.target as HTMLElement)?.closest('a:not(.view-case-square), button, .chips, .cue');
-          if (isOverControl) {
-            if (square) {
-              square.style.opacity = '0';
-              square.style.pointerEvents = 'none';
-            }
-            return;
-          } else if (square) {
-            square.style.opacity = '';
-            square.style.pointerEvents = '';
-          }
-
-          // Subtle magnetic displacement on the preview square within the item
-          if (square && qx && qy && qrot) {
-            const rect = item.getBoundingClientRect();
-            // Offset relative to right half of the card
-            const relX = (e.clientX - rect.left) / rect.width - 0.75;
-            const relY = (e.clientY - rect.top) / rect.height - 0.5;
-            qx(relX * 40);
-            qy(relY * 35);
-            qrot(gsap.utils.clamp(-7, 7, (e.clientX - lastX) * 0.4));
-            lastX = e.clientX;
-          }
-
-          // Media slides subtle parallax
-          if (media && slides && mediaQx && mediaQy) {
-            const mRect = media.getBoundingClientRect();
-            mediaQx(-((e.clientX - mRect.left) / mRect.width - 0.5) * 20);
-            mediaQy(-((e.clientY - mRect.top) / mRect.height - 0.5) * 20);
-          }
-        };
-
-        const onPointerLeave = () => {
-          if (qx && qy && qrot) {
-            qx(0);
-            qy(0);
-            qrot(0);
-          }
-          if (mediaQx && mediaQy) {
-            mediaQx(0);
-            mediaQy(0);
-          }
-        };
-
-        item.addEventListener('pointermove', onPointerMove, { passive: true });
-        item.addEventListener('pointerleave', onPointerLeave);
-
-        offs.push(() => {
-          item.removeEventListener('pointermove', onPointerMove);
-          item.removeEventListener('pointerleave', onPointerLeave);
-        });
-      });
-
-      return () => {
-        offs.forEach((f) => f());
-      };
     });
   }
 }
