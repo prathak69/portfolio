@@ -29,10 +29,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  FeaturedShowcaseComponent,
-  FEATURED_PROJECTS_MOCK,
-} from './featured-showcase.component';
+import { FeaturedShowcaseComponent } from './featured-showcase.component';
 
 describe('FeaturedShowcaseComponent', () => {
   let component: FeaturedShowcaseComponent;
@@ -60,73 +57,64 @@ describe('FeaturedShowcaseComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render editorial top header with FEATURED. and [ CASE STUDIES ]', () => {
+  it('should render editorial top header with letters mask and [ CASE STUDIES ]', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const heading = compiled.querySelector('.featured-heading');
-    const bracketTag = compiled.querySelector('.bracket-tag');
+    const title = compiled.querySelector('.title');
+    const label = compiled.querySelector('.label');
 
-    expect(heading?.textContent?.trim()).toContain('FEATURED.');
-    expect(bracketTag?.textContent?.trim()).toBe('[ CASE STUDIES ]');
+    expect(title?.textContent?.trim()).toContain('FEATURED');
+    expect(label?.textContent?.trim()).toBe('[ CASE STUDIES ]');
   });
 
-  it('should render 3 showcase items based on mock data', () => {
+  it('should render 4 real resume projects', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const items = compiled.querySelectorAll('.showcase-item');
-    expect(items.length).toBe(FEATURED_PROJECTS_MOCK.length);
+    const items = compiled.querySelectorAll('.item');
+    expect(items.length).toBe(4);
+    expect(component.projects.length).toBe(4);
   });
 
-  it('should render asymmetric split view with media-col and info-col for each item', () => {
+  it('should render asymmetric split view with media and info for each item', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const mediaCols = compiled.querySelectorAll('.media-col');
-    const infoCols = compiled.querySelectorAll('.info-col');
+    const medias = compiled.querySelectorAll('.media');
+    const infos = compiled.querySelectorAll('.info');
 
-    expect(mediaCols.length).toBe(FEATURED_PROJECTS_MOCK.length);
-    expect(infoCols.length).toBe(FEATURED_PROJECTS_MOCK.length);
+    expect(medias.length).toBe(4);
+    expect(infos.length).toBe(4);
   });
 
   it('should display padded numerals and project titles', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const nums = compiled.querySelectorAll('.project-num');
-    const titles = compiled.querySelectorAll('.project-title');
+    const nums = compiled.querySelectorAll('.num');
+    const headings = compiled.querySelectorAll('.info h3');
 
     expect(nums[0]?.textContent?.trim()).toBe('01');
     expect(nums[1]?.textContent?.trim()).toBe('02');
     expect(nums[2]?.textContent?.trim()).toBe('03');
+    expect(nums[3]?.textContent?.trim()).toBe('04');
 
-    expect(titles[0]?.textContent?.trim()).toBe(FEATURED_PROJECTS_MOCK[0].title);
+    expect(headings[0]?.textContent).toContain('Causal & Impact');
+    expect(headings[1]?.textContent).toContain('Talk-A-Tive');
+    expect(headings[2]?.textContent).toContain('Dead by Shot');
+    expect(headings[3]?.textContent).toContain('Gold Price Prediction');
   });
 
-  it('should render floating bottom dock navigation with links and LET\'S TALK CTA', () => {
+  it('should render contextual cues with next link and contact on last item', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const dock = compiled.querySelector('.floating-dock');
-    const links = compiled.querySelectorAll('.dock-link');
-    const ctaBtn = compiled.querySelector('.dock-cta-btn');
+    const cues = compiled.querySelectorAll('.cue');
 
-    expect(dock).toBeTruthy();
-    expect(links.length).toBe(3);
-    expect(ctaBtn?.textContent).toContain("LET'S TALK");
-  });
-
-  it('should render contextual cue with arrow (Next project ↘ / Testimonials ↘)', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    const cues = compiled.querySelectorAll('.contextual-cue');
-
-    expect(cues.length).toBe(FEATURED_PROJECTS_MOCK.length);
+    expect(cues.length).toBe(4);
     expect(cues[0]?.textContent).toContain('Next project');
-    expect(cues[0]?.textContent).toContain('↘');
-    expect(cues[2]?.textContent).toContain('Testimonials');
+    expect(cues[3]?.textContent).toContain('Contact');
   });
 
-  it('should render magnetic cursor root with collapsed square and VIEW CASE preview card', () => {
+  it('should render preview cursor with VIEW CASE pill', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const cursorRoot = compiled.querySelector('.magnetic-cursor-root');
-    const cursorSquare = compiled.querySelector('.cursor-square');
-    const previewCard = compiled.querySelector('.cursor-preview-card');
-    const viewCasePill = compiled.querySelector('.view-case-pill');
+    const cursor = compiled.querySelector('.cursor');
+    const previews = compiled.querySelectorAll('.pv');
+    const pill = compiled.querySelector('.pill');
 
-    expect(cursorRoot).toBeTruthy();
-    expect(cursorSquare).toBeTruthy();
-    expect(previewCard).toBeTruthy();
-    expect(viewCasePill?.textContent).toContain('VIEW CASE');
+    expect(cursor).toBeTruthy();
+    expect(previews.length).toBe(4);
+    expect(pill?.textContent).toContain('VIEW CASE →');
   });
 });

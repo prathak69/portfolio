@@ -50,10 +50,10 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render project stack component', async () => {
+  it('should render featured showcase component', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('app-project-stack')).toBeTruthy();
+    expect(compiled.querySelector('app-featured-showcase')).toBeTruthy();
   });
 });

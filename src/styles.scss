@@ -329,6 +329,16 @@ body {
   }
 }
 
+/* Hide global custom cursor & doodle ink trail over the Featured Showcase section */
+body:has(#projects:hover) .custom-cursor,
+body:has(#projects:hover) #ink-trail-canvas,
+body:has(.featured:hover) .custom-cursor,
+body:has(.featured:hover) #ink-trail-canvas {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 /* Doodle Ink Trail Canvas */
 #ink-trail-canvas {
   position: fixed;

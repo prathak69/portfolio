@@ -30,7 +30,7 @@ import { AboutBentoComponent } from './components/about-bento/about-bento.compon
 import { DesignApproachComponent } from './components/design-approach/design-approach.component';
 import { SkillsPlaygroundComponent } from './components/skills-playground/skills-playground.component';
 import { ExperienceTimelineComponent } from './components/experience-timeline/experience-timeline.component';
-import { ProjectStackComponent } from './components/sticky-stacking-cards/project-stack.component';
+import { FeaturedShowcaseComponent } from './components/featured-showcase/featured-showcase.component';
 import { CertificationsCardsComponent } from './components/certifications-cards/certifications-cards.component';
 import { ContactSectionComponent } from './components/contact-section/contact-section.component';
 import { AriaAssistantComponent } from './components/aria-assistant/aria-assistant.component';
@@ -47,7 +47,7 @@ import { AriaAssistantComponent } from './components/aria-assistant/aria-assista
     DesignApproachComponent,
     SkillsPlaygroundComponent,
     ExperienceTimelineComponent,
-    ProjectStackComponent,
+    FeaturedShowcaseComponent,
     CertificationsCardsComponent,
     ContactSectionComponent,
     AriaAssistantComponent

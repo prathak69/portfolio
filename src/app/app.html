@@ -230,33 +230,8 @@
 <!-- 04 // EXPERIENCE TIMELINE (Self-Drawing Path, Walking Avatar & Mini D3 Charts) -->
 <app-experience-timeline />
 
-<!-- 05 // FEATURED WORKS (Marcus Lorenzet Design System: 100vh Sticky Scaling Stacks & 144px Typography) -->
-<section id="projects" class="relative z-[2] bg-[#11100d] text-[#cfc5ab] px-4 sm:px-8 md:px-12 pt-20 md:pt-28 pb-36 border-t border-[#22201b]">
-  <div class="relative z-10 max-w-[1240px] mx-auto mb-14 md:mb-20">
-    <!-- Marcus Lorenzet Top Eyebrow with Beige Square -->
-    <div class="flex items-center gap-3 mb-4">
-      <div class="w-3 h-3 rounded-[2px] bg-[#d0c5ab] shadow-[0_0_8px_rgba(208,197,171,0.3)]"></div>
-      <span class="text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] font-medium tracking-wide text-[#cfc5ab]/80 uppercase">
-        trusted by platforms with 1M+ users.
-      </span>
-    </div>
-
-    <!-- Main Headline Row: Giant FEATURED. on Left & [ CASE STUDIES ] on Right -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#cfc5ab]/12 pb-6 md:pb-8">
-      <h2 class="text-6xl sm:text-8xl md:text-9xl lg:text-[124px] xl:text-[144px] font-bold tracking-[-0.04em] text-[#d0c5ab] m-0 leading-[0.88] uppercase font-['Plus_Jakarta_Sans',sans-serif]" aria-label="Featured Projects.">
-        FEATURED<span class="text-[#0066ff]">.</span>
-      </h2>
-
-      <div class="text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] font-semibold tracking-[0.08em] text-[#cfc5ab]/90 uppercase whitespace-nowrap mb-2 md:mb-3">
-        [ CASE STUDIES ]
-      </div>
-    </div>
-  </div>
-
-  <div class="relative z-10 max-w-[1240px] mx-auto">
-    <app-project-stack [projects]="projects" />
-  </div>
-</section>
+<!-- 05 // FEATURED WORKS (Editorial Stacking Showcase) -->
+<app-featured-showcase />
 
 <!-- 06 // HOLOGRAPHIC CERTIFICATIONS TRADING CARDS -->
 <app-certifications-cards />

@@ -34,60 +34,75 @@ export interface ProjectCard {
 
 export const DEFAULT_PROJECTS: ProjectCard[] = [
   {
-    category: 'Tech Startup, UI Design, Framer Development',
-    name: 'Investor-Ready Website for Mobility Tech Startup',
-    liveUrl: 'https://www.marcuslorenzet.com/glide',
-    githubUrl: 'https://github.com',
-    role: 'Lead Designer & Developer',
-    problem: 'Creating an investor-ready visual presence for a next-gen micromobility startup.',
-    description: 'Investor-Ready Website for Mobility Tech Startup with interactive 3D fleet map.',
+    category: 'Enterprise, Data Visualisation, Angular, D3.js',
+    name: 'Causal & Impact Dashboards (SPC)',
+    liveUrl: 'https://github.com/prathaksoni',
+    githubUrl: 'https://github.com/prathaksoni',
+    role: 'Frontend Architect & Data Specialist',
+    problem: 'Engineers across 20+ manufacturing sites needed real-time statistical process control and causal variance telemetry.',
+    description: 'Causal & Impact dashboards used by 500+ quality engineers across 20+ manufacturing sites in 190 countries.',
     accent: PALETTE_ACCENTS['red'],
-    stack: ['Framer Motion', 'WebGL', 'React', 'Design System'],
+    stack: ['Angular 18', 'D3.js', 'RxJS', 'TypeScript', 'WebSockets'],
     widgetType: 'line-chart',
-    videoUrl: 'https://video.gumlet.io/69b2fa33dc37184fc7650c73/6a6b58a6731270e6e79b1c78/download.mp4',
-    previewImage: 'https://framerusercontent.com/images/f7ePAyOXTqkV0ObfQxJQOQa8M.png',
+    previewImage: '/assets/projects/spc-preview.webp',
     images: [
-      'https://framerusercontent.com/images/f7ePAyOXTqkV0ObfQxJQOQa8M.png',
-      'https://framerusercontent.com/images/f7ePAyOXTqkV0ObfQxJQOQa8M.png',
-      'https://framerusercontent.com/images/f7ePAyOXTqkV0ObfQxJQOQa8M.png'
+      '/assets/projects/spc-1.webp',
+      '/assets/projects/spc-2.webp',
+      '/assets/projects/spc-3.webp'
     ]
   },
   {
-    category: 'Saas Product, UI Design, Design System',
-    name: 'Dashboard design helping artists manage their careers like a business',
-    liveUrl: 'https://www.marcuslorenzet.com/genesis',
-    githubUrl: 'https://github.com',
-    role: 'Product Designer & Architect',
-    problem: 'Empowering independent musicians with automated royalty splits and booking telemetry.',
-    description: 'Dashboard design helping artists manage their careers like a business.',
+    category: 'Full-stack, MERN, Socket.io',
+    name: 'Talk-A-Tive: Real-Time Chat Platform',
+    liveUrl: 'https://github.com/prathaksoni',
+    githubUrl: 'https://github.com/prathaksoni',
+    role: 'Full-Stack Developer',
+    problem: 'Traditional polling suffered high packet overhead and noticeable message latency under peak concurrent loads.',
+    description: 'Talk-A-Tive: real-time chat with sub-100ms delivery, typing indicators, and group chat management.',
     accent: PALETTE_ACCENTS['blue'],
-    stack: ['Angular', 'TypeScript', 'Analytics', 'Design System'],
-    widgetType: 'spatial-3d',
-    videoUrl: 'https://video.gumlet.io/69b2fa33dc37184fc7650c73/6a6b59de731270e6e79b45cf/download.mp4',
-    previewImage: 'https://framerusercontent.com/images/jLnEmpGObvOqFM6ogldzZSnlp7I.jpg',
+    stack: ['React', 'Node.js', 'Express', 'Socket.io', 'MongoDB'],
+    widgetType: 'chat-typing',
+    previewImage: '/assets/projects/talk-preview.webp',
     images: [
-      'https://framerusercontent.com/images/jLnEmpGObvOqFM6ogldzZSnlp7I.jpg',
-      'https://framerusercontent.com/images/jLnEmpGObvOqFM6ogldzZSnlp7I.jpg',
-      'https://framerusercontent.com/images/jLnEmpGObvOqFM6ogldzZSnlp7I.jpg'
+      '/assets/projects/talk-1.webp',
+      '/assets/projects/talk-2.webp',
+      '/assets/projects/talk-3.webp'
     ]
   },
   {
-    category: 'Small Business, UI Design, Framer Development',
-    name: 'Website that transformed a teacher into a recognized language school',
-    liveUrl: 'https://www.marcuslorenzet.com/ateachersandra',
-    githubUrl: 'https://github.com',
-    role: 'Creative Developer',
-    problem: 'Repositioning an independent tutor into a top-tier digital language institution.',
-    description: 'Website that transformed a teacher into a recognized language school.',
+    category: 'Game, Unreal Engine 4, Blender',
+    name: 'Dead by Shot: Unreal Engine FPS',
+    liveUrl: 'https://github.com/prathaksoni',
+    githubUrl: 'https://github.com/prathaksoni',
+    role: 'Game Developer & 3D Artist',
+    problem: 'Designing responsive hit detection, fluid weapon kinematics, and dynamic atmospheric lighting.',
+    description: 'Dead by Shot: an Unreal Engine FPS played by 100+ people featuring custom 3D asset modeling in Blender.',
     accent: PALETTE_ACCENTS['green'],
-    stack: ['Framer', 'Brand Identity', 'Conversion Funnel', 'Motion Design'],
-    widgetType: 'chat-typing',
-    videoUrl: 'https://video.gumlet.io/69b2fa33dc37184fc7650c73/6a6b5af7731270e6e79b69e7/download.mp4',
-    previewImage: 'https://framerusercontent.com/images/5ILRvlYXf72kHSVHqpa3snGzjU.jpg',
+    stack: ['Unreal Engine 4', 'C++', 'Blueprints', 'Blender'],
+    widgetType: 'spatial-3d',
+    previewImage: '/assets/projects/deadbyshot-preview.webp',
     images: [
-      'https://framerusercontent.com/images/5ILRvlYXf72kHSVHqpa3snGzjU.jpg',
-      'https://framerusercontent.com/images/5ILRvlYXf72kHSVHqpa3snGzjU.jpg',
-      'https://framerusercontent.com/images/5ILRvlYXf72kHSVHqpa3snGzjU.jpg'
+      '/assets/projects/deadbyshot-1.webp',
+      '/assets/projects/deadbyshot-2.webp',
+      '/assets/projects/deadbyshot-3.webp'
+    ]
+  },
+  {
+    category: 'Machine Learning, Python, Scikit-Learn',
+    name: 'Gold Price Prediction on 13 Years of Market Data',
+    liveUrl: 'https://github.com/prathaksoni',
+    githubUrl: 'https://github.com/prathaksoni',
+    role: 'Machine Learning Engineer',
+    problem: 'Predicting precious metal fluctuations through cross-asset regression and volatility analysis.',
+    description: 'Gold Price Prediction on 13 years of market data using Random Forest regression with sub-2% MAPE.',
+    accent: PALETTE_ACCENTS['yellow'],
+    stack: ['Python', 'Scikit-Learn', 'Pandas', 'NumPy', 'Matplotlib'],
+    widgetType: 'line-chart',
+    previewImage: '/assets/projects/gold-preview.webp',
+    images: [
+      '/assets/projects/gold-1.webp',
+      '/assets/projects/gold-2.webp',
+      '/assets/projects/gold-3.webp'
     ]
   }
 ];
