@@ -11,6 +11,8 @@ import {
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { AvatarGazeService } from '../../services/avatar-gaze.service';
+import { ChipComponent } from '../ui/chip/chip.component';
+import { MonoLabelComponent } from '../ui/mono-label/mono-label.component';
 
 if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
   gsap.registerPlugin(ScrollTrigger);
@@ -19,15 +21,15 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
 @Component({
   selector: 'app-about-bento',
   standalone: true,
+  imports: [ChipComponent, MonoLabelComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section id="about" class="about-bento-section relative z-[2] bg-[#FFF8F0] px-5 sm:px-8 md:px-[6%] py-24 sm:py-32 border-t border-[#E8DCCF]">
       <!-- Section Tag Header -->
       <div class="max-w-6xl mx-auto mb-16 flex items-center justify-between select-none">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E8DCCF] text-xs font-mono font-bold uppercase tracking-wider text-[#E5392F] shadow-xs">
-          <span class="w-2 h-2 rounded-full bg-[#E5392F] animate-ping"></span>
-          <span>01 // STATEMENT &amp; CONTEXT</span>
-        </div>
+        <app-mono-label [dot]="true" accentColor="#E5392F">
+          01 // STATEMENT &amp; CONTEXT
+        </app-mono-label>
         <span class="text-xs font-mono text-[#6B6560] text-muted tracking-widest hidden sm:inline-block">
           BHOPAL &bull; PUNE, INDIA &bull; IST (UTC +5:30)
         </span>
@@ -62,10 +64,10 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
           <div>
             <div class="flex items-center justify-between mb-6">
               <span class="text-xs font-mono uppercase tracking-wider text-[#6B6560] text-muted">SYSTEM ENGINEER</span>
-              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#EBF3FF] text-[#2F5BFF] text-[11px] font-bold">
+              <app-chip variant="pastel" color="sky" size="sm">
                 <span class="w-1.5 h-1.5 rounded-full bg-[#2F5BFF] animate-pulse"></span>
-                TCS &bull; Pune, IN
-              </span>
+                <span>TCS &bull; Pune, IN</span>
+              </app-chip>
             </div>
 
             <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#14110F] text-ink mb-3">

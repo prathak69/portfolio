@@ -5,6 +5,8 @@ import {
   signal
 } from '@angular/core';
 import { EDUCATION } from '../../data/portfolio.data';
+import { ChipComponent } from '../ui/chip/chip.component';
+import { MonoLabelComponent } from '../ui/mono-label/mono-label.component';
 
 interface CourseCard {
   id: string;
@@ -20,6 +22,7 @@ interface CourseCard {
 @Component({
   selector: 'app-certifications-cards',
   standalone: true,
+  imports: [ChipComponent, MonoLabelComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section id="education" class="certifications-section relative z-[2] bg-[#FFF8F0] px-5 sm:px-8 md:px-[6%] py-24 sm:py-32 border-t border-[#E8DCCF] overflow-hidden">
@@ -28,9 +31,10 @@ interface CourseCard {
 
       <!-- Section Header -->
       <div class="max-w-6xl mx-auto mb-16 sm:mb-20 text-center">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F0F9FF] border border-[#BAE6FD] text-xs font-mono font-bold uppercase tracking-wider text-[#0A7C9C] shadow-xs mb-5">
-          <span class="w-2 h-2 rounded-full bg-[#38BDF8] animate-pulse"></span>
-          <span>05 // EDUCATION &amp; LEARNING</span>
+        <div class="mb-5 inline-block">
+          <app-mono-label [dot]="true" accentColor="#38BDF8">
+            05 // EDUCATION &amp; LEARNING
+          </app-mono-label>
         </div>
 
         <h2 class="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-[#14110F] text-ink m-0">
@@ -45,10 +49,12 @@ interface CourseCard {
       <div class="max-w-6xl mx-auto mb-12">
         <div class="p-8 sm:p-10 rounded-3xl bg-white border-2 border-[#E8DCCF] shadow-[0_16px_40px_rgba(20,17,15,0.04)] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFCEB] border border-[#FFE885] text-xs font-mono font-bold text-[#A87900] mb-3">
-              <span>🎓 {{ education.period }}</span>
-              <span>&bull;</span>
-              <span>{{ education.location }}</span>
+            <div class="mb-3">
+              <app-chip variant="pastel" color="butter" size="sm">
+                <span>🎓 {{ education.period }}</span>
+                <span>&bull;</span>
+                <span>{{ education.location }}</span>
+              </app-chip>
             </div>
             <h3 class="text-2xl sm:text-3xl font-extrabold text-[#14110F] text-ink mb-1">
               {{ education.institution }}

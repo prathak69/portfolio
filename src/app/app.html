@@ -47,21 +47,26 @@
   </a>
 
   <!-- Desktop nav links (centered, hidden below lg) -->
-  <nav class="hidden lg:flex flex-row items-center text-[12.5px] xl:text-[13.5px] font-mono font-bold tracking-wider uppercase absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap pointer-events-auto">
-    @for (link of navLinks; track link.label; let last = $last) {
+  <nav
+    class="hidden lg:flex flex-row items-center gap-1 px-3 py-1.5 rounded-full absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap pointer-events-auto"
+    [style.background]="navbarTheme().isLight ? 'rgba(20, 17, 15, 0.05)' : 'rgba(255, 255, 255, 0.08)'"
+    [style.border]="'1px solid ' + (navbarTheme().isLight ? 'rgba(20, 17, 15, 0.08)' : 'rgba(255, 255, 255, 0.12)')"
+  >
+    @for (link of navLinks; track link.label) {
       <a
         [href]="link.href"
         (click)="scrollToSection(link.href, $event)"
-        class="no-underline transition-colors hover:text-[var(--accent)]"
-        [style.color]="navbarTheme().textColor"
+        class="nav-spy-link relative px-3 py-1 rounded-full text-[12px] xl:text-[13px] font-mono font-bold tracking-wider uppercase no-underline transition-all duration-200 inline-flex items-center gap-1.5"
+        [class.is-active]="activeSection() === link.href"
+        [style.color]="activeSection() === link.href ? (navbarTheme().isLight ? '#14110F' : '#FFFFFF') : navbarTheme().textColor"
+        [style.background]="activeSection() === link.href ? (navbarTheme().isLight ? 'rgba(20, 17, 15, 0.1)' : 'rgba(255, 255, 255, 0.18)') : 'transparent'"
         data-cursor="GO"
-      >{{ link.label }}</a>
-      @if (!last) {
-        <span
-          class="mx-2 lg:mx-3 text-xs font-light select-none transition-colors"
-          [style.color]="navbarTheme().separatorColor"
-        >&bull;</span>
-      }
+      >
+        @if (activeSection() === link.href) {
+          <span class="active-dot inline-block w-1.5 h-1.5 rounded-full bg-[var(--accent)]" aria-hidden="true"></span>
+        }
+        {{ link.label }}
+      </a>
     }
   </nav>
 
@@ -107,19 +112,24 @@
 
 <!-- MOBILE OVERLAY (z-index: 19, hidden on lg+) -->
 <div
+  role="dialog"
+  aria-modal="true"
+  aria-label="Mobile Navigation"
   class="fixed inset-0 z-[19] bg-[#14110F]/95 backdrop-blur-md flex flex-col justify-center items-start px-8 gap-6 lg:hidden transition-opacity duration-300"
   [class.opacity-100]="isMobileMenuOpen()"
   [class.pointer-events-auto]="isMobileMenuOpen()"
   [class.opacity-0]="!isMobileMenuOpen()"
   [class.pointer-events-none]="!isMobileMenuOpen()"
+  (click)="closeMobileMenu()"
 >
-  @for (link of navLinks; track link.label) {
+  @for (link of navLinks; track link.label; let i = $index) {
     <a
       [href]="link.href"
       (click)="scrollToSection(link.href, $event)"
-      class="text-3xl font-extrabold text-[#FFF8F0] no-underline hover:text-[#E5392F] transition-colors font-mono"
+      class="text-3xl font-extrabold text-[#FFF8F0] no-underline hover:text-[#E84A3F] transition-all font-mono flex items-center gap-3"
     >
-      {{ link.label }}
+      <span class="text-xs font-mono text-[#78756E]">0{{ i + 1 }}</span>
+      <span>{{ link.label }}</span>
     </a>
   }
 </div>

@@ -89,6 +89,7 @@ export class App implements OnInit, AfterViewInit, OnDestroy {
   ];
 
   // UI state signals
+  readonly activeSection = signal<string>('#hero');
   readonly isMobileMenuOpen = signal<boolean>(false);
   readonly showPills = signal<boolean>(false);
   readonly isScrolled = signal<boolean>(false);
@@ -277,6 +278,13 @@ export class App implements OnInit, AfterViewInit, OnDestroy {
     this.checkScrollPosition();
   }
 
+  @HostListener('window:keydown.escape')
+  onEscapeKey(): void {
+    if (this.isMobileMenuOpen()) {
+      this.closeMobileMenu();
+    }
+  }
+
   private checkScrollPosition(): void {
     if (typeof window === 'undefined') return;
     const scrollY = window.scrollY || document.documentElement.scrollTop;
@@ -289,6 +297,20 @@ export class App implements OnInit, AfterViewInit, OnDestroy {
       this.isOverLightSection.set(rect.top <= 80 || scrollY > 200);
     } else {
       this.isOverLightSection.set(scrollY > 200);
+    }
+
+    // Scroll-spy active section detection
+    const sections = ['contact', 'education', 'certifications', 'projects', 'experience', 'skills', 'approach', 'about', 'hero'];
+    for (const sectionId of sections) {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= 220 && rect.bottom >= 100) {
+          const href = sectionId === 'certifications' ? '#education' : `#${sectionId}`;
+          this.activeSection.set(href);
+          break;
+        }
+      }
     }
   }
 

@@ -11,6 +11,7 @@ import {
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PRINCIPLES, PrincipleRecord } from '../../data/portfolio.data';
+import { MonoLabelComponent } from '../ui/mono-label/mono-label.component';
 
 if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
   gsap.registerPlugin(ScrollTrigger);
@@ -19,14 +20,16 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
 @Component({
   selector: 'app-design-approach',
   standalone: true,
+  imports: [MonoLabelComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section id="approach" class="approach-section relative z-[2] bg-[#FFF8F0] px-5 sm:px-8 md:px-[6%] py-24 sm:py-32 border-t border-[#E8DCCF]">
       <!-- Section Header -->
       <div class="max-w-6xl mx-auto mb-16 sm:mb-20 text-center">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF3FF] border border-[#C2D8FF] text-xs font-mono font-bold uppercase tracking-wider text-[#2F5BFF] shadow-xs mb-5">
-          <span class="w-2 h-2 rounded-full bg-[#2F5BFF] animate-pulse"></span>
-          <span>02 // PHILOSOPHY &amp; METHODS</span>
+        <div class="mb-5 inline-block">
+          <app-mono-label [dot]="true" accentColor="#2F5BFF">
+            02 // PHILOSOPHY &amp; METHODS
+          </app-mono-label>
         </div>
 
         <h2 class="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-[#14110F] text-ink m-0">

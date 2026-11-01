@@ -1,0 +1,123 @@
+// Design System Tokens for Prathak Soni Portfolio
+// ----------------------------------------------------
+
+// Colors
+$color-red: #E84A3F;
+$color-cream: #F7F4EE;
+$color-dark: #171715;
+$color-mono: #78756E;
+
+// Pastels
+$color-sky: #D8E8F5;
+$color-mint: #D8EED8;
+$color-butter: #FBF1C9;
+$color-lavender: #E7DEEE;
+
+// Accents
+$color-blue: #2F5BFF;
+$color-green: #5CC46B;
+$color-yellow: #FFC93C;
+$color-pink: #FF8FB1;
+$color-cyan: #38BDF8;
+$color-purple: #8B5CF6;
+$color-line: #E8DCCF;
+
+// Typography Clamps
+$font-display: clamp(3rem, 7vw, 7.5rem);
+$font-h1: clamp(2.25rem, 5vw, 4.5rem);
+$font-h2: clamp(1.75rem, 3.5vw, 3rem);
+$font-h3: clamp(1.25rem, 2.2vw, 1.75rem);
+$font-body: clamp(1rem, 1.2vw, 1.25rem);
+$font-body-sm: clamp(0.875rem, 1vw, 1rem);
+$font-mono: clamp(0.75rem, 0.9vw, 0.875rem);
+
+// Spacing Scale (4px / 8px baseline)
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 12px;
+$space-4: 16px;
+$space-5: 20px;
+$space-6: 24px;
+$space-8: 32px;
+$space-10: 40px;
+$space-12: 48px;
+$space-16: 64px;
+$space-20: 80px;
+$space-24: 96px;
+$space-32: 128px;
+
+// Radii
+$radius-card: 20px;
+$radius-chip: 12px;
+$radius-pill: 999px;
+$radius-sm: 8px;
+
+// Motion Tokens
+$ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+$ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+$ease-out: cubic-bezier(0, 0, 0.2, 1);
+$duration-enter: 0.35s;
+$duration-exit: 0.2s;
+$duration-hover: 0.25s;
+
+// CSS Variables Export
+:root {
+  // Brand colors
+  --color-red: #{$color-red};
+  --color-cream: #{$color-cream};
+  --color-dark: #{$color-dark};
+  --color-mono: #{$color-mono};
+
+  // Pastels
+  --color-sky: #{$color-sky};
+  --color-mint: #{$color-mint};
+  --color-butter: #{$color-butter};
+  --color-lavender: #{$color-lavender};
+
+  // Accents
+  --color-blue: #{$color-blue};
+  --color-green: #{$color-green};
+  --color-yellow: #{$color-yellow};
+  --color-pink: #{$color-pink};
+  --color-cyan: #{$color-cyan};
+  --color-purple: #{$color-purple};
+  --color-line: #{$color-line};
+
+  // Typography scale
+  --font-size-display: #{$font-display};
+  --font-size-h1: #{$font-h1};
+  --font-size-h2: #{$font-h2};
+  --font-size-h3: #{$font-h3};
+  --font-size-body: #{$font-body};
+  --font-size-body-sm: #{$font-body-sm};
+  --font-size-mono: #{$font-mono};
+
+  // Spacing scale
+  --space-1: #{$space-1};
+  --space-2: #{$space-2};
+  --space-3: #{$space-3};
+  --space-4: #{$space-4};
+  --space-5: #{$space-5};
+  --space-6: #{$space-6};
+  --space-8: #{$space-8};
+  --space-10: #{$space-10};
+  --space-12: #{$space-12};
+  --space-16: #{$space-16};
+  --space-20: #{$space-20};
+  --space-24: #{$space-24};
+  --space-32: #{$space-32};
+
+  // Radii
+  --radius-card: #{$radius-card};
+  --radius-chip: #{$radius-chip};
+  --radius-pill: #{$radius-pill};
+  --radius-sm: #{$radius-sm};
+
+  // Motion
+  --ease-standard: #{$ease-standard};
+  --ease-spring: #{$ease-spring};
+  --ease-out: #{$ease-out};
+  --duration-enter: #{$duration-enter};
+  --duration-exit: #{$duration-exit};
+  --duration-hover: #{$duration-hover};
+}
