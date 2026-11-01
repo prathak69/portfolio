@@ -29,7 +29,7 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
           <span>01 // STATEMENT &amp; CONTEXT</span>
         </div>
         <span class="text-xs font-mono text-[#6B6560] text-muted tracking-widest hidden sm:inline-block">
-          BENGALURU, INDIA &bull; 12.9716&deg; N
+          BHOPAL &bull; PUNE, INDIA &bull; +91 7000558459
         </span>
       </div>
 
@@ -38,7 +38,7 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
         <p class="scrolly-text text-3xl sm:text-4xl md:text-5xl lg:text-[52px] font-extrabold leading-[1.2] tracking-tight">
           @for (word of statementWords; track $index) {
             <span class="scrub-word inline-block mr-[0.26em] transition-colors duration-150 text-[#14110F]/30 select-text" [attr.data-word-index]="$index">
-              @if (word === 'craft' || word === 'interactive' || word === 'alive') {
+              @if (word === 'mission-critical' || word === 'enterprise' || word === 'interactive' || word === 'scale') {
                 <span class="cabin-sketch-bold text-[#E5392F] select-text">{{ word }}</span>
               } @else {
                 <span class="select-text">{{ word }}</span>
@@ -61,10 +61,10 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
 
           <div>
             <div class="flex items-center justify-between mb-6">
-              <span class="text-xs font-mono uppercase tracking-wider text-[#6B6560] text-muted">CREATIVE DEV</span>
+              <span class="text-xs font-mono uppercase tracking-wider text-[#6B6560] text-muted">SYSTEM ENGINEER</span>
               <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#EBF3FF] text-[#2F5BFF] text-[11px] font-bold">
                 <span class="w-1.5 h-1.5 rounded-full bg-[#2F5BFF] animate-pulse"></span>
-                Open for work
+                TCS &bull; Pune, IN
               </span>
             </div>
 
@@ -72,12 +72,12 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
               Prathak Soni
             </h3>
             <p class="text-sm sm:text-base text-[#6B6560] text-muted leading-relaxed font-normal">
-              Pairing rigorous frontend engineering with fluid, tactile micro-interactions and spatial motion design.
+              Frontend Developer for Unilever, architecting mission-critical platforms delivering to 3.4B consumers across 190 countries.
             </p>
           </div>
 
           <div class="mt-8 pt-5 border-t border-[#E8DCCF] flex items-center justify-between">
-            <span class="text-xs font-mono text-[#14110F] text-ink font-semibold">Frontend &bull; Data Viz &bull; 3D</span>
+            <span class="text-xs font-mono text-[#14110F] text-ink font-semibold">TCS &bull; Unilever &bull; Angular &amp; D3</span>
             <span class="text-xl group-hover:scale-125 group-hover:rotate-12 transition-transform duration-300">👋</span>
           </div>
         </div>
@@ -89,11 +89,11 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
         >
           <div>
             <div class="flex items-center justify-between mb-4">
-              <span class="text-xs font-mono uppercase tracking-wider text-[#E5392F] font-semibold">LOCATION &amp; TIME</span>
+              <span class="text-xs font-mono uppercase tracking-wider text-[#E5392F] font-semibold">LOCATION &amp; CONTACT</span>
               <span class="text-lg">📍</span>
             </div>
-            <h4 class="text-xl font-bold text-[#14110F] text-ink">Bengaluru, IN</h4>
-            <p class="text-xs font-mono text-[#6B6560] text-muted mt-1">UTC +5:30 &bull; India Standard Time</p>
+            <h4 class="text-xl font-bold text-[#14110F] text-ink">Bhopal &bull; Pune, IN</h4>
+            <p class="text-xs font-mono text-[#6B6560] text-muted mt-1">+91 7000558459 &bull; prathaksoni.19&#64;gmail.com</p>
           </div>
 
           <div class="mt-8">
@@ -102,7 +102,7 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
             </div>
             <div class="text-[11px] font-mono text-[#6B6560] text-muted mt-2 flex items-center gap-1.5">
               <span class="w-2 h-2 rounded-full bg-[#5CC46B] animate-pulse"></span>
-              Working hours &bull; Fast response
+              IST (UTC +5:30) &bull; Active &amp; Ready
             </div>
           </div>
         </div>
@@ -110,24 +110,24 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
         <!-- 3. Currently Building Card (Col 9-12) -->
         <div
           class="bento-card md:col-span-3 bg-white rounded-3xl p-7 border-2 border-[#E8DCCF] shadow-[0_12px_32px_rgba(20,17,15,0.04)] flex flex-col justify-between hover:border-[#5CC46B] transition-all duration-300"
-          data-cursor="BUILDING"
+          data-cursor="SCALE"
         >
           <div>
             <div class="flex items-center justify-between mb-4">
-              <span class="text-xs font-mono uppercase tracking-wider text-[#5CC46B] font-semibold">NOW BUILDING</span>
+              <span class="text-xs font-mono uppercase tracking-wider text-[#5CC46B] font-semibold">ENTERPRISE SCALE</span>
               <span class="w-2.5 h-2.5 rounded-full bg-[#5CC46B] animate-ping"></span>
             </div>
             <h4 class="text-lg font-bold text-[#14110F] text-ink leading-snug">
-              Generative Canvas &amp; 3D Lab
+              Statistical Process Control (SPC)
             </h4>
           </div>
 
           <div class="mt-6">
             <p class="text-xs text-[#6B6560] text-muted leading-relaxed mb-4">
-              Exploring low-latency WebGL shaders, SVG kinematic paths, and real-time audio reactivity.
+              Causal &amp; Impact ML module deployed across 20+ Unilever manufacturing sites for 500+ quality engineers.
             </p>
             <span class="inline-block px-3 py-1 rounded-full bg-[#EBFBEF] text-[#0A7F3A] text-xs font-mono font-bold">
-              v2.4 in progress
+              500+ Engineers &bull; 20+ Sites
             </span>
           </div>
         </div>
@@ -140,10 +140,10 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
           <div>
             <div class="flex items-center justify-between mb-5">
               <span class="text-xs font-mono uppercase tracking-wider text-[#2F5BFF] font-bold">PRODUCTION ARSENAL</span>
-              <span class="text-xs font-mono text-[#2F5BFF]/80">9+ YEARS WEB</span>
+              <span class="text-xs font-mono text-[#2F5BFF]/80">FORTUNE 500 PROVEN</span>
             </div>
             <h4 class="text-xl sm:text-2xl font-extrabold text-[#14110F] text-ink mb-4">
-              Modern Frameworks, Reactive State &amp; WebGL
+              Enterprise Frontend, Reactive State &amp; Interactive D3
             </h4>
           </div>
 
@@ -160,27 +160,30 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
           </div>
         </div>
 
-        <!-- 5. Fun Fact / Clay Doodle Card (Col 8-12) -->
+        <!-- 5. Education & Foundations Card (Col 8-12) -->
         <div
           class="bento-card md:col-span-5 bg-[#FFFCEB] rounded-3xl p-7 border-2 border-[#FFE885] shadow-[0_12px_32px_rgba(20,17,15,0.04)] flex flex-col justify-between hover:border-[#FFC93C] transition-all duration-300"
-          data-cursor="SMILE"
+          data-cursor="DEGREE"
         >
           <div>
             <div class="flex items-center justify-between mb-4">
-              <span class="text-xs font-mono uppercase tracking-wider text-[#A87900] font-bold">CURIOSITY &amp; CRAFT</span>
-              <span class="text-2xl">⚡️</span>
+              <span class="text-xs font-mono uppercase tracking-wider text-[#A87900] font-bold">EDUCATION &amp; FOUNDATIONS</span>
+              <span class="text-2xl">🎓</span>
             </div>
-            <h4 class="text-xl font-extrabold text-[#14110F] text-ink mb-2">
-              D3 Physics Obsessive
+            <h4 class="text-xl font-extrabold text-[#14110F] text-ink mb-1">
+              B.Tech in Computer Science
             </h4>
-            <p class="text-sm text-[#6B6560] text-muted leading-relaxed">
-              Believes every data point deserves a heartbeat. Spends weekends simulating rigid body particle collisions and hand-sculpting clay characters.
+            <div class="text-xs font-mono font-semibold text-[#A87900] mb-2">
+              LNCT Group of Colleges, Bhopal (2020 &ndash; 2024)
+            </div>
+            <p class="text-xs text-[#6B6560] text-muted leading-relaxed">
+              Graduated with 82.80% aggregate. Rigorous coursework in Data Structures, Algorithms, DBMS, Operating Systems, Computer Networks, and Cloud Computing.
             </p>
           </div>
 
           <div class="mt-6 pt-4 border-t border-[#F5DC6E] flex items-center justify-between">
-            <span class="cabin-sketch-bold text-lg text-[#A87900]">"Make it feel alive"</span>
-            <span class="text-xs font-mono text-[#6B6560] text-muted">60fps only</span>
+            <span class="cabin-sketch-bold text-lg text-[#A87900]">82.80% Aggregate</span>
+            <span class="text-xs font-mono text-[#6B6560] text-muted">Batch of 2024</span>
           </div>
         </div>
       </div>
@@ -193,19 +196,21 @@ export class AboutBentoComponent implements AfterViewInit, OnDestroy {
   readonly liveTime = signal<string>('--:--:--');
 
   readonly statement =
-    'I build fast, tactile digital experiences where fluid motion and clear data engineering meet. From dynamic D3 physics to custom WebGL shaders, every interaction is sculpted to feel alive and delightfully human.';
+    'I architect mission-critical enterprise platforms and interactive data visualizations for global scale. From Statistical Process Control across 20+ manufacturing sites to real-time event platforms, every pixel is engineered for high performance and clarity.';
 
   readonly statementWords = this.statement.split(' ');
 
   readonly stackBadges = [
-    { name: 'Angular 21', icon: '🅰️' },
+    { name: 'Angular', icon: '🅰️' },
     { name: 'TypeScript', icon: '🔷' },
     { name: 'D3.js', icon: '📊' },
-    { name: 'GSAP', icon: '🟢' },
-    { name: 'Three.js / WebGL', icon: '📐' },
-    { name: 'Tailwind CSS', icon: '🎨' },
+    { name: 'ReactJS', icon: '⚛️' },
+    { name: 'Next.js', icon: '▲' },
+    { name: 'Python', icon: '🐍' },
+    { name: 'SQL', icon: '🗄️' },
     { name: 'RxJS', icon: '⚡️' },
-    { name: 'Node.js', icon: '🌱' }
+    { name: 'Socket.io', icon: '🔌' },
+    { name: 'Unreal Engine 4', icon: '🎮' }
   ];
 
   private timeInterval: any = null;

@@ -160,7 +160,7 @@ export class App implements OnInit, AfterViewInit, OnDestroy {
     'https://res.cloudinary.com/prathaksoni/video/upload/ki_0.05/v1792591379/0e97306f-2b09-43d8-9101-c6d03ef9c936_ndhdmu.mp4';
 
   readonly fullText =
-    'Glad you stopped in. Good taste tends to find me. Now, what should we build together?';
+    'I architect mission-critical frontend platforms and interactive data visualization for global scale. Now, what should we build together?';
 
   ngOnInit(): void {
     // 1. Initialize Lenis smooth scrolling & GSAP ticker outside zone

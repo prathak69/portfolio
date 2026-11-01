@@ -185,23 +185,28 @@ export class AriaAssistantComponent {
 
   readonly quickChips = [
     {
+      q: 'Current Role & Impact?',
+      a: 'Prathak is a System Engineer at TCS in Pune, building frontend platforms for Unilever (serving 3.4B consumers across 190 countries) and architecting the SPC app across 20+ manufacturing sites.',
+      link: { label: 'View Career Trajectory', target: '#experience' }
+    },
+    {
       q: 'Core Tech Stack?',
-      a: 'Prathak specializes in Angular 21, TypeScript, D3.js physics simulations, Three.js/WebGL spatial graphics, and GSAP scrollytelling.',
+      a: 'Prathak specializes in Angular, TypeScript, D3.js data visualizations, ReactJS, Next.js, Python (Scikit-Learn), SQL, and Unreal Engine 4.',
       link: { label: 'Jump to Skills Section', target: '#skills' }
     },
     {
-      q: 'Data Viz Craft?',
-      a: 'With extensive D3 mastery, Prathak engineers live telemetry dashboards, rigid-body particle arenas, and animated SVG timelines running at 60fps.',
-      link: { label: 'Explore D3 Playground', target: '#skills' }
-    },
-    {
-      q: 'Selected Projects?',
-      a: 'Check out his featured 3D client portals, generative spatial systems, and kinetic UI stacks.',
+      q: 'Featured Projects?',
+      a: 'Explore his core projects: Unilever Statistical Process Control (SPC), Talk-A-Tive (real-time MERN chat), Dead by Shot (Unreal Engine 4 FPS), and Gold Price Prediction (Random Forest).',
       link: { label: 'View Featured Works', target: '#projects' }
     },
     {
-      q: 'Contact & Hire?',
-      a: 'Prathak is currently open for creative dev roles & contracts. Reach him directly at prathaksoni.19@gmail.com!',
+      q: 'Education & Degree?',
+      a: 'Prathak graduated from LNCT Group of Colleges, Bhopal (2020-2024) with a B.Tech in Computer Science & Engineering (82.80% aggregate).',
+      link: { label: 'Explore About Statement', target: '#about' }
+    },
+    {
+      q: 'Contact & Phone?',
+      a: 'Reach Prathak directly via email at prathaksoni.19@gmail.com or call him at +91 7000558459!',
       link: { label: 'Go to Contact Section', target: '#contact' }
     }
   ];
@@ -262,16 +267,19 @@ export class AriaAssistantComponent {
       let link: { label: string; target: string } | undefined = { label: 'Send an Email', target: '#contact' };
 
       if (lower.includes('skill') || lower.includes('stack') || lower.includes('angular') || lower.includes('react')) {
-        reply = 'He works primarily with Angular 21, TypeScript, D3.js, Three.js, GSAP, and Tailwind. Check out the interactive physics playground to test each skill!';
+        reply = 'He works primarily with Angular, TypeScript, D3.js, ReactJS, Next.js, Python, SQL, and Unreal Engine 4. Check out the interactive physics playground to test each skill!';
         link = { label: 'Open Skills Playground', target: '#skills' };
-      } else if (lower.includes('experience') || lower.includes('work') || lower.includes('job') || lower.includes('resume')) {
-        reply = 'He has 9+ years of web experience leading frontend architecture, shipping 14+ 3D apps and enterprise data analytics tools.';
+      } else if (lower.includes('experience') || lower.includes('work') || lower.includes('job') || lower.includes('tcs') || lower.includes('unilever')) {
+        reply = 'Prathak is a System Engineer at TCS in Pune, building frontend platforms for Unilever (serving 3.4B consumers across 190 countries) and architecting the SPC app across 20+ manufacturing sites.';
         link = { label: 'View Career Trajectory', target: '#experience' };
+      } else if (lower.includes('education') || lower.includes('college') || lower.includes('degree') || lower.includes('lnct')) {
+        reply = 'Prathak completed his B.Tech in Computer Science from LNCT Group of Colleges, Bhopal (2020–2024) with an 82.80% aggregate.';
+        link = { label: 'Explore About Statement', target: '#about' };
       } else if (lower.includes('project') || lower.includes('portfolio')) {
-        reply = 'Explore his featured works below—featuring live line chart predictions, spatial UI cards, and kinetic brand identities.';
+        reply = 'Explore his featured works below—including Unilever SPC & Causal Impact, Talk-A-Tive, Dead by Shot, and Gold Price Prediction!';
         link = { label: 'See Featured Works', target: '#projects' };
-      } else if (lower.includes('contact') || lower.includes('email') || lower.includes('hire')) {
-        reply = 'You can reach Prathak at prathaksoni.19@gmail.com or dispatch a message through the contact form!';
+      } else if (lower.includes('contact') || lower.includes('email') || lower.includes('hire') || lower.includes('phone')) {
+        reply = 'You can reach Prathak at prathaksoni.19@gmail.com or call him at +91 7000558459!';
         link = { label: 'Jump to Contact Form', target: '#contact' };
       }
 

@@ -23,7 +23,11 @@ export interface Project {
   preview: string;
 }
 
-// Prathak Soni's real work: Causal & Impact (SPC), Talk-A-Tive, Dead by Shot, Gold Price Prediction
+// Prathak Soni's real portfolio work from resume:
+// 1. Statistical Process Control (SPC) & Causal Impact ML Module (TCS / Unilever)
+// 2. Talk-A-Tive Real-time Chat (MERN + Socket.io)
+// 3. Dead by Shot FPS Game (Unreal Engine 4 + Blender)
+// 4. Gold Price Prediction (Machine Learning + Scikit-Learn)
 export const createProject = (
   id: string,
   title: string,
@@ -65,32 +69,60 @@ export const createProject = (
         @for (p of projects; track p.id; let i = $index; let last = $last) {
           <article class="item" [attr.data-index]="i" [style.--accent]="p.accent" [style.z-index]="i + 1">
             <div class="inner">
-              <a class="media" [href]="p.href" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'View case study: ' + p.title">
+              <!-- Left Column: Media Card with Animated Slides Carousel & Chips -->
+              <a
+                class="media"
+                [href]="p.href"
+                target="_blank"
+                rel="noopener noreferrer"
+                [attr.aria-label]="'View case study: ' + p.title"
+                data-cursor="CASE"
+              >
                 <div class="slides">
                   @for (s of p.slides; track s; let k = $index) {
-                    <div class="slide"><img [src]="s" alt="" [attr.loading]="i === 0 && k === 0 ? 'eager' : 'lazy'" /></div>
+                    <div class="slide">
+                      <img [src]="s" alt="" [attr.loading]="i === 0 && k === 0 ? 'eager' : 'lazy'" />
+                    </div>
                   }
                 </div>
                 <ul class="chips">
-                  @for (t of p.tags.slice(0, 3); track t) { <li class="chip">{{ t }}</li> }
+                  @for (t of p.tags.slice(0, 3); track t) {
+                    <li class="chip">{{ t }}</li>
+                  }
                 </ul>
               </a>
+
+              <!-- Right Column: Info & Interactive Reveal Square -->
               <div class="info">
                 <span class="num">{{ pad(i + 1) }}</span>
-                <h3>{{ p.title }}</h3>
-                <p class="meta">{{ p.tags.join(', ') }}</p>
-                <a class="cue" [href]="last ? '#contact' : '#projects'">{{ last ? 'Contact' : 'Next project' }} ↘</a>
+
+                <div class="info-layout">
+                  <div class="info-main">
+                    <h3>{{ p.title }}</h3>
+                    <p class="meta">{{ p.tags.join(', ') }}</p>
+                    <a class="cue" [href]="last ? '#contact' : '#projects'">
+                      {{ last ? 'Contact' : 'Next project' }} ↘
+                    </a>
+                  </div>
+
+                  <!-- THE "VIEW CASE →" SQUARE: Hidden by default, smoothly pops in on card hover! -->
+                  <a
+                    class="view-case-square"
+                    [href]="p.href"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    [attr.aria-label]="'Open case study: ' + p.title"
+                    data-cursor="OPEN"
+                  >
+                    <img class="view-case-img" [src]="p.preview" alt="" loading="lazy" />
+                    <div class="view-case-overlay"></div>
+                    <span class="view-case-pill">VIEW CASE →</span>
+                  </a>
+                </div>
               </div>
             </div>
           </article>
         }
-      </div>
-
-      <div class="cursor" #cursor aria-hidden="true">
-        @for (p of projects; track p.id; let i = $index) {
-          <img class="pv" [class.on]="i === active()" [src]="p.preview" alt="" />
-        }
-        <span class="pill">VIEW CASE →</span>
       </div>
     </section>
   `,
@@ -99,14 +131,33 @@ export class FeaturedShowcaseComponent {
   private zone = inject(NgZone);
   private destroyRef = inject(DestroyRef);
   private root = viewChild.required<ElementRef<HTMLElement>>('root');
-  private cursor = viewChild.required<ElementRef<HTMLElement>>('cursor');
 
   readonly letters = 'FEATURED'.split('');
   readonly projects: Project[] = [
-    createProject('spc', 'Causal & Impact dashboards used by 500+ quality engineers', ['Enterprise', 'Data Visualisation', 'Angular', 'D3.js'], '#2F5BFF'),
-    createProject('talk', 'Talk-A-Tive: real-time chat with sub-100ms delivery', ['Full-stack', 'MERN', 'Socket.io'], '#16A34A'),
-    createProject('deadbyshot', 'Dead by Shot: an Unreal Engine FPS played by 100+ people', ['Game', 'Unreal Engine 4', 'Blender'], '#8B5CF6'),
-    createProject('gold', 'Gold Price Prediction on 13 years of market data', ['Machine Learning', 'Python', 'Scikit-Learn'], '#D97706'),
+    createProject(
+      'spc',
+      'Causal & Impact dashboards used by 500+ quality engineers',
+      ['Enterprise', 'Statistical Process Control', 'Angular', 'D3.js'],
+      '#2F5BFF'
+    ),
+    createProject(
+      'talk',
+      'Talk-A-Tive: real-time chat with sub-100ms delivery',
+      ['Full-stack', 'MERN', 'Socket.io', 'WebSockets'],
+      '#16A34A'
+    ),
+    createProject(
+      'deadbyshot',
+      'Dead by Shot: an Unreal Engine FPS played by 100+ people',
+      ['Game Engineering', 'Unreal Engine 4', 'Blender', 'C++'],
+      '#8B5CF6'
+    ),
+    createProject(
+      'gold',
+      'Gold Price Prediction on 13 years of market data',
+      ['Machine Learning', 'Random Forest', 'Python', 'Scikit-Learn'],
+      '#D97706'
+    ),
   ];
 
   readonly active = signal(0);
@@ -130,6 +181,7 @@ export class FeaturedShowcaseComponent {
     const q = gsap.utils.selector(root);
     const mm = gsap.matchMedia();
     this.destroyRef.onDestroy(() => mm.revert());
+
     if (typeof document !== 'undefined' && document.fonts?.ready) {
       document.fonts.ready.then(() => ScrollTrigger.refresh());
     }
@@ -139,15 +191,33 @@ export class FeaturedShowcaseComponent {
       const headEl = q('.head')[0];
       if (headEl) {
         const trigger = { trigger: headEl, start: 'top 85%' };
-        gsap.from(q('.title .ch'), { yPercent: 115, stagger: 0.05, duration: 1, ease: 'expo.out', scrollTrigger: trigger });
-        gsap.from(q('.title .dot'), { scale: 0, duration: 0.6, delay: 0.5, ease: 'back.out(3)', scrollTrigger: trigger });
+        gsap.from(q('.title .ch'), {
+          yPercent: 115,
+          stagger: 0.05,
+          duration: 1,
+          ease: 'expo.out',
+          scrollTrigger: trigger,
+        });
+        gsap.from(q('.title .dot'), {
+          scale: 0,
+          duration: 0.6,
+          delay: 0.5,
+          ease: 'back.out(3)',
+          scrollTrigger: trigger,
+        });
       }
 
       // Project titles: word-by-word mask reveal
-      (q('.info h3') as HTMLElement[]).forEach((h) => {
-        h.innerHTML = (h.textContent ?? '').split(' ').map((w) => `<span class="w"><span>${w}</span></span>`).join(' ');
+      (q('.info-main h3') as HTMLElement[]).forEach((h) => {
+        h.innerHTML = (h.textContent ?? '')
+          .split(' ')
+          .map((w) => `<span class="w"><span>${w}</span></span>`)
+          .join(' ');
         gsap.from(h.querySelectorAll('.w > span'), {
-          yPercent: 115, stagger: 0.05, duration: 0.9, ease: 'expo.out',
+          yPercent: 115,
+          stagger: 0.05,
+          duration: 0.9,
+          ease: 'expo.out',
           scrollTrigger: { trigger: h, start: 'top 88%' },
         });
       });
@@ -156,99 +226,124 @@ export class FeaturedShowcaseComponent {
       (q('.media') as HTMLElement[]).forEach((media) => {
         const slides = Array.from(media.querySelectorAll<HTMLElement>('.slide'));
         gsap.from(media.querySelectorAll('.chip'), {
-          y: 24, opacity: 0, stagger: 0.12, duration: 0.7, ease: 'power3.out',
+          y: 24,
+          opacity: 0,
+          stagger: 0.12,
+          duration: 0.7,
+          ease: 'power3.out',
           scrollTrigger: { trigger: media, start: 'top 80%' },
         });
+
         if (slides.length < 2) return;
         gsap.set(slides, { zIndex: 1 });
         const tl = gsap.timeline({ repeat: -1, paused: true });
         let z = 1;
         [...slides.slice(1), slides[0]].forEach((s) => {
-          tl.call(() => { gsap.set(s, { zIndex: ++z, clipPath: 'inset(100% 0% 0% 0%)' }); }, [], '+=2.4')
+          tl.call(() => {
+            gsap.set(s, { zIndex: ++z, clipPath: 'inset(100% 0% 0% 0%)' });
+          }, [], '+=2.4')
             .to(s, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'expo.inOut' });
         });
-        ScrollTrigger.create({ trigger: media, onToggle: (st) => (st.isActive ? tl.play() : tl.pause()) });
+        ScrollTrigger.create({
+          trigger: media,
+          onToggle: (st) => (st.isActive ? tl.play() : tl.pause()),
+        });
       });
     });
 
-    // 2. Stacking cards: each card shrinks and dims as the next one slides over it
+    // 2. Stacking cards: each card sticks and dims slightly as next card slides over it
     mm.add('(prefers-reduced-motion: no-preference) and (min-width: 801px)', () => {
       const items = q('.item') as HTMLElement[];
       items.forEach((item, i) => {
         const next = items[i + 1];
         if (next) {
           gsap.to(item.querySelector('.inner'), {
-            scale: 0.92, opacity: 0.3, yPercent: -4, ease: 'none',
-            scrollTrigger: { trigger: next, start: 'top 85%', end: 'top 15%', scrub: true },
+            scale: 0.94,
+            opacity: 0.35,
+            yPercent: -4,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: next,
+              start: 'top 85%',
+              end: 'top 15%',
+              scrub: true,
+            },
           });
         }
         ScrollTrigger.create({
-          trigger: item, start: 'top 55%', end: 'bottom 55%',
+          trigger: item,
+          start: 'top 55%',
+          end: 'bottom 55%',
           onToggle: (st) => st.isActive && this.setActive(i),
         });
       });
     });
 
-    // 3. Cursor: small cream square everywhere; becomes a preview card over the list
+    // 3. Interactive Magnetic Hover for the "VIEW CASE →" Preview Square
     mm.add('(hover: hover) and (pointer: fine)', () => {
-      const el = this.cursor().nativeElement;
-      const list = root.querySelector('.list') as HTMLElement;
-      if (!list) return;
-
-      const SMALL = 0.07; // 156px * 0.07 ≈ 11px square
-      gsap.set(el, { xPercent: -50, yPercent: -50, scale: SMALL, x: -200, y: -200 });
-      const x = gsap.quickTo(el, 'x', { duration: 0.4, ease: 'power3' });
-      const y = gsap.quickTo(el, 'y', { duration: 0.4, ease: 'power3' });
-      const rot = gsap.quickTo(el, 'rotation', { duration: 0.6, ease: 'power3' });
-      let lastX = 0;
-
-      const move = (e: PointerEvent) => {
-        x(e.clientX); y(e.clientY);
-        rot(gsap.utils.clamp(-9, 9, (e.clientX - lastX) * 0.35)); // tilts with momentum
-        lastX = e.clientX;
-      };
-      const over = (e: PointerEvent) => {
-        const item = (e.target as HTMLElement).closest<HTMLElement>('.item');
-        if (item && item.dataset['index'] !== undefined) {
-          this.setActive(Number(item.dataset['index']));
-        }
-      };
-      const enter = () => {
-        el.classList.add('is-preview');
-        gsap.to(el, { scale: 1, duration: 0.5, ease: 'back.out(1.7)', overwrite: 'auto' });
-      };
-      const leave = () => {
-        el.classList.remove('is-preview');
-        gsap.to(el, { scale: SMALL, rotation: 0, duration: 0.4, ease: 'power3.inOut', overwrite: 'auto' });
-      };
-
-      window.addEventListener('pointermove', move, { passive: true });
-      list.addEventListener('pointerenter', enter);
-      list.addEventListener('pointerleave', leave);
-      list.addEventListener('pointerover', over);
-
-      // Media parallax: image drifts opposite to the pointer
+      const items = q('.item') as HTMLElement[];
       const offs: Array<() => void> = [];
-      (q('.media') as HTMLElement[]).forEach((m) => {
-        const s = m.querySelector('.slides');
-        if (!s) return;
-        const qx = gsap.quickTo(s, 'x', { duration: 0.8, ease: 'power3' });
-        const qy = gsap.quickTo(s, 'y', { duration: 0.8, ease: 'power3' });
-        const mv = (e: PointerEvent) => {
-          const r = m.getBoundingClientRect();
-          qx(-((e.clientX - r.left) / r.width - 0.5) * 24);
-          qy(-((e.clientY - r.top) / r.height - 0.5) * 24);
+
+      items.forEach((item, idx) => {
+        const square = item.querySelector<HTMLElement>('.view-case-square');
+        const media = item.querySelector<HTMLElement>('.media');
+        const slides = media?.querySelector<HTMLElement>('.slides');
+
+        // QuickTo smooth magnetic springs
+        const qx = square ? gsap.quickTo(square, 'x', { duration: 0.5, ease: 'power3' }) : null;
+        const qy = square ? gsap.quickTo(square, 'y', { duration: 0.5, ease: 'power3' }) : null;
+        const qrot = square ? gsap.quickTo(square, 'rotation', { duration: 0.6, ease: 'power3' }) : null;
+
+        const mediaQx = slides ? gsap.quickTo(slides, 'x', { duration: 0.8, ease: 'power3' }) : null;
+        const mediaQy = slides ? gsap.quickTo(slides, 'y', { duration: 0.8, ease: 'power3' }) : null;
+
+        let lastX = 0;
+
+        const onPointerMove = (e: PointerEvent) => {
+          this.setActive(idx);
+
+          // Subtle magnetic displacement on the preview square within the item
+          if (square && qx && qy && qrot) {
+            const rect = item.getBoundingClientRect();
+            // Offset relative to right half of the card
+            const relX = (e.clientX - rect.left) / rect.width - 0.75;
+            const relY = (e.clientY - rect.top) / rect.height - 0.5;
+            qx(relX * 40);
+            qy(relY * 35);
+            qrot(gsap.utils.clamp(-7, 7, (e.clientX - lastX) * 0.4));
+            lastX = e.clientX;
+          }
+
+          // Media slides subtle parallax
+          if (media && slides && mediaQx && mediaQy) {
+            const mRect = media.getBoundingClientRect();
+            mediaQx(-((e.clientX - mRect.left) / mRect.width - 0.5) * 20);
+            mediaQy(-((e.clientY - mRect.top) / mRect.height - 0.5) * 20);
+          }
         };
-        const lv = () => { qx(0); qy(0); };
-        m.addEventListener('pointermove', mv); m.addEventListener('pointerleave', lv);
-        offs.push(() => { m.removeEventListener('pointermove', mv); m.removeEventListener('pointerleave', lv); });
+
+        const onPointerLeave = () => {
+          if (qx && qy && qrot) {
+            qx(0);
+            qy(0);
+            qrot(0);
+          }
+          if (mediaQx && mediaQy) {
+            mediaQx(0);
+            mediaQy(0);
+          }
+        };
+
+        item.addEventListener('pointermove', onPointerMove, { passive: true });
+        item.addEventListener('pointerleave', onPointerLeave);
+
+        offs.push(() => {
+          item.removeEventListener('pointermove', onPointerMove);
+          item.removeEventListener('pointerleave', onPointerLeave);
+        });
       });
 
       return () => {
-        window.removeEventListener('pointermove', move);
-        list.removeEventListener('pointerenter', enter);
-        list.removeEventListener('pointerleave', leave);
-        list.removeEventListener('pointerover', over);
         offs.forEach((f) => f());
       };
     });

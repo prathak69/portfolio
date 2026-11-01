@@ -21,8 +21,12 @@
 }
 
 .head {
-  display: flex; justify-content: space-between; align-items: flex-end;
-  padding-bottom: 3vh; margin-bottom: 7vh; border-bottom: 1.5px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 3vh;
+  margin-bottom: 7vh;
+  border-bottom: 1.5px solid var(--line);
   gap: 1.5rem;
   flex-wrap: wrap;
 }
@@ -62,17 +66,34 @@
 }
 
 .title {
-  display: flex; margin: 0; text-transform: uppercase;
-  font: 800 clamp(3.8rem, 12vw, 11rem) / 0.88 var(--display); letter-spacing: -0.04em;
+  display: flex;
+  margin: 0;
+  text-transform: uppercase;
+  font: 800 clamp(3.8rem, 12vw, 11rem) / 0.88 var(--display);
+  letter-spacing: -0.04em;
   color: var(--ink);
 }
-.mask { display: inline-block; overflow: hidden; padding-bottom: 0.04em; }
-.ch { display: inline-block; }
-.dot {
-  align-self: flex-end; width: 0.16em; height: 0.16em; margin: 0 0 0.06em 0.05em;
-  border-radius: 4px;
-  background: var(--accent); transition: background 0.6s ease, transform 0.6s ease;
+
+.mask {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.04em;
 }
+
+.ch {
+  display: inline-block;
+}
+
+.dot {
+  align-self: flex-end;
+  width: 0.16em;
+  height: 0.16em;
+  margin: 0 0 0.06em 0.05em;
+  border-radius: 4px;
+  background: var(--accent);
+  transition: background 0.6s ease, transform 0.6s ease;
+}
+
 .label {
   font: 700 0.8rem / 1 var(--mono);
   letter-spacing: 0.12em;
@@ -84,7 +105,7 @@
   box-shadow: 0 2px 8px rgba(20, 17, 15, 0.04);
 }
 
-// Stacking cards: each item sticks to top and incoming card slides over it
+// Stacking cards list: each item sticks to top and incoming card slides over it
 .list {
   display: flex;
   flex-direction: column;
@@ -96,7 +117,7 @@
   top: 12vh;
   min-height: 76vh;
   padding-block: 2vh 4vh;
-  background: var(--bg); // Opaque background matching portfolio cream so cards stack neatly
+  background: var(--bg); // Opaque clay background so stacked cards clip neatly
 }
 
 .inner {
@@ -182,22 +203,37 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: 1.5rem;
   min-height: 100%;
   justify-content: center;
 }
 
 .num {
-  font: 800 clamp(3.5rem, 6vw, 6.5rem) / 1 var(--display);
+  font: 800 clamp(3.2rem, 5.5vw, 5.5rem) / 1 var(--display);
   color: var(--accent);
   letter-spacing: -0.03em;
   transition: color 0.4s ease;
 }
 
+.info-layout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  position: relative;
+}
+
+.info-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
 h3 {
   margin: 0;
   max-width: 22ch;
-  font: 700 clamp(1.6rem, 2.75vw, 2.75rem) / 1.16 var(--display);
+  font: 700 clamp(1.5rem, 2.4vw, 2.4rem) / 1.18 var(--display);
   letter-spacing: -0.025em;
   color: var(--ink);
 }
@@ -215,7 +251,7 @@ h3 {
 
 .meta {
   margin: 0;
-  font: 500 clamp(0.95rem, 1.25vw, 1.2rem) / 1.45 var(--display);
+  font: 500 clamp(0.9rem, 1.15vw, 1.15rem) / 1.45 var(--display);
   color: var(--muted);
   max-width: 32ch;
 }
@@ -224,18 +260,18 @@ h3 {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font: 700 0.85rem / 1 var(--mono);
+  font: 700 0.82rem / 1 var(--mono);
   color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   text-decoration: none;
-  padding: 0.6rem 1.15rem;
+  padding: 0.55rem 1.1rem;
   border-radius: 99px;
   background: var(--paper);
   border: 1.5px solid var(--line);
   box-shadow: 0 2px 6px rgba(20, 17, 15, 0.03);
   width: fit-content;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
   transition: all 0.25s ease;
 
   &:hover {
@@ -246,67 +282,94 @@ h3 {
   }
 }
 
-// Cursor: tiny accent square -> rich preview card with VIEW CASE pill
-.cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 60;
-  display: none;
-  width: 156px;
-  height: 156px;
+// THE FLOATING "VIEW CASE →" SQUARE:
+// Initially hidden / not there when first scrolling to section;
+// Smoothly pops in when the user hovers over the project card!
+.view-case-square {
+  position: relative;
+  flex-shrink: 0;
+  width: clamp(140px, 12vw, 176px);
+  height: clamp(140px, 12vw, 176px);
   border-radius: 18px;
-  background: var(--card-bg);
-  border: 2px solid var(--accent);
-  box-shadow: 0 20px 50px rgba(20, 17, 15, 0.22);
   overflow: hidden;
+  border: 2px solid var(--accent);
+  box-shadow: 0 16px 40px rgba(20, 17, 15, 0.16);
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.68) translateY(16px);
   pointer-events: none;
-  will-change: transform;
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s ease;
+  will-change: transform, opacity;
+  text-decoration: none;
+
+  .item:hover & {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
+  }
+
+  &:hover .view-case-img {
+    transform: scale(1.08);
+  }
 }
 
-.pv {
-  position: absolute;
-  inset: 0;
+.view-case-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  display: block;
+  transition: transform 0.4s ease;
 }
 
-.is-preview .pv.on {
-  opacity: 1;
+.view-case-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.55) 100%);
 }
 
-.pill {
+.view-case-pill {
   position: absolute;
   top: 50%;
   left: 50%;
+  transform: translate(-50%, -50%);
   white-space: nowrap;
-  padding: 0.75rem 1.15rem;
-  border-radius: 8px;
-  background: var(--accent);
-  color: #FFFFFF;
-  font: 700 0.8rem / 1 var(--display);
-  letter-spacing: 0.02em;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.6);
-  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
+  padding: 0.65rem 1.15rem;
+  border-radius: 99px;
+  background: #FFF8F0;
+  color: #14110F;
+  font: 700 0.76rem / 1 var(--display);
+  letter-spacing: 0.04em;
+  border: 1.5px solid var(--accent);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
 
-.is-preview .pill {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-  transition-delay: 0.12s;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .cursor {
-    display: block;
+  .view-case-square:hover & {
+    background: var(--accent);
+    color: #FFFFFF;
+    transform: translate(-50%, -50%) scale(1.06);
   }
-  .featured, .list, .list a, .item, .inner, .media {
-    cursor: none !important;
+}
+
+@media (max-width: 960px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 1.75rem;
+  }
+  .info-layout {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .view-case-square {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
+    width: 100%;
+    max-width: 220px;
+    height: 120px;
+    margin-top: 1rem;
   }
 }
 
@@ -316,11 +379,6 @@ h3 {
     top: 0;
     min-height: 0;
     padding-block: 2vh 4vh;
-  }
-  .inner {
-    grid-template-columns: 1fr;
-    gap: 1.75rem;
-    padding: 1.5rem;
   }
 }
 

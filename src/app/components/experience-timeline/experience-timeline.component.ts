@@ -45,10 +45,10 @@ interface ExperienceItem {
         </div>
 
         <h2 class="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-[#14110F] text-ink m-0">
-          Work <span class="cabin-sketch-bold text-[#A87900]">Experience</span>
+          Career <span class="cabin-sketch-bold text-[#A87900]">Experience</span>
         </h2>
         <p class="mt-4 text-base sm:text-lg text-[#6B6560] text-muted max-w-xl mx-auto font-normal leading-relaxed">
-          Crafting production systems, high-velocity data products, and kinetic web experiences.
+          Engineering mission-critical enterprise platforms, high-throughput data visualizations, and production systems.
         </p>
       </div>
 
@@ -153,69 +153,70 @@ export class ExperienceTimelineComponent implements AfterViewInit, OnDestroy {
 
   readonly experiences: ExperienceItem[] = [
     {
-      id: 'spatial',
-      role: 'Lead Creative Technologist & Frontend Architect',
-      company: 'Spatial Craft Studio',
-      period: '2023 — Present',
-      location: 'Remote &bull; Bengaluru',
+      id: 'tcs',
+      role: 'System Engineer',
+      company: 'Tata Consultancy Services (TCS)',
+      period: '2024 — Present',
+      location: 'Pune, India',
       accent: '#2F5BFF',
       bg: '#EBF3FF',
       borderColor: '#C6DCFF',
       bullets: [
-        'Architected 14+ bespoke 3D spatial web environments running smoothly at 60fps on both desktop and mobile.',
-        'Engineered high-throughput telemetry analytics streaming 140k+ real-time events without frame drops.',
-        'Spearheaded design token unification and established component test suites achieving 99.8% lighthouse scores.'
+        'Frontend Developer for Fortune 500 consumer goods giant Unilever, delivering web platforms serving 3.4 billion consumers across 190 countries.',
+        'Architected the Statistical Process Control (SPC) application used by 500+ quality engineers across 20+ manufacturing sites.',
+        'Engineered UI for Causal and Impact module using Angular and D3.js—building 5+ configuration screens and dashboards to train, parameterize, and visualize causal relationships in ML models.',
+        'Resolved 20+ critical production bugs and performance bottlenecks, optimizing real-time data rendering.'
       ],
       metrics: [
-        { label: 'Active Users', value: '+140k', num: 140, prefix: '+', suffix: 'k' },
-        { label: 'Frame Rate', value: '60fps', num: 60, suffix: 'fps' },
-        { label: 'Lighthouse', value: '99.8%', num: 99.8, suffix: '%' }
+        { label: 'Consumers Served', value: '3.4B', num: 3.4, suffix: 'B' },
+        { label: 'Quality Engineers', value: '500+', num: 500, suffix: '+' },
+        { label: 'Manufacturing Sites', value: '20+', num: 20, suffix: '+' }
       ],
-      stack: ['Angular 21', 'TypeScript', 'D3.js', 'Three.js', 'Tailwind', 'GSAP'],
+      stack: ['Angular', 'TypeScript', 'D3.js', 'RxJS', 'Unilever SPC', 'Enterprise UI'],
       chartType: 'sparkline'
     },
     {
-      id: 'hyperscale',
-      role: 'Senior Frontend Engineer',
-      company: 'HyperScale Labs',
-      period: '2021 — 2023',
-      location: 'Bengaluru, IN',
+      id: 'lnct',
+      role: 'Bachelor of Technology in CS (82.80%)',
+      company: 'LNCT Group of Colleges',
+      period: '2020 — 2024',
+      location: 'Bhopal, India',
       accent: '#5CC46B',
       bg: '#EBFBEF',
       borderColor: '#BCECC5',
       bullets: [
-        'Orchestrated enterprise migration to standalone reactive architectures, slicing production bundle weight by 42%.',
-        'Built interactive canvas charting modules featuring fluid zoom, box-selection, and collision filtering.',
-        'Collaborated directly with UX designers to craft micro-delight transitions and keyboard accessibility.'
+        'Graduated with 82.80% aggregate, mastering Core Coursework: Data Structures & Algorithms, DBMS, Operating Systems, Computer Networks, and Cloud Computing.',
+        'Engineered scalable web applications, real-time socket communication architectures, and predictive machine learning models.',
+        'Led technical design and algorithmic problem solving across competitive coding and hackathons.'
       ],
       metrics: [
-        { label: 'Bundle Reduction', value: '-42%', num: 42, prefix: '-', suffix: '%' },
-        { label: 'Conversion Lift', value: '+35%', num: 35, prefix: '+', suffix: '%' },
-        { label: 'Core LCP', value: '1.1s', num: 1.1, suffix: 's' }
+        { label: 'Degree Aggregate', value: '82.8%', num: 82.8, suffix: '%' },
+        { label: 'Core Modules', value: '5+', num: 5, suffix: '+' },
+        { label: 'Academic Years', value: '4 Yrs', num: 4, suffix: ' Yrs' }
       ],
-      stack: ['TypeScript', 'RxJS', 'D3.js', 'GSAP', 'Web Workers', 'Jest'],
+      stack: ['C++', 'Java', 'Python', 'DBMS', 'Computer Networks', 'Cloud Computing'],
       chartType: 'bars'
     },
     {
-      id: 'datapulse',
-      role: 'Interactive Visualization Developer',
-      company: 'DataPulse Analytics',
-      period: '2019 — 2021',
-      location: 'Bengaluru, IN',
+      id: 'projects',
+      role: 'Full-Stack, ML & 3D Engineering',
+      company: 'High-Impact Systems & Open Source',
+      period: '2021 — 2024',
+      location: 'Bhopal &bull; Remote',
       accent: '#FF7A00',
       bg: '#FFF4EB',
       borderColor: '#FFD7BE',
       bullets: [
-        'Crafted exploratory financial models and multi-variable tree diagrams for Fortune 500 decision-makers.',
-        'Reduced SVG DOM overhead by 70% by layering high-density coordinates on HTML5 canvas.',
-        'Maintained 100% test coverage on core math transforms and interpolation shaders.'
+        'Talk-A-Tive: Full-stack MERN real-time chat with Socket.io delivering sub-100ms latency for 20+ concurrent active users.',
+        'Gold Price Prediction: Machine learning model trained on 13-year longitudinal market data (2008–2021) using Random Forest (500+ estimators) and R² evaluation.',
+        'Dead by Shot: First-person shooter game built in Unreal Engine 4 played by 100+ players with custom 3D assets modeled in Blender.'
       ],
       metrics: [
-        { label: 'DOM Node Cut', value: '-70%', num: 70, prefix: '-', suffix: '%' },
-        { label: 'Charts Shipped', value: '50+', num: 50, suffix: '+' },
-        { label: 'Data Points/s', value: '100k', num: 100, suffix: 'k' }
+        { label: 'Chat Latency', value: '<100ms', num: 100, prefix: '<', suffix: 'ms' },
+        { label: 'Market Data Span', value: '13 Yrs', num: 13, suffix: ' Yrs' },
+        { label: 'Game Players', value: '100+', num: 100, suffix: '+' }
       ],
-      stack: ['JavaScript', 'D3.js', 'Canvas API', 'Node.js', 'SVG'],
+      stack: ['Python', 'Scikit-Learn', 'ReactJS', 'Node.js', 'Socket.io', 'Unreal Engine 4', 'Blender'],
       chartType: 'sparkline'
     }
   ];

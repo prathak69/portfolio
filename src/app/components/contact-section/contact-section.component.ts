@@ -46,11 +46,11 @@ import { AccentThemeService } from '../../services/accent-theme.service';
             </h2>
 
             <p class="text-base sm:text-lg text-[#6B6560] text-muted leading-relaxed max-w-lg mb-8 font-normal">
-              Whether you need high-fidelity 3D web environments, complex telemetry dashboards, or modern frontend architecture—my inbox is always open.
+              Whether you need enterprise Angular platforms, complex telemetry dashboards, or scalable frontend architecture—my inbox is always open.
             </p>
 
-            <!-- Copy Email Button with Confetti Explosion -->
-            <div class="mb-10">
+            <!-- Direct Contact Details (Phone & Email) -->
+            <div class="mb-10 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
               <button
                 type="button"
                 (click)="copyEmail()"
@@ -60,10 +60,18 @@ import { AccentThemeService } from '../../services/accent-theme.service';
                 <span>prathaksoni.19&#64;gmail.com</span>
                 <span class="text-lg group-hover:scale-125 transition-transform">✂️</span>
               </button>
-              <span class="block text-xs font-mono text-[#6B6560] text-muted mt-2">
-                Click to copy email &amp; trigger confetti explosion
-              </span>
+
+              <a
+                href="tel:+917000558459"
+                class="magnetic-btn inline-flex items-center gap-2 px-5 py-4 rounded-full bg-white border border-[#E8DCCF] text-[#14110F] font-mono text-sm sm:text-base font-bold shadow-xs hover:border-[#2F5BFF] hover:text-[#2F5BFF] transition-colors duration-200 select-none no-underline"
+                data-cursor="CALL"
+              >
+                <span>📞 +91 7000558459</span>
+              </a>
             </div>
+            <span class="block text-xs font-mono text-[#6B6560] text-muted -mt-6 mb-8">
+              Bhopal &bull; Pune, India &bull; Click to copy email or call directly
+            </span>
 
             <!-- Social Pill Links -->
             <div class="space-y-3">

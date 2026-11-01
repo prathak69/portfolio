@@ -107,14 +107,13 @@ describe('FeaturedShowcaseComponent', () => {
     expect(cues[3]?.textContent).toContain('Contact');
   });
 
-  it('should render preview cursor with VIEW CASE pill', () => {
+  it('should render VIEW CASE preview square for each project', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const cursor = compiled.querySelector('.cursor');
-    const previews = compiled.querySelectorAll('.pv');
-    const pill = compiled.querySelector('.pill');
+    const squares = compiled.querySelectorAll('.view-case-square');
+    const pills = compiled.querySelectorAll('.view-case-pill');
 
-    expect(cursor).toBeTruthy();
-    expect(previews.length).toBe(4);
-    expect(pill?.textContent).toContain('VIEW CASE →');
+    expect(squares.length).toBe(4);
+    expect(pills.length).toBe(4);
+    expect(pills[0]?.textContent).toContain('VIEW CASE →');
   });
 });
