@@ -48,7 +48,18 @@
   --font-heading: 'Plus Jakarta Sans', 'HelveticaNowDisplay-Medium', system-ui, sans-serif;
   --font-body: 'Plus Jakarta Sans', 'HelveticaNowDisplayW01-Rg', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-sketch: 'Cabin Sketch', cursive, sans-serif;
+  /* Marcus Lorenzet Design System Tokens */
+  --ml-bg-dark: #11100d;
+  --ml-bg-darker: #000000;
+  --ml-surface-dark: #161511;
+  --ml-text-light: #cfc5ab;
+  --ml-text-light-alt: #d0c5ab;
+  --ml-text-dark: #000000;
+  --ml-text-inverse: #ffffff;
+  --ml-accent-blue: #0066ff;
+  --ml-surface-light: #ffffff;
+  --font-inter: 'Inter', sans-serif;
+  --font-display: 'Plus Jakarta Sans', sans-serif;
 }
 
 /* Base resets & typography */
@@ -115,8 +126,8 @@ body {
   border-color: #14110F !important;
 }
 
-/* Section Typography Rules: crisp, dark ink on all light content sections */
-#about, #approach, #skills, #experience, #projects, #certifications, #contact {
+/* Section Typography Rules: crisp, dark ink on light content sections */
+#about, #approach, #skills, #experience, #certifications, #contact {
   color: #14110F;
   background-color: #FFF8F0;
 }
@@ -125,14 +136,57 @@ body {
 #approach h1, #approach h2, #approach h3, #approach h4,
 #skills h1, #skills h2, #skills h3, #skills h4,
 #experience h1, #experience h2, #experience h3, #experience h4,
-#projects h1, #projects h2, #projects h3, #projects h4,
 #certifications h1, #certifications h2, #certifications h3, #certifications h4,
 #contact h1, #contact h2, #contact h3, #contact h4 {
   color: #14110F !important;
 }
 
-#about p, #approach p, #skills p, #experience p, #projects p, #certifications p, #contact p {
+#about p, #approach p, #skills p, #experience p, #certifications p, #contact p {
   color: #6B6560;
+}
+
+/* Marcus Lorenzet Featured Projects Section Theme */
+#projects {
+  background-color: #11100d !important;
+  color: #cfc5ab !important;
+  font-family: 'Inter', sans-serif;
+}
+
+#projects h1, #projects h2, #projects h3, #projects h4 {
+  color: #ffffff !important;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+#projects p {
+  color: #cfc5ab !important;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Character-by-character reveal headline animation */
+@keyframes mlCharReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) rotateX(-15deg);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg);
+    filter: blur(0px);
+  }
+}
+
+.char-reveal {
+  display: inline-block;
+  perspective: 600px;
+}
+
+.char-reveal .char {
+  display: inline-block;
+  opacity: 0;
+  animation: mlCharReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--c-idx, 0) * 38ms + 0.12s);
+  will-change: transform, opacity, filter;
 }
 
 /* Hero section retains dark overlay styling for video background */

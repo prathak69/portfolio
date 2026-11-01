@@ -86,7 +86,7 @@ export class AccentThemeService {
       ['#approach', '#2F5BFF'],      // Blue
       ['#skills', '#5CC46B'],        // Green
       ['#experience', '#FFC93C'],    // Yellow
-      ['#projects', '#FF8FB1'],      // Pink
+      ['#projects', '#0066ff'],      // Marcus Lorenzet Accent Blue
       ['#certifications', '#38BDF8'],// Cyan
       ['#contact', '#E5392F']        // Red
     ];
