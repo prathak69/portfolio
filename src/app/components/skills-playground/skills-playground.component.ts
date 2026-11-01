@@ -9,6 +9,7 @@ import {
   signal
 } from '@angular/core';
 import * as d3 from 'd3';
+import { SKILLS } from '../../data/portfolio.data';
 
 export interface SkillNode extends d3.SimulationNodeDatum {
   id: string;
@@ -176,118 +177,16 @@ export class SkillsPlaygroundComponent implements AfterViewInit, OnDestroy {
   readonly selectedCategory = signal<string>('All');
   readonly activeSkill = signal<SkillNode | null>(null);
 
-  readonly nodes: SkillNode[] = [
-    {
-      id: 'angular',
-      name: 'Angular / AngularJS',
-      category: 'Frontend',
-      level: 'Advanced',
-      note: 'Architected enterprise SPC dashboards, signal-based reactive state, and Causal & Impact ML interfaces at TCS for Unilever.',
-      color: '#E5392F',
-      bg: '#FFF0F0',
-      r: 58
-    },
-    {
-      id: 'typescript',
-      name: 'TypeScript & JS',
-      category: 'Frontend',
-      level: 'Advanced',
-      note: 'Strict type designs, mapped generics, modern ESNext patterns, and high-performance reactive pipelines.',
-      color: '#2F5BFF',
-      bg: '#F0F4FF',
-      r: 54
-    },
-    {
-      id: 'react',
-      name: 'ReactJS / Next.Js',
-      category: 'Frontend',
-      level: 'Advanced',
-      note: 'Engineered full-stack applications like Talk-A-Tive, component-driven UIs, server-side rendering, and low-latency state hooks.',
-      color: '#06B6D4',
-      bg: '#F0FDFA',
-      r: 52
-    },
-    {
-      id: 'd3',
-      name: 'D3.js',
-      category: 'Data Viz',
-      level: 'Mastery',
-      note: 'Custom force simulations, Causal & Impact graphs, Statistical Process Control charts, and animated SVG/Canvas visualizations.',
-      color: '#FF7A00',
-      bg: '#FFF4EB',
-      r: 58
-    },
-    {
-      id: 'ue4',
-      name: 'Unreal Engine 4',
-      category: '3D & Design',
-      level: 'Proficient',
-      note: 'Architected Dead by Shot FPS game played by 100+ players with C++/Blueprints gameplay mechanics and custom physics collisions.',
-      color: '#8B5CF6',
-      bg: '#F5F0FF',
-      r: 52
-    },
-    {
-      id: 'blender',
-      name: 'Blender 3D',
-      category: '3D & Design',
-      level: 'Proficient',
-      note: '3D modeling, texturing, UV unwrapping, and asset pipelines for Dead by Shot FPS and web interactive environments.',
-      color: '#FFC93C',
-      bg: '#FFFCEB',
-      r: 50
-    },
-    {
-      id: 'figma',
-      name: 'Figma & Canva',
-      category: '3D & Design',
-      level: 'Advanced',
-      note: 'End-to-end design systems, responsive auto-layout wireframes, interactive prototypes, and vector illustrations.',
-      color: '#38BDF8',
-      bg: '#F0F9FF',
-      r: 46
-    },
-    {
-      id: 'python',
-      name: 'Python (Scikit-Learn)',
-      category: 'Tools',
-      level: 'Advanced',
-      note: 'Longitudinal machine learning modeling (Gold Price Prediction with Random Forest 500+ estimators), data transformations, and analysis.',
-      color: '#FF8FB1',
-      bg: '#FFF5F8',
-      r: 52
-    },
-    {
-      id: 'cpp',
-      name: 'C++ & Java',
-      category: 'Tools',
-      level: 'Advanced',
-      note: 'Core Computer Science foundations, Data Structures, Algorithms, object-oriented design, and memory management.',
-      color: '#D91E75',
-      bg: '#FFF0F6',
-      r: 48
-    },
-    {
-      id: 'sql',
-      name: 'SQL (MySQL)',
-      category: 'Tools',
-      level: 'Advanced',
-      note: 'Relational database architecture, normalized schemas, complex queries, indexing, and transactional integrity.',
-      color: '#22C55E',
-      bg: '#F0FDF4',
-      r: 48
-    },
-    {
-      id: 'git',
-      name: 'Git & GitHub',
-      category: 'Tools',
-      level: 'Advanced',
-      note: 'Version control workflows, CI/CD automated test pipelines, pull request reviews, and collaborative trunk development.',
-      color: '#E5392F',
-      bg: '#FFF0F0',
-      r: 44
-    }
-  ];
+  readonly nodes: SkillNode[] = SKILLS.map((s) => ({
+    id: s.id,
+    name: s.name,
+    category: s.category === '3D & Gaming' ? '3D & Design' : (s.category === 'Languages & Tools' ? 'Tools' : s.category),
+    level: s.level,
+    note: s.evidence,
+    color: s.color,
+    bg: s.bg,
+    r: s.r
+  }));
 
   private simulation: d3.Simulation<SkillNode, undefined> | null = null;
   private mouseX = -9999;

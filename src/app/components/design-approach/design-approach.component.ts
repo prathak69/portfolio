@@ -6,25 +6,14 @@ import {
   NgZone,
   OnDestroy,
   ViewChildren,
-  QueryList,
-  signal
+  QueryList
 } from '@angular/core';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { PRINCIPLES, PrincipleRecord } from '../../data/portfolio.data';
 
 if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
   gsap.registerPlugin(ScrollTrigger);
-}
-
-interface Principle {
-  number: string;
-  title: string;
-  kicker: string;
-  body: string;
-  accent: string;
-  bg: string;
-  borderColor: string;
-  doodleId: string;
 }
 
 @Component({
@@ -59,23 +48,20 @@ interface Principle {
           >
             <!-- Top Row: Number & Animated Doodle -->
             <div>
-              <div class="flex items-start justify-between mb-8">
-                <span class="font-mono text-3xl sm:text-4xl font-black" [style.color]="item.accent">
+              <div class="flex items-center justify-between mb-8">
+                <span class="text-4xl sm:text-5xl font-black font-mono tracking-tight text-[#14110F] text-ink select-none">
                   {{ item.number }}
                 </span>
 
-                <!-- Self-drawing SVG Doodle -->
-                <div class="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center p-2 rounded-2xl bg-white/70 border border-black/5 shadow-xs">
+                <!-- Self-drawing vector doodle on scroll -->
+                <div class="w-12 h-12 flex items-center justify-center">
                   @switch (item.doodleId) {
                     @case ('clarity') {
-                      <!-- Clarity: Clean compass & focus grid -->
+                      <!-- Clarity: Geometric nested circles -->
                       <svg #doodleSvg class="w-full h-full" viewBox="0 0 64 64" fill="none" stroke="currentColor" [style.color]="item.accent" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="32" cy="32" r="22" class="doodle-path" />
-                        <circle cx="32" cy="32" r="8" class="doodle-path" />
-                        <line x1="32" y1="4" x2="32" y2="14" class="doodle-path" />
-                        <line x1="32" y1="50" x2="32" y2="60" class="doodle-path" />
-                        <line x1="4" y1="32" x2="14" y2="32" class="doodle-path" />
-                        <line x1="50" y1="32" x2="60" y2="32" class="doodle-path" />
+                        <circle cx="32" cy="32" r="26" class="doodle-path" />
+                        <circle cx="32" cy="32" r="14" class="doodle-path" />
+                        <circle cx="32" cy="32" r="4" fill="currentColor" />
                       </svg>
                     }
                     @case ('alive') {
@@ -98,9 +84,7 @@ interface Principle {
                     @case ('details') {
                       <!-- Details: Doodle stars & sparkling cursor -->
                       <svg #doodleSvg class="w-full h-full" viewBox="0 0 64 64" fill="none" stroke="currentColor" [style.color]="item.accent" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <!-- 4-point star -->
                         <path d="M32 10 L36 26 L52 30 L36 34 L32 50 L28 34 L12 30 L28 26 Z" class="doodle-path" />
-                        <!-- Tiny sparkle -->
                         <path d="M48 14 L50 20 L56 22 L50 24 L48 30 L46 24 L40 22 L46 20 Z" class="doodle-path" />
                       </svg>
                     }
@@ -122,64 +106,33 @@ interface Principle {
               </p>
             </div>
 
-            <!-- Bottom Pill -->
-            <div class="mt-8 pt-5 border-t border-black/8 flex items-center justify-between">
-              <span class="cabin-sketch-bold text-sm tracking-wide text-[#14110F] text-ink">
-                Core Standard
+            <!-- Concrete Proof Line Footer (Derived from portfolio.data.ts) -->
+            <div class="mt-8 pt-5 border-t border-black/8 flex items-center justify-between gap-4">
+              <span class="text-xs font-mono text-[#6B6560] leading-snug">
+                <strong class="text-[#14110F] font-bold">Proof:</strong> {{ item.proofLine }}
               </span>
-              <span class="w-2.5 h-2.5 rounded-full" [style.background]="item.accent"></span>
+              <span class="w-2.5 h-2.5 rounded-full shrink-0" [style.background]="item.accent"></span>
             </div>
           </div>
         }
       </div>
     </section>
-  `
+  `,
+  styles: [`
+    .principle-card {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+    }
+    .doodle-path {
+      stroke-dasharray: 200;
+      stroke-dashoffset: 200;
+      transition: stroke-dashoffset 1s ease-out;
+    }
+  `]
 })
 export class DesignApproachComponent implements AfterViewInit, OnDestroy {
   @ViewChildren('doodleSvg') doodleSvgs!: QueryList<ElementRef<SVGElement>>;
 
-  readonly principles: Principle[] = [
-    {
-      number: '01',
-      title: 'Clarity First',
-      kicker: 'REDUCE NOISE',
-      body: 'Remove noise before adding motion. Every element must earn its visual weight and solve a human need before decoration enters.',
-      accent: '#2F5BFF',
-      bg: '#F5F8FF',
-      borderColor: '#D4E2FF',
-      doodleId: 'clarity'
-    },
-    {
-      number: '02',
-      title: 'Data Should Feel Alive',
-      kicker: 'KINETIC INTUITION',
-      body: 'Static charts hide the pulse of systems. Spring physics, collision bounds, and organic easing turn abstract numbers into tactile stories.',
-      accent: '#5CC46B',
-      bg: '#F3FBF5',
-      borderColor: '#C6EDD0',
-      doodleId: 'alive'
-    },
-    {
-      number: '03',
-      title: 'Performance Is Design',
-      kicker: '60FPS OR BUST',
-      body: "If an animation drops below 60fps, it's not delight—it's friction. Offload heavy loops outside Angular's zone and keep render trees lean.",
-      accent: '#FFC93C',
-      bg: '#FFFDF0',
-      borderColor: '#FFEFA6',
-      doodleId: 'perf'
-    },
-    {
-      number: '04',
-      title: 'Details Matter',
-      kicker: 'MICRO-DELIGHT',
-      body: 'The feeling of quality lives in the micro-seconds: the magnetic button resistance, dynamic selection colours, and responsive character gaze.',
-      accent: '#FF8FB1',
-      bg: '#FFF5F8',
-      borderColor: '#FFD3E1',
-      doodleId: 'details'
-    }
-  ];
+  readonly principles: PrincipleRecord[] = PRINCIPLES;
 
   private scrollTriggers: ScrollTrigger[] = [];
 
@@ -189,41 +142,43 @@ export class DesignApproachComponent implements AfterViewInit, OnDestroy {
     if (typeof window === 'undefined') return;
 
     this.zone.runOutsideAngular(() => {
-      this.initSelfDrawingDoodles();
+      this.initDoodleDrawings();
     });
   }
 
-  private initSelfDrawingDoodles(): void {
-    setTimeout(() => {
-      this.doodleSvgs.forEach((svgRef) => {
-        const svg = svgRef.nativeElement;
-        const paths = svg.querySelectorAll<SVGGeometryElement>('.doodle-path');
+  private initDoodleDrawings(): void {
+    const svgs = this.doodleSvgs?.toArray();
+    if (!svgs || svgs.length === 0) return;
 
-        paths.forEach((path) => {
-          const length = path.getTotalLength ? path.getTotalLength() : 120;
-          path.style.strokeDasharray = `${length}`;
-          path.style.strokeDashoffset = `${length}`;
+    svgs.forEach((svgRef) => {
+      const el = svgRef.nativeElement;
+      const paths = el.querySelectorAll('.doodle-path');
 
-          const st = ScrollTrigger.create({
-            trigger: svg,
-            start: 'top 85%',
-            once: true,
-            onEnter: () => {
-              gsap.to(path, {
-                strokeDashoffset: 0,
-                duration: 1.4,
-                ease: 'power2.out'
-              });
-            }
+      const st = ScrollTrigger.create({
+        trigger: el,
+        start: 'top 85%',
+        once: true,
+        onEnter: () => {
+          paths.forEach((p, idx) => {
+            const pathEl = p as SVGGeometryElement;
+            const length = pathEl.getTotalLength ? pathEl.getTotalLength() : 200;
+            pathEl.style.strokeDasharray = `${length}`;
+            pathEl.style.strokeDashoffset = `${length}`;
+
+            gsap.to(pathEl, {
+              strokeDashoffset: 0,
+              duration: 1.2,
+              delay: idx * 0.15,
+              ease: 'power2.out'
+            });
           });
-          this.scrollTriggers.push(st);
-        });
+        }
       });
-    }, 250);
+      this.scrollTriggers.push(st);
+    });
   }
 
   ngOnDestroy(): void {
     this.scrollTriggers.forEach((st) => st.kill());
-    this.scrollTriggers = [];
   }
 }

@@ -77,7 +77,8 @@
 .mask {
   display: inline-block;
   overflow: hidden;
-  padding-bottom: 0.04em;
+  padding-bottom: 0.18em;
+  margin-bottom: -0.18em;
 }
 
 .ch {
@@ -242,7 +243,8 @@ h3 {
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  padding-bottom: 0.08em;
+  padding-bottom: 0.18em;
+  margin-bottom: -0.18em;
 }
 
 :host ::ng-deep .w > span {
@@ -307,6 +309,14 @@ h3 {
     visibility: visible;
     transform: scale(1) translateY(0);
     pointer-events: auto;
+  }
+
+  // Hide preview card when pointer is over buttons, media carousel, chips, or links inside the item
+  .item:has(a:not(.view-case-square):hover, button:hover, .chips:hover, .cue:hover) & {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: scale(0.68) translateY(16px) !important;
+    pointer-events: none !important;
   }
 
   &:hover .view-case-img {

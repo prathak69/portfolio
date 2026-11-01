@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { PROJECTS, ProjectRecord } from '../../data/portfolio.data';
 
 export interface Project {
   id: string;
@@ -133,32 +134,15 @@ export class FeaturedShowcaseComponent {
   private root = viewChild.required<ElementRef<HTMLElement>>('root');
 
   readonly letters = 'FEATURED'.split('');
-  readonly projects: Project[] = [
-    createProject(
-      'spc',
-      'Causal & Impact dashboards used by 500+ quality engineers',
-      ['Enterprise', 'Statistical Process Control', 'Angular', 'D3.js'],
-      '#2F5BFF'
-    ),
-    createProject(
-      'talk',
-      'Talk-A-Tive: real-time chat with sub-100ms delivery',
-      ['Full-stack', 'MERN', 'Socket.io', 'WebSockets'],
-      '#16A34A'
-    ),
-    createProject(
-      'deadbyshot',
-      'Dead by Shot: an Unreal Engine FPS played by 100+ people',
-      ['Game Engineering', 'Unreal Engine 4', 'Blender', 'C++'],
-      '#8B5CF6'
-    ),
-    createProject(
-      'gold',
-      'Gold Price Prediction on 13 years of market data',
-      ['Machine Learning', 'Random Forest', 'Python', 'Scikit-Learn'],
-      '#D97706'
-    ),
-  ];
+  readonly projects: Project[] = PROJECTS.map((p) => ({
+    id: p.id,
+    title: p.title,
+    tags: p.tags,
+    accent: p.accent,
+    href: p.githubUrl || p.liveUrl,
+    slides: p.slides,
+    preview: p.previewImage
+  }));
 
   readonly active = signal(0);
   readonly current = computed(() => this.projects[this.active()]);
@@ -301,6 +285,19 @@ export class FeaturedShowcaseComponent {
 
         const onPointerMove = (e: PointerEvent) => {
           this.setActive(idx);
+
+          // Hide preview square if pointer is directly over buttons, chips, media carousel, or links
+          const isOverControl = (e.target as HTMLElement)?.closest('a:not(.view-case-square), button, .chips, .cue');
+          if (isOverControl) {
+            if (square) {
+              square.style.opacity = '0';
+              square.style.pointerEvents = 'none';
+            }
+            return;
+          } else if (square) {
+            square.style.opacity = '';
+            square.style.pointerEvents = '';
+          }
 
           // Subtle magnetic displacement on the preview square within the item
           if (square && qx && qy && qrot) {

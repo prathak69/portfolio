@@ -325,6 +325,13 @@ body {
   z-index: 9997;
 }
 
+/* Hide native cursor strictly when custom cursor is active on fine pointer devices */
+@media (hover: hover) and (pointer: fine) {
+  body, a, button, input, textarea, select, [data-cursor] {
+    cursor: none !important;
+  }
+}
+
 /* Hide custom cursor and ink trail on touch devices */
 @media (pointer: coarse) {
   .custom-cursor,

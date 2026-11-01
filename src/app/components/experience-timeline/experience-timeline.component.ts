@@ -11,6 +11,7 @@ import {
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import * as d3 from 'd3';
+import { EXPERIENCES, ExperienceRecord } from '../../data/portfolio.data';
 
 if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
   gsap.registerPlugin(ScrollTrigger);
@@ -126,7 +127,7 @@ interface ExperienceItem {
                 <!-- Live D3 Mini Chart (Col 8-12) -->
                 <div class="md:col-span-5 flex flex-col items-start md:items-end">
                   <span class="text-[10px] font-mono text-[#6B6560] text-muted uppercase tracking-wider mb-1">
-                    Live Telemetry Preview
+                    Illustrative data
                   </span>
                   <div [id]="'chart-' + item.id" class="mini-chart-container w-full max-w-[200px] h-[55px]"></div>
                 </div>
@@ -151,75 +152,26 @@ export class ExperienceTimelineComponent implements AfterViewInit, OnDestroy {
   @ViewChild('timelinePath') pathRef?: ElementRef<SVGLineElement>;
   @ViewChild('walkingMarker') markerRef?: ElementRef<HTMLDivElement>;
 
-  readonly experiences: ExperienceItem[] = [
-    {
-      id: 'tcs',
-      role: 'System Engineer',
-      company: 'Tata Consultancy Services (TCS)',
-      period: '2024 — Present',
-      location: 'Pune, India',
-      accent: '#2F5BFF',
-      bg: '#EBF3FF',
-      borderColor: '#C6DCFF',
-      bullets: [
-        'Frontend Developer for Fortune 500 consumer goods giant Unilever, delivering web platforms serving 3.4 billion consumers across 190 countries.',
-        'Architected the Statistical Process Control (SPC) application used by 500+ quality engineers across 20+ manufacturing sites.',
-        'Engineered UI for Causal and Impact module using Angular and D3.js—building 5+ configuration screens and dashboards to train, parameterize, and visualize causal relationships in ML models.',
-        'Resolved 20+ critical production bugs and performance bottlenecks, optimizing real-time data rendering.'
-      ],
-      metrics: [
-        { label: 'Consumers Served', value: '3.4B', num: 3.4, suffix: 'B' },
-        { label: 'Quality Engineers', value: '500+', num: 500, suffix: '+' },
-        { label: 'Manufacturing Sites', value: '20+', num: 20, suffix: '+' }
-      ],
-      stack: ['Angular', 'TypeScript', 'D3.js', 'RxJS', 'Unilever SPC', 'Enterprise UI'],
-      chartType: 'sparkline'
-    },
-    {
-      id: 'lnct',
-      role: 'Bachelor of Technology in CS (82.80%)',
-      company: 'LNCT Group of Colleges',
-      period: '2020 — 2024',
-      location: 'Bhopal, India',
-      accent: '#5CC46B',
-      bg: '#EBFBEF',
-      borderColor: '#BCECC5',
-      bullets: [
-        'Graduated with 82.80% aggregate, mastering Core Coursework: Data Structures & Algorithms, DBMS, Operating Systems, Computer Networks, and Cloud Computing.',
-        'Engineered scalable web applications, real-time socket communication architectures, and predictive machine learning models.',
-        'Led technical design and algorithmic problem solving across competitive coding and hackathons.'
-      ],
-      metrics: [
-        { label: 'Degree Aggregate', value: '82.8%', num: 82.8, suffix: '%' },
-        { label: 'Core Modules', value: '5+', num: 5, suffix: '+' },
-        { label: 'Academic Years', value: '4 Yrs', num: 4, suffix: ' Yrs' }
-      ],
-      stack: ['C++', 'Java', 'Python', 'DBMS', 'Computer Networks', 'Cloud Computing'],
-      chartType: 'bars'
-    },
-    {
-      id: 'projects',
-      role: 'Full-Stack, ML & 3D Engineering',
-      company: 'High-Impact Systems & Open Source',
-      period: '2021 — 2024',
-      location: 'Bhopal &bull; Remote',
-      accent: '#FF7A00',
-      bg: '#FFF4EB',
-      borderColor: '#FFD7BE',
-      bullets: [
-        'Talk-A-Tive: Full-stack MERN real-time chat with Socket.io delivering sub-100ms latency for 20+ concurrent active users.',
-        'Gold Price Prediction: Machine learning model trained on 13-year longitudinal market data (2008–2021) using Random Forest (500+ estimators) and R² evaluation.',
-        'Dead by Shot: First-person shooter game built in Unreal Engine 4 played by 100+ players with custom 3D assets modeled in Blender.'
-      ],
-      metrics: [
-        { label: 'Chat Latency', value: '<100ms', num: 100, prefix: '<', suffix: 'ms' },
-        { label: 'Market Data Span', value: '13 Yrs', num: 13, suffix: ' Yrs' },
-        { label: 'Game Players', value: '100+', num: 100, suffix: '+' }
-      ],
-      stack: ['Python', 'Scikit-Learn', 'ReactJS', 'Node.js', 'Socket.io', 'Unreal Engine 4', 'Blender'],
-      chartType: 'sparkline'
-    }
-  ];
+  readonly experiences: ExperienceItem[] = EXPERIENCES.map((e) => ({
+    id: e.id,
+    role: e.role,
+    company: e.company,
+    period: e.period,
+    location: e.location,
+    accent: e.accent,
+    bg: e.bg,
+    borderColor: e.borderColor,
+    bullets: e.bullets,
+    metrics: e.metrics.map((m) => ({
+      label: m.label,
+      value: m.value,
+      num: m.num,
+      prefix: m.prefix,
+      suffix: m.suffix
+    })),
+    stack: e.stack,
+    chartType: e.chartType
+  }));
 
   private scrollTriggers: ScrollTrigger[] = [];
 

@@ -49,8 +49,8 @@ import { AccentThemeService } from '../../services/accent-theme.service';
               Whether you need enterprise Angular platforms, complex telemetry dashboards, or scalable frontend architecture—my inbox is always open.
             </p>
 
-            <!-- Direct Contact Details (Phone & Email) -->
-            <div class="mb-10 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+            <!-- Direct Contact Details (Email) -->
+            <div class="mb-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
               <button
                 type="button"
                 (click)="copyEmail()"
@@ -60,17 +60,9 @@ import { AccentThemeService } from '../../services/accent-theme.service';
                 <span>prathaksoni.19&#64;gmail.com</span>
                 <span class="text-lg group-hover:scale-125 transition-transform">✂️</span>
               </button>
-
-              <a
-                href="tel:+917000558459"
-                class="magnetic-btn inline-flex items-center gap-2 px-5 py-4 rounded-full bg-white border border-[#E8DCCF] text-[#14110F] font-mono text-sm sm:text-base font-bold shadow-xs hover:border-[#2F5BFF] hover:text-[#2F5BFF] transition-colors duration-200 select-none no-underline"
-                data-cursor="CALL"
-              >
-                <span>📞 +91 7000558459</span>
-              </a>
             </div>
-            <span class="block text-xs font-mono text-[#6B6560] text-muted -mt-6 mb-8">
-              Bhopal &bull; Pune, India &bull; Click to copy email or call directly
+            <span class="block text-xs font-mono text-[#6B6560] text-muted mb-8">
+              Click to copy
             </span>
 
             <!-- Social Pill Links -->
@@ -224,9 +216,9 @@ export class ContactSectionComponent implements AfterViewInit, OnDestroy {
   readonly liveTime = signal<string>('--:--:--');
 
   readonly socialLinks = [
-    { label: 'LinkedIn', icon: '💼', url: 'https://linkedin.com' },
-    { label: 'GitHub', icon: '🐙', url: 'https://github.com' },
-    { label: 'Resume (PDF)', icon: '📄', url: '#' },
+    { label: 'LinkedIn', icon: '💼', url: 'https://www.linkedin.com/in/prathak-soni-669149202/' },
+    { label: 'GitHub', icon: '🐙', url: 'https://github.com/prathaksoni' },
+    { label: 'Resume (PDF)', icon: '📄', url: '/assets/Prathak_Resume.pdf' },
     { label: 'Twitter / X', icon: '🐦', url: 'https://x.com' }
   ];
 
@@ -321,11 +313,20 @@ export class ContactSectionComponent implements AfterViewInit, OnDestroy {
 
   onSubmit(e: Event): void {
     e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const name = (form.querySelector('#name') as HTMLInputElement)?.value || 'Colleague';
+    const email = (form.querySelector('#email') as HTMLInputElement)?.value || '';
+    const message = (form.querySelector('#message') as HTMLTextAreaElement)?.value || '';
+
     this.isSending.set(true);
+
+    const subject = encodeURIComponent(`Portfolio Inquiry from ${name}`);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+    const mailtoUrl = `mailto:prathaksoni.19@gmail.com?subject=${subject}&body=${body}`;
 
     setTimeout(() => {
       this.isSending.set(false);
-      this.toast.show('Message dispatched! Will reply within 24h', '🚀', 3500);
+      this.toast.show('Opening email dispatch client...', '✉️', 3500);
       confetti({
         particleCount: 100,
         spread: 100,
@@ -333,8 +334,9 @@ export class ContactSectionComponent implements AfterViewInit, OnDestroy {
         colors: ['#2F5BFF', '#5CC46B', '#FFC93C']
       });
       this.avatarGaze.triggerWink();
-      (e.target as HTMLFormElement).reset();
-    }, 1200);
+      window.location.href = mailtoUrl;
+      form.reset();
+    }, 600);
   }
 
   scrollToTop(): void {

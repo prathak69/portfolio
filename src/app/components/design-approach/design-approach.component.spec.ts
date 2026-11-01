@@ -15,6 +15,10 @@ if (typeof window !== 'undefined' && !window.matchMedia) {
   });
 }
 
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+gsap.registerPlugin(ScrollTrigger);
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DesignApproachComponent } from './design-approach.component';
 
@@ -23,6 +27,10 @@ describe('DesignApproachComponent', () => {
   let fixture: ComponentFixture<DesignApproachComponent>;
 
   beforeEach(async () => {
+    vi.spyOn(ScrollTrigger, 'create').mockImplementation(
+      () => ({ kill: vi.fn(), refresh: vi.fn() } as any)
+    );
+
     await TestBed.configureTestingModule({
       imports: [DesignApproachComponent]
     }).compileComponents();

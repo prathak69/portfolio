@@ -29,7 +29,7 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
           <span>01 // STATEMENT &amp; CONTEXT</span>
         </div>
         <span class="text-xs font-mono text-[#6B6560] text-muted tracking-widest hidden sm:inline-block">
-          BHOPAL &bull; PUNE, INDIA &bull; +91 7000558459
+          BHOPAL &bull; PUNE, INDIA &bull; IST (UTC +5:30)
         </span>
       </div>
 
@@ -72,7 +72,7 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
               Prathak Soni
             </h3>
             <p class="text-sm sm:text-base text-[#6B6560] text-muted leading-relaxed font-normal">
-              Frontend Developer for Unilever, architecting mission-critical platforms delivering to 3.4B consumers across 190 countries.
+              Frontend Developer for client Unilever (serving 3.4B consumers across 190 countries), architecting mission-critical platforms.
             </p>
           </div>
 
@@ -93,7 +93,7 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
               <span class="text-lg">📍</span>
             </div>
             <h4 class="text-xl font-bold text-[#14110F] text-ink">Bhopal &bull; Pune, IN</h4>
-            <p class="text-xs font-mono text-[#6B6560] text-muted mt-1">+91 7000558459 &bull; prathaksoni.19&#64;gmail.com</p>
+            <p class="text-xs font-mono text-[#6B6560] text-muted mt-1">prathaksoni.19&#64;gmail.com &bull; Open for work</p>
           </div>
 
           <div class="mt-8">
