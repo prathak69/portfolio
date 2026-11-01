@@ -177,3 +177,4 @@ export class PerformanceHudComponent implements OnInit {
     this.isVisible.set(false);
   }
 }
+

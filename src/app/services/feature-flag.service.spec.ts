@@ -22,3 +22,4 @@ describe('FeatureFlagService', () => {
     expect(service.isEnabled('spcTelemetry')).toBe(true);
   });
 });
+

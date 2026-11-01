@@ -182,3 +182,4 @@ export class SpcTelemetryComponent implements OnInit {
     this.showTooltip.update((open) => !open);
   }
 }
+

@@ -29,3 +29,4 @@ describe('PerformanceHudComponent', () => {
     expect(component.isVisible()).toBe(false);
   });
 });
+

@@ -32,3 +32,4 @@ describe('SpcTelemetryComponent', () => {
     expect(component.showTooltip()).toBe(true);
   });
 });
+
