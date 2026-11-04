@@ -107,15 +107,19 @@
   line-height: 105%;
   user-select: none;
 
-  /* Scaling font size tuned to match Two26 proportions */
-  font-size: clamp(1.85rem, 3.4vw, 3.35rem);
+  /* Scaling font size tuned to match Two26 proportions and cover generous screen area */
+  font-size: clamp(2rem, 4.2vw, 4.35rem);
+
+  @media (min-width: 1024px) {
+    font-size: clamp(2.8rem, 4.3vw, 4.25rem);
+  }
 
   @media (min-width: 1280px) {
-    font-size: 3.35rem;
+    font-size: clamp(3.4rem, 4.4vw, 4.6rem);
   }
 
   @media (min-width: 1536px) {
-    font-size: 3.65rem;
+    font-size: clamp(3.8rem, 4.5vw, 5.1rem);
   }
 }
 
@@ -192,26 +196,26 @@
   line-height: 1;
 }
 
-/* Pill 1: "Professional overthinkers" (.about-pill.second) - resting over "keep our" on Line 2 */
+/* Pill 1: "Professional overthinkers" (.about-pill.second) - resting directly over "keep our" on Line 2 */
 .about-pill.second {
   position: absolute;
   top: 25%;
-  left: 82%;
+  left: 87%;
   transform: translate(-50%, calc(-50% + 18px)) rotate(0deg) scale(0.6);
 }
 
-/* Pill 2: "Nerding out on design" (.about-pill.first) - resting over "high, so" on Line 4 */
+/* Pill 2: "Nerding out on design" (.about-pill.first) - resting directly over "high, so" on Line 4 */
 .about-pill.first {
   position: absolute;
   top: 57%;
-  left: 14%;
+  left: 13%;
   transform: translate(-50%, calc(-50% + 18px)) rotate(0deg) scale(0.6);
 }
 
-/* Pill 3: "Allergic to generic" (.about-pill.third) - resting over "brands" on Line 5 */
+/* Pill 3: "Allergic to generic" (.about-pill.third) - resting directly over "brands" on Line 5 */
 .about-pill.third {
   position: absolute;
   top: 74%;
-  left: 65%;
+  left: 71%;
   transform: translate(-50%, calc(-50% + 18px)) rotate(0deg) scale(0.6);
 }
