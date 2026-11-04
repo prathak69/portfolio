@@ -107,19 +107,11 @@
   line-height: 105%;
   user-select: none;
 
-  /* Scaling font size tuned to match Two26 proportions and cover generous screen area */
-  font-size: clamp(2rem, 4.2vw, 4.35rem);
+  /* Exact 84px on desktop, scaling responsively on smaller viewports */
+  font-size: clamp(2rem, 5.8vw, 84px);
 
-  @media (min-width: 1024px) {
-    font-size: clamp(2.8rem, 4.3vw, 4.25rem);
-  }
-
-  @media (min-width: 1280px) {
-    font-size: clamp(3.4rem, 4.4vw, 4.6rem);
-  }
-
-  @media (min-width: 1536px) {
-    font-size: clamp(3.8rem, 4.5vw, 5.1rem);
+  @media (min-width: 1200px) {
+    font-size: 84px;
   }
 }
 

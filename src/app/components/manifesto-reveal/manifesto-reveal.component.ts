@@ -380,7 +380,13 @@ export class ManifestoRevealComponent implements AfterViewInit, OnDestroy {
 
     // Two26 Studio exact timeline pacing:
     // letterAnimSpan = 85 (wave sweeps through 0..85% of timeline; remaining 15% is settled hold)
-    const timelinePos = clampedProgress * 100;
+    // Small threshold before letter 0 activates so that at 0% scroll, every letter (including 'W') is faded peach
+    const startThreshold = 0.01;
+    const effectiveProgress = clampedProgress <= startThreshold
+      ? 0
+      : (clampedProgress - startThreshold) / (1 - startThreshold);
+
+    const timelinePos = effectiveProgress * 100;
     const letterAnimSpan = 85;
 
     for (let i = 0; i < this.charElements.length; i++) {
@@ -390,12 +396,12 @@ export class ManifestoRevealComponent implements AfterViewInit, OnDestroy {
       const startTime = (i / totalChars) * letterAnimSpan;
       const diff = timelinePos - startTime;
 
-      if (diff < 0) {
-        // Stage 0: Initial state (Muted peach / low-contrast)
+      if (effectiveProgress <= 0 || diff <= 0) {
+        // Stage 0: Initial state (Muted peach / low-contrast) - All characters including 'W' are faded
         charEl.style.color = 'rgba(255, 84, 0, 0.45)';
         charEl.style.transform = 'scale(1) rotate(0deg)';
         charEl.style.textShadow = '0px 0px 0px rgba(0,0,0,0)';
-      } else if (diff >= 0 && diff < 3.5) {
+      } else if (diff > 0 && diff < 3.5) {
         // Stage 1: Active Wavefront (Kinetic Zoom 1.14x + Brand Orange Glow #FF5400 + Subtle Tilt)
         const u = diff / 3.5;
         const scale = 1.0 + 0.14 * Math.sin(u * Math.PI);
