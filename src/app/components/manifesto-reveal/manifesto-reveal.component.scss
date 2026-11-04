@@ -6,14 +6,14 @@
   --manifesto-paper: var(--paper, #F7EFE5);
   --manifesto-ink: var(--ink, #14110F);
   --manifesto-accent: var(--accent, #E5392F);
-  --manifesto-inactive: color-mix(in srgb, var(--manifesto-accent) 38%, transparent);
+  --manifesto-inactive: rgba(20, 17, 15, 0.22);
 }
 
 :host-context(.night-shift) {
   --manifesto-bg: #171715;
   --manifesto-paper: #21211E;
   --manifesto-ink: #F7F4EE;
-  --manifesto-inactive: color-mix(in srgb, var(--manifesto-accent) 42%, transparent);
+  --manifesto-inactive: rgba(247, 244, 238, 0.22);
 }
 
 /* -------------------------------------------------------------
@@ -198,33 +198,52 @@
 
 .hero-pill-text {
   font-family: 'NeueMontreal', 'Neuemontreal', var(--font-heading, 'Plus Jakarta Sans', sans-serif);
-  color: var(--cream, #FFF8F0);
+  color: #FFFFFF;
   font-size: 1em;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
 
-/* Pill 1: "Professional overthinkers" (.about-pill.second) - resting directly over "keep our" on Line 2 */
+/* Pill 1: "Professional overthinkers" (.about-pill.second) - Sunrise Coral & Amber */
 .about-pill.second {
   position: absolute;
   top: 23%;
   left: 81%;
+  background: linear-gradient(135deg, #FF5400 0%, #FFC93C 100%);
+  box-shadow: 0 4px 18px rgba(255, 84, 0, 0.4);
   transform: translate(-50%, calc(-50% + 22px)) rotate(-4deg) scale(0.6);
+
+  &:hover {
+    box-shadow: 0 8px 26px rgba(255, 84, 0, 0.6);
+  }
 }
 
-/* Pill 2: "Nerding out on design" (.about-pill.first) - resting directly over "high, so" on Line 4 */
+/* Pill 2: "Nerding out on design" (.about-pill.first) - Emerald to Electric Blue */
 .about-pill.first {
   position: absolute;
   top: 57%;
   left: 12%;
+  background: linear-gradient(135deg, #5CC46B 0%, #2F5BFF 100%);
+  box-shadow: 0 4px 18px rgba(47, 91, 255, 0.4);
   transform: translate(-50%, calc(-50% + 22px)) rotate(5deg) scale(0.6);
+
+  &:hover {
+    box-shadow: 0 8px 26px rgba(47, 91, 255, 0.6);
+  }
 }
 
-/* Pill 3: "Allergic to generic" (.about-pill.third) - resting directly over "brands" on Line 5 */
+/* Pill 3: "Allergic to generic" (.about-pill.third) - Cosmic Violet to Neon Pink */
 .about-pill.third {
   position: absolute;
   top: 75%;
   left: 68%;
+  background: linear-gradient(135deg, #8B5CF6 0%, #FF8FB1 100%);
+  box-shadow: 0 4px 18px rgba(139, 92, 246, 0.4);
   transform: translate(-50%, calc(-50% + 22px)) rotate(-4.5deg) scale(0.6);
+
+  &:hover {
+    box-shadow: 0 8px 26px rgba(139, 92, 246, 0.6);
+  }
 }
