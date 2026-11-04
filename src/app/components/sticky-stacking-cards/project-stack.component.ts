@@ -645,6 +645,7 @@ export class ProjectStackComponent {
 
     this.zone.runOutsideAngular(() => {
       const onScroll = () => {
+        if (typeof window === 'undefined') return;
         const list = this.listRef()?.nativeElement;
         if (!list) return;
 

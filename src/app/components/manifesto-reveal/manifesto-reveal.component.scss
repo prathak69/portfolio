@@ -1,0 +1,217 @@
+:host {
+  display: block;
+  width: 100%;
+  position: relative;
+}
+
+/* -------------------------------------------------------------
+   Scroll Runway: provides vertical scroll distance for scrubbing
+   ------------------------------------------------------------- */
+.manifesto-runway {
+  position: relative;
+  width: 100%;
+  height: 250vh;
+  background-color: #F8EEE8; /* Two26 exact brand-secondary */
+}
+
+/* -------------------------------------------------------------
+   Sticky Centered Viewport (Clears navbar, centers header + copy)
+   ------------------------------------------------------------- */
+.manifesto-sticky-viewport {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* Top padding accommodates the 72px fixed navbar so "A BIT ABOUT US" is comfortably visible */
+  padding: 5rem 1.5rem 2rem;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  @media (min-width: 640px) {
+    padding: 5.5rem 2rem 2.5rem;
+  }
+}
+
+.manifesto-inner-wrap {
+  width: 100%;
+  max-width: 1440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  margin: 0 auto;
+}
+
+/* -------------------------------------------------------------
+   Section Tag: "A BIT ABOUT US" (Prominently visible in viewport)
+   ------------------------------------------------------------- */
+.about-text,
+.manifesto-header {
+  font-family: 'NeueMontreal', var(--font-heading, 'Plus Jakarta Sans', sans-serif);
+  color: #000000;
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  user-select: none;
+
+  @media (min-width: 768px) {
+    margin-bottom: 2rem;
+  }
+
+  .header-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: #000000;
+    text-transform: uppercase;
+
+    @media (min-width: 640px) {
+      font-size: 0.82rem;
+    }
+  }
+}
+
+/* -------------------------------------------------------------
+   Exact 6-Line Copy Box with Anchored Pills (Matching Two26 Studio)
+   ------------------------------------------------------------- */
+.manifesto-copy-box {
+  position: relative;
+  display: inline-block;
+  margin: 0 auto;
+  width: max-content;
+  max-width: 95vw;
+}
+
+.manifesto-line {
+  display: block;
+  white-space: nowrap;
+  line-height: 105%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.about-para,
+.manifesto-paragraph {
+  font-family: 'MDNichromeTest Dark', 'Mdnichrometest Dark', var(--font-heading, 'Plus Jakarta Sans', sans-serif);
+  color: #000000;
+  text-align: center;
+  letter-spacing: -1px;
+  margin: 0 auto;
+  font-weight: 400;
+  line-height: 105%;
+  user-select: none;
+
+  /* Scaling font size tuned to match Two26 proportions */
+  font-size: clamp(1.85rem, 3.4vw, 3.35rem);
+
+  @media (min-width: 1280px) {
+    font-size: 3.35rem;
+  }
+
+  @media (min-width: 1536px) {
+    font-size: 3.65rem;
+  }
+}
+
+.manifesto-word {
+  display: inline-block;
+  position: relative;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+.word-spacer {
+  display: inline;
+}
+
+/* Character Kinetic Bulge */
+.char {
+  display: inline-block;
+  position: relative;
+  color: rgba(255, 84, 0, 0.45);
+  transform-origin: center center;
+  will-change: transform, color;
+  backface-visibility: hidden;
+  transition: color 0.12s ease-out, transform 0.15s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+/* -------------------------------------------------------------
+   Two26 Studio Pill Badges (Exact Sizes, Positions & Tilts)
+   ------------------------------------------------------------- */
+.about-pill {
+  background-color: #FF5400;
+  border-radius: 100px;
+  justify-content: center;
+  align-items: center;
+  padding: 0.38rem 1.15rem;
+  display: inline-flex;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: #F9E2E1;
+  box-shadow: 0 4px 16px rgba(255, 84, 0, 0.35);
+  z-index: 30;
+  white-space: nowrap;
+  user-select: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+
+  @media (min-width: 640px) {
+    font-size: 0.82rem;
+    padding: 0.38rem 1.15rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 0.88rem;
+    padding: 0.42rem 1.25rem;
+  }
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(255, 84, 0, 0.55);
+    filter: brightness(1.05);
+  }
+
+  &:active {
+    filter: brightness(0.95);
+  }
+}
+
+.hero-pill-text {
+  font-family: 'NeueMontreal', var(--font-heading, 'Plus Jakarta Sans', sans-serif);
+  color: #F9E2E1;
+  font-size: 1em;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+/* Pill 1: "Professional overthinkers" (.about-pill.second) - resting over "keep our" on Line 2 */
+.about-pill.second {
+  position: absolute;
+  top: 25%;
+  left: 82%;
+  transform: translate(-50%, calc(-50% + 18px)) rotate(0deg) scale(0.6);
+}
+
+/* Pill 2: "Nerding out on design" (.about-pill.first) - resting over "high, so" on Line 4 */
+.about-pill.first {
+  position: absolute;
+  top: 57%;
+  left: 14%;
+  transform: translate(-50%, calc(-50% + 18px)) rotate(0deg) scale(0.6);
+}
+
+/* Pill 3: "Allergic to generic" (.about-pill.third) - resting over "brands" on Line 5 */
+.about-pill.third {
+  position: absolute;
+  top: 74%;
+  left: 65%;
+  transform: translate(-50%, calc(-50% + 18px)) rotate(0deg) scale(0.6);
+}
