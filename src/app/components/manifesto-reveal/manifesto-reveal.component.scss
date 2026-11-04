@@ -40,19 +40,19 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* Top padding accommodates fixed navbar so "A BIT ABOUT US" is comfortably visible */
-  padding: 4.5rem 1.5rem 2rem;
+  /* Top padding accommodates fixed navbar so "A BIT ABOUT US" is always comfortably visible */
+  padding: calc(var(--nav-height, 64px) + 0.5rem) 1.5rem 1.25rem;
   box-sizing: border-box;
   overflow: hidden;
 
   @media (min-width: 640px) {
-    padding: 5rem 2rem 2.5rem;
+    padding: calc(var(--nav-height, 64px) + 0.75rem) 2rem 1.5rem;
   }
 }
 
 .manifesto-inner-wrap {
   width: 100%;
-  max-width: 1440px;
+  max-width: 1520px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -70,7 +70,7 @@
   color: var(--manifesto-ink);
   text-align: center;
   text-transform: uppercase;
-  margin-bottom: 1.25rem;
+  margin-bottom: clamp(0.75rem, 1.8vh, 1.5rem);
   user-select: none;
   font-size: 19px;
   font-weight: 700;
@@ -79,7 +79,7 @@
   transition: color 0.4s ease;
 
   @media (min-width: 768px) {
-    margin-bottom: 1.75rem;
+    margin-bottom: clamp(1rem, 2vh, 1.75rem);
   }
 
   .header-tag {
@@ -101,13 +101,13 @@
   display: inline-block;
   margin: 0 auto;
   width: max-content;
-  max-width: 95vw;
+  max-width: 96vw;
 }
 
 .manifesto-line {
   display: block;
   white-space: nowrap;
-  line-height: 105%;
+  line-height: 102%;
   margin: 0 auto;
   text-align: center;
 }
@@ -117,17 +117,18 @@
   font-family: 'MDNichromeTest Dark', 'Mdnichrometest Dark', 'MD Nichrome Test Dark', 'Mdnichrometest', sans-serif;
   color: var(--manifesto-ink);
   text-align: center;
-  letter-spacing: -1px;
+  letter-spacing: -0.025em;
   margin: 0 auto;
-  font-weight: 400;
-  line-height: 105%;
+  font-weight: 700;
+  -webkit-font-smoothing: antialiased;
+  line-height: 102%;
   user-select: none;
   transition: color 0.4s ease;
 
-  /* Responsive desktop sizing scaling gracefully to 84px */
-  font-size: clamp(2.2rem, 5vw, 84px);
+  /* Dynamic viewport scaling: generously covers screen area like Image 2, reaches 84px on desktop without overflowing */
+  font-size: clamp(2.8rem, min(5.8vw, 8.8vh), 84px);
 
-  @media (min-width: 1400px) {
+  @media (min-width: 1300px) and (min-height: 700px) {
     font-size: 84px;
   }
 }
@@ -151,6 +152,7 @@
   transform-origin: center center;
   will-change: transform, color;
   backface-visibility: hidden;
+  text-shadow: none !important;
   /* Zero CSS transition so that frame-by-frame scroll scrubbing is instantaneous and free of jitter */
 }
 

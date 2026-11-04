@@ -412,6 +412,7 @@ export class ManifestoRevealComponent implements AfterViewInit, OnDestroy {
     const letterAnimSpan = 82;
 
     // The 3 iconic stacking curtain loader colors (Red, Blue, Green)
+    // Strictly ONLY these 3 solid colors - NO gradients, NO color-mix blends between them, NO glow
     const triColors = ['#E5392F', '#2F5BFF', '#5CC46B'];
 
     for (let i = 0; i < this.charElements.length; i++) {
@@ -422,43 +423,33 @@ export class ManifestoRevealComponent implements AfterViewInit, OnDestroy {
       const diff = timelinePos - startTime;
 
       if (effectiveProgress <= 0 || diff <= 0) {
-        // Stage 0: Initial state (Clean muted whisper) - All characters start unrevealed without harsh glow
+        // Stage 0: Initial state (Clean muted whisper) - All characters including 'W' start unrevealed without harsh glow or orange
         charEl.style.color = 'var(--manifesto-inactive, rgba(20, 17, 15, 0.22))';
         charEl.style.transform = 'scale(1) rotate(0deg)';
         charEl.style.textShadow = 'none';
       } else if (diff > 0 && diff <= 4.5) {
-        // Stage 1: Active Wavefront (Kinetic Zoom 1.15x + 3 Stacking Colors + Crisp Anti-Glow Shadow)
+        // Stage 1: Active Wavefront (Kinetic Zoom 1.15x + strictly 1 of 3 solid stacking colors + Zero Glow)
         const u = diff / 4.5;
         const scale = 1.0 + 0.15 * Math.sin(u * Math.PI * 0.5);
         const randomTilt = Math.sin((i + 1) * 12.9898) * 3.5;
         const tilt = (randomTilt * Math.sin(u * Math.PI)).toFixed(2);
 
-        // Harmonious tri-color cycle across Red (#E5392F), Blue (#2F5BFF), Green (#5CC46B)
-        const colorPos = (i * 0.32 + timelinePos * 0.08) % 3;
-        const colorIdx = Math.floor(colorPos);
-        const frac = colorPos - colorIdx;
-        const c1 = triColors[colorIdx % 3];
-        const c2 = triColors[(colorIdx + 1) % 3];
-        const charColor = `color-mix(in srgb, ${c2} ${Math.round(frac * 100)}%, ${c1})`;
+        // Strict 1-of-3 solid color: Red (#E5392F), Blue (#2F5BFF), or Green (#5CC46B)
+        const charColor = triColors[i % 3];
 
         charEl.style.color = charColor;
         charEl.style.transform = `scale(${scale.toFixed(3)}) rotate(${tilt}deg)`;
-        charEl.style.textShadow = `0.4px 0.4px 0 ${charColor}, -0.4px -0.4px 0 ${charColor}`;
-      } else if (diff > 4.5 && diff <= 9.0) {
-        // Stage 2: Settling Phase - Smoothly blends from tri-color into solid black ink (#14110F)
-        const v = (diff - 4.5) / 4.5;
+        charEl.style.textShadow = 'none';
+      } else if (diff > 4.5 && diff <= 8.5) {
+        // Stage 2: Settling Phase - Directly darkens from its solid tri-color into solid black ink (#14110F), zero glow, zero other hues
+        const v = (diff - 4.5) / 4.0;
         const scale = 1.15 - 0.15 * v;
         const randomTilt = Math.sin((i + 1) * 12.9898) * 3.5;
         const tilt = (randomTilt * (1 - v) * 0.3).toFixed(2);
         const pct = Math.round((1 - v) * 100);
 
-        const colorPos = (i * 0.32 + timelinePos * 0.08) % 3;
-        const colorIdx = Math.floor(colorPos);
-        const frac = colorPos - colorIdx;
-        const c1 = triColors[colorIdx % 3];
-        const c2 = triColors[(colorIdx + 1) % 3];
-        const charColor = `color-mix(in srgb, ${c2} ${Math.round(frac * 100)}%, ${c1})`;
-
+        const charColor = triColors[i % 3];
+        // Directly darkens to solid black ink without any intermediate gradient hues
         charEl.style.color = `color-mix(in srgb, ${charColor} ${pct}%, var(--manifesto-ink, #14110F))`;
         charEl.style.transform = `scale(${scale.toFixed(3)}) rotate(${tilt}deg)`;
         charEl.style.textShadow = 'none';
