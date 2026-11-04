@@ -27,13 +27,13 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* Top padding accommodates the 72px fixed navbar so "A BIT ABOUT US" is comfortably visible */
-  padding: 5rem 1.5rem 2rem;
+  /* Top padding accommodates fixed navbar so "A BIT ABOUT US" is comfortably visible */
+  padding: 4.5rem 1.5rem 2rem;
   box-sizing: border-box;
   overflow: hidden;
 
   @media (min-width: 640px) {
-    padding: 5.5rem 2rem 2.5rem;
+    padding: 5rem 2rem 2.5rem;
   }
 }
 
@@ -53,18 +53,19 @@
    ------------------------------------------------------------- */
 .about-text,
 .manifesto-header {
-  font-family: 'NeueMontreal', var(--font-heading, 'Plus Jakarta Sans', sans-serif);
+  font-family: 'NeueMontreal', 'Neuemontreal', var(--font-heading, 'Plus Jakarta Sans', sans-serif);
   color: #000000;
   text-align: center;
   text-transform: uppercase;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   user-select: none;
   font-size: 19px;
   font-weight: 700;
+  letter-spacing: 0.05em;
   line-height: 100%;
 
   @media (min-width: 768px) {
-    margin-bottom: 2rem;
+    margin-bottom: 1.75rem;
   }
 
   .header-tag {
@@ -98,7 +99,7 @@
 
 .about-para,
 .manifesto-paragraph {
-  font-family: 'MDNichromeTest Dark', 'Mdnichrometest Dark', var(--font-heading, 'Plus Jakarta Sans', sans-serif);
+  font-family: 'MDNichromeTest Dark', 'Mdnichrometest Dark', 'MD Nichrome Test Dark', 'Mdnichrometest', sans-serif;
   color: #000000;
   text-align: center;
   letter-spacing: -1px;
@@ -107,10 +108,10 @@
   line-height: 105%;
   user-select: none;
 
-  /* Exact 84px on desktop, scaling responsively on smaller viewports */
-  font-size: clamp(2rem, 5.8vw, 84px);
+  /* Responsive desktop sizing scaling gracefully to 84px */
+  font-size: clamp(2.2rem, 5vw, 84px);
 
-  @media (min-width: 1200px) {
+  @media (min-width: 1400px) {
     font-size: 84px;
   }
 }
@@ -126,7 +127,7 @@
   display: inline;
 }
 
-/* Character Kinetic Bulge */
+/* Character Kinetic Bulge (Driven frame-by-frame via GSAP/rAF) */
 .char {
   display: inline-block;
   position: relative;
@@ -134,7 +135,7 @@
   transform-origin: center center;
   will-change: transform, color;
   backface-visibility: hidden;
-  transition: color 0.12s ease-out, transform 0.15s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  /* Zero CSS transition so that frame-by-frame scroll scrubbing is instantaneous and free of jitter */
 }
 
 /* -------------------------------------------------------------
@@ -145,7 +146,7 @@
   border-radius: 100px;
   justify-content: center;
   align-items: center;
-  padding: 0.38rem 1.15rem;
+  padding: 0.35rem 1.15rem;
   display: inline-flex;
   border: none;
   outline: none;
@@ -160,13 +161,13 @@
   transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
 
   @media (min-width: 640px) {
-    font-size: 0.82rem;
-    padding: 0.38rem 1.15rem;
+    font-size: 0.88rem;
+    padding: 0.36rem 1.18rem;
   }
 
   @media (min-width: 1024px) {
-    font-size: 0.88rem;
-    padding: 0.42rem 1.25rem;
+    font-size: 0.95rem;
+    padding: 0.4rem 1.25rem;
   }
 
   &:hover {
@@ -180,7 +181,7 @@
 }
 
 .hero-pill-text {
-  font-family: 'NeueMontreal', var(--font-heading, 'Plus Jakarta Sans', sans-serif);
+  font-family: 'NeueMontreal', 'Neuemontreal', var(--font-heading, 'Plus Jakarta Sans', sans-serif);
   color: #F9E2E1;
   font-size: 1em;
   font-weight: 500;
@@ -191,23 +192,23 @@
 /* Pill 1: "Professional overthinkers" (.about-pill.second) - resting directly over "keep our" on Line 2 */
 .about-pill.second {
   position: absolute;
-  top: 25%;
-  left: 87%;
-  transform: translate(-50%, calc(-50% + 18px)) rotate(0deg) scale(0.6);
+  top: 23%;
+  left: 81%;
+  transform: translate(-50%, calc(-50% + 22px)) rotate(-4deg) scale(0.6);
 }
 
 /* Pill 2: "Nerding out on design" (.about-pill.first) - resting directly over "high, so" on Line 4 */
 .about-pill.first {
   position: absolute;
   top: 57%;
-  left: 13%;
-  transform: translate(-50%, calc(-50% + 18px)) rotate(0deg) scale(0.6);
+  left: 12%;
+  transform: translate(-50%, calc(-50% + 22px)) rotate(5deg) scale(0.6);
 }
 
 /* Pill 3: "Allergic to generic" (.about-pill.third) - resting directly over "brands" on Line 5 */
 .about-pill.third {
   position: absolute;
-  top: 74%;
-  left: 71%;
-  transform: translate(-50%, calc(-50% + 18px)) rotate(0deg) scale(0.6);
+  top: 75%;
+  left: 68%;
+  transform: translate(-50%, calc(-50% + 22px)) rotate(-4.5deg) scale(0.6);
 }

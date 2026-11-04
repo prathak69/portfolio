@@ -9,6 +9,12 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import confetti from 'canvas-confetti';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export interface ManifestoToken {
   text: string;
@@ -45,7 +51,7 @@ export interface LineItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <!-- Scroll Runway: provides vertical scroll travel for smooth scrubbing -->
-    <div #runway class="manifesto-runway">
+    <div #runway class="manifesto-runway" id="about">
       <!-- Sticky Centered Viewport (clears top navbar, centers A BIT ABOUT US + 6 lines) -->
       <div class="manifesto-sticky-viewport">
         <div class="manifesto-inner-wrap">
@@ -54,7 +60,7 @@ export interface LineItem {
             <span class="header-tag">A BIT ABOUT US</span>
           </div>
 
-          <!-- Exact 6-Line Copy Box with Anchored Pills (Matching Image 2) -->
+          <!-- Exact 6-Line Copy Box with Anchored Pills (Matching Two26 Studio) -->
           <div class="manifesto-copy-box">
             <p #manifestoParagraph class="about-para manifesto-paragraph">
               @for (line of linesData; track line.lineIndex) {
@@ -213,6 +219,7 @@ export class ManifestoRevealComponent implements AfterViewInit, OnDestroy {
     activeTransform: string;
     inactiveTransform: string;
   }[] = [];
+  private scrollTriggerInstance: ScrollTrigger | null = null;
   private scrollListener: any = null;
   private resizeListener: any = null;
 
@@ -268,40 +275,55 @@ export class ManifestoRevealComponent implements AfterViewInit, OnDestroy {
     const pill2 = runway.querySelector('.about-pill.first') as HTMLElement | null;
     const pill3 = runway.querySelector('.about-pill.third') as HTMLElement | null;
 
-    // Pill 1: "Professional overthinkers" (triggers as Line 2 finishes and Line 3 begins ~35%)
+    // Pill 1: "Professional overthinkers" (triggers at Line 2 completion ~35%)
     if (pill1) {
       this.pillElements.push({
         el: pill1,
         threshold: 0.35,
         activeTransform: 'translate(-50%, -50%) rotate(-4deg) scale(1)',
-        inactiveTransform: 'translate(-50%, calc(-50% + 18px)) rotate(0deg) scale(0.6)'
+        inactiveTransform: 'translate(-50%, calc(-50% + 22px)) rotate(-4deg) scale(0.6)'
       });
     }
 
-    // Pill 2: "Nerding out on design" (triggers as Line 4 finishes and Line 5 begins ~72%)
+    // Pill 2: "Nerding out on design" (triggers at Line 4 completion ~70%)
     if (pill2) {
       this.pillElements.push({
         el: pill2,
-        threshold: 0.72,
+        threshold: 0.70,
         activeTransform: 'translate(-50%, -50%) rotate(5deg) scale(1)',
-        inactiveTransform: 'translate(-50%, calc(-50% + 18px)) rotate(0deg) scale(0.6)'
+        inactiveTransform: 'translate(-50%, calc(-50% + 22px)) rotate(5deg) scale(0.6)'
       });
     }
 
-    // Pill 3: "Allergic to generic" (triggers as Line 5 finishes ~94%)
+    // Pill 3: "Allergic to generic" (triggers at Line 5 completion ~92%)
     if (pill3) {
       this.pillElements.push({
         el: pill3,
-        threshold: 0.94,
+        threshold: 0.92,
         activeTransform: 'translate(-50%, -50%) rotate(-4.5deg) scale(1)',
-        inactiveTransform: 'translate(-50%, calc(-50% + 18px)) rotate(0deg) scale(0.6)'
+        inactiveTransform: 'translate(-50%, calc(-50% + 22px)) rotate(-4.5deg) scale(0.6)'
       });
     }
 
-    // Initialize in unrevealed peach state
+    // Initialize in unrevealed peach state (0% scroll)
     this.updateProgress(0);
 
-    // Scroll listener driven by runway depth (compatible with native & Lenis scroll)
+    // 1. GSAP ScrollTrigger Scrubbed Timeline
+    try {
+      this.scrollTriggerInstance = ScrollTrigger.create({
+        trigger: runway,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.8,
+        onUpdate: (self) => {
+          this.updateProgress(self.progress);
+        }
+      });
+    } catch {
+      // Fallback to rAF scroll listener if ScrollTrigger unavailable
+    }
+
+    // 2. Direct fallback listeners for Lenis and native scrolling
     this.scrollListener = () => {
       this.handleScroll();
     };
@@ -316,7 +338,7 @@ export class ManifestoRevealComponent implements AfterViewInit, OnDestroy {
 
     // Initial check
     this.handleScroll();
-    setTimeout(() => this.handleScroll(), 50);
+    setTimeout(() => this.handleScroll(), 60);
     setTimeout(() => this.handleScroll(), 250);
   }
 
@@ -352,10 +374,10 @@ export class ManifestoRevealComponent implements AfterViewInit, OnDestroy {
   /**
    * Two26 Studio Exact Kinetic Character Animation:
    * - Resting before wave: Low-contrast peach rgba(255, 84, 0, 0.45), scale 1, rot 0
-   * - Wavefront Active Zoom: Kinetic zoom 1.14x, random ±3.5deg tilt, vibrant Two26 orange (#FF5400) + stroke textShadow
+   * - Wavefront Active Zoom: Kinetic zoom 1.15x, dynamic ±3.5deg tilt, vibrant Two26 orange (#FF5400) + thick textShadow glow
    * - Wavefront Settle: Smoothly settles down to scale 1, rot 0, solid black #000000
    * - Past wave / 100% progress: Clean solid black #000000 (ZERO permanent orange words!)
-   * - Badges pop in at Two26 milestones (35%, 72%, 94%)
+   * - Badges pop in at Two26 milestones (35%, 70%, 92%)
    */
   public updateProgress(progress: number): void {
     if (this.charElements.length === 0 && this.paragraphRef?.nativeElement) {
@@ -379,7 +401,7 @@ export class ManifestoRevealComponent implements AfterViewInit, OnDestroy {
     }
 
     // Two26 Studio exact timeline pacing:
-    // letterAnimSpan = 85 (wave sweeps through 0..85% of timeline; remaining 15% is settled hold)
+    // letterAnimSpan = 82 (wave sweeps through 0..82% of timeline; remaining 18% is settled hold)
     // Small threshold before letter 0 activates so that at 0% scroll, every letter (including 'W') is faded peach
     const startThreshold = 0.01;
     const effectiveProgress = clampedProgress <= startThreshold
@@ -387,7 +409,7 @@ export class ManifestoRevealComponent implements AfterViewInit, OnDestroy {
       : (clampedProgress - startThreshold) / (1 - startThreshold);
 
     const timelinePos = effectiveProgress * 100;
-    const letterAnimSpan = 85;
+    const letterAnimSpan = 82;
 
     for (let i = 0; i < this.charElements.length; i++) {
       const charEl = this.charElements[i];
@@ -400,33 +422,34 @@ export class ManifestoRevealComponent implements AfterViewInit, OnDestroy {
         // Stage 0: Initial state (Muted peach / low-contrast) - All characters including 'W' are faded
         charEl.style.color = 'rgba(255, 84, 0, 0.45)';
         charEl.style.transform = 'scale(1) rotate(0deg)';
-        charEl.style.textShadow = '0px 0px 0px rgba(0,0,0,0)';
-      } else if (diff > 0 && diff < 3.5) {
-        // Stage 1: Active Wavefront (Kinetic Zoom 1.14x + Brand Orange Glow #FF5400 + Subtle Tilt)
-        const u = diff / 3.5;
-        const scale = 1.0 + 0.14 * Math.sin(u * Math.PI);
-        // Deterministic pseudo-random tilt between -3.5deg and +3.5deg matching Two26:
+        charEl.style.textShadow = 'none';
+      } else if (diff > 0 && diff <= 4.5) {
+        // Stage 1: Active Wavefront (Kinetic Zoom 1.15x + Brand Orange Glow #FF5400 + Dynamic Tilt)
+        const u = diff / 4.5;
+        const scale = 1.0 + 0.15 * Math.sin(u * Math.PI * 0.5);
         const randomTilt = Math.sin((i + 1) * 12.9898) * 3.5;
         const tilt = (randomTilt * Math.sin(u * Math.PI)).toFixed(2);
 
         charEl.style.color = '#FF5400';
         charEl.style.transform = `scale(${scale.toFixed(3)}) rotate(${tilt}deg)`;
-        charEl.style.textShadow = '0.6px 0.6px 0 #FF5400, -0.6px -0.6px 0 #FF5400, 0.6px -0.6px 0 #FF5400, -0.6px 0.6px 0 #FF5400';
-      } else if (diff >= 3.5 && diff < 7.0) {
+        charEl.style.textShadow = '0.6px 0.6px 0 #FF5400, -0.6px -0.6px 0 #FF5400, 0.6px 0.6px 0 #FF5400, -0.6px 0.6px 0 #FF5400';
+      } else if (diff > 4.5 && diff <= 9.0) {
         // Stage 2: Settling to Solid Black
-        const v = (diff - 3.5) / 3.5;
-        const scale = 1.0 + 0.14 * (1 - v) * 0.3;
+        const v = (diff - 4.5) / 4.5;
+        const scale = 1.15 - 0.15 * v;
+        const randomTilt = Math.sin((i + 1) * 12.9898) * 3.5;
+        const tilt = (randomTilt * (1 - v) * 0.3).toFixed(2);
         const r = Math.round(255 * (1 - v));
         const g = Math.round(84 * (1 - v));
 
         charEl.style.color = `rgb(${r}, ${g}, 0)`;
-        charEl.style.transform = `scale(${scale.toFixed(3)}) rotate(0deg)`;
-        charEl.style.textShadow = v > 0.5 ? '0px 0px 0px rgba(0,0,0,0)' : '0.4px 0.4px 0 rgba(255,84,0,0.4)';
+        charEl.style.transform = `scale(${scale.toFixed(3)}) rotate(${tilt}deg)`;
+        charEl.style.textShadow = v > 0.5 ? 'none' : '0.4px 0.4px 0 rgba(255,84,0,0.3)';
       } else {
         // Stage 3: Fully settled solid black (#000000)
         charEl.style.color = '#000000';
         charEl.style.transform = 'scale(1) rotate(0deg)';
-        charEl.style.textShadow = '0px 0px 0px rgba(0,0,0,0)';
+        charEl.style.textShadow = 'none';
       }
     }
 
@@ -463,6 +486,10 @@ export class ManifestoRevealComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (typeof window !== 'undefined') {
+      if (this.scrollTriggerInstance) {
+        this.scrollTriggerInstance.kill();
+        this.scrollTriggerInstance = null;
+      }
       if (this.scrollListener) {
         window.removeEventListener('scroll', this.scrollListener);
         window.removeEventListener('lenis-scroll', this.scrollListener);
