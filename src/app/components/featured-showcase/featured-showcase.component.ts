@@ -91,68 +91,93 @@ export const createProject = (
             (mouseleave)="onItemMouseLeave()"
           >
             <div class="inner">
-              <!-- Left Column: Media Card with Animated Slides Carousel, Signature Badge & Chips -->
+              <!-- Left Column: Media Card with Two26 Liquid Wave Wipe, Animated Slides Carousel, Signature Badge & Chips -->
               <div
-                class="media"
+                class="media project-media-box"
                 role="button"
                 tabindex="0"
                 (click)="openCaseStudy(p, $event)"
+                (mouseenter)="onMediaHover(i, true)"
+                (mouseleave)="onMediaHover(i, false)"
                 (keydown.enter)="openCaseStudy(p, $event)"
                 (keydown.space)="openCaseStudy(p, $event)"
                 [attr.aria-label]="'View case study: ' + p.title"
                 data-cursor="CASE"
               >
-                <div class="slides">
-                  @for (s of p.slides; track s; let k = $index) {
-                    <div class="slide">
-                      <img [src]="s" alt="" [attr.loading]="i === 0 && k === 0 ? 'eager' : 'lazy'" />
-                    </div>
+                <!-- Primary Layer: Slides, live miniature badge, chips -->
+                <div class="layer-primary" [class.layer-hidden]="isSecondary(i)">
+                  <div class="slides">
+                    @for (s of p.slides; track s; let k = $index) {
+                      <div class="slide">
+                        <img [src]="s" alt="" [attr.loading]="i === 0 && k === 0 ? 'eager' : 'lazy'" />
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Signature Live Miniature Widget -->
+                  @switch (p.id) {
+                    @case ('spc') {
+                      <div class="miniature-badge spc-badge">
+                        <svg class="mini-network" viewBox="0 0 100 50">
+                          <line x1="20" y1="25" x2="50" y2="25" stroke="rgba(255,255,255,0.7)" stroke-dasharray="2,2" />
+                          <line x1="50" y1="25" x2="80" y2="25" stroke="rgba(255,255,255,0.7)" stroke-dasharray="2,2" />
+                          <circle cx="20" cy="25" r="7" fill="#E84A3F" />
+                          <circle cx="50" cy="25" r="9" fill="#FFC93C" class="pulse-node" />
+                          <circle cx="80" cy="25" r="7" fill="#5CC46B" />
+                        </svg>
+                        <span>Causal Tree</span>
+                      </div>
+                    }
+                    @case ('talk') {
+                      <div class="miniature-badge talk-badge">
+                        <span class="live-dot"></span>
+                        <span>Socket.io // 60fps</span>
+                      </div>
+                    }
+                    @case ('deadbyshot') {
+                      <div class="miniature-badge radar-badge">
+                        <div class="mini-radar">
+                          <div class="radar-sweep"></div>
+                        </div>
+                        <span>UE4 Radar</span>
+                      </div>
+                    }
+                    @case ('gold') {
+                      <div class="miniature-badge gold-badge">
+                        <svg class="mini-sparkline" viewBox="0 0 60 24">
+                          <path d="M2,20 L15,14 L30,17 L45,6 L58,9" fill="none" stroke="#FFC93C" stroke-width="2.5" stroke-linecap="round" />
+                        </svg>
+                        <span>R² 98.2%</span>
+                      </div>
+                    }
                   }
+
+                  <ul class="chips">
+                    @for (t of p.tags.slice(0, 3); track t) {
+                      <li class="chip">{{ t }}</li>
+                    }
+                  </ul>
                 </div>
 
-                <!-- Signature Live Miniature Widget -->
-                @switch (p.id) {
-                  @case ('spc') {
-                    <div class="miniature-badge spc-badge">
-                      <svg class="mini-network" viewBox="0 0 100 50">
-                        <line x1="20" y1="25" x2="50" y2="25" stroke="rgba(255,255,255,0.7)" stroke-dasharray="2,2" />
-                        <line x1="50" y1="25" x2="80" y2="25" stroke="rgba(255,255,255,0.7)" stroke-dasharray="2,2" />
-                        <circle cx="20" cy="25" r="7" fill="#E84A3F" />
-                        <circle cx="50" cy="25" r="9" fill="#FFC93C" class="pulse-node" />
-                        <circle cx="80" cy="25" r="7" fill="#5CC46B" />
-                      </svg>
-                      <span>Causal Tree</span>
-                    </div>
-                  }
-                  @case ('talk') {
-                    <div class="miniature-badge talk-badge">
-                      <span class="live-dot"></span>
-                      <span>Socket.io // 60fps</span>
-                    </div>
-                  }
-                  @case ('deadbyshot') {
-                    <div class="miniature-badge radar-badge">
-                      <div class="mini-radar">
-                        <div class="radar-sweep"></div>
+                <!-- Secondary Layer (Revealed via Two26 Liquid Wave Wipe) -->
+                <div class="layer-secondary" [class.layer-active]="isSecondary(i)">
+                  <img [src]="p.slides[1] || p.preview" alt="" class="secondary-img" loading="lazy" />
+                  <div class="secondary-overlay">
+                    <div class="secondary-content">
+                      <span class="secondary-tag">{{ p.tags[0] || 'FEATURED' }}</span>
+                      <h4 class="secondary-title">{{ p.title }}</h4>
+                      <div class="secondary-cta">
+                        <span>EXPLORE CASE STUDY</span>
+                        <span class="secondary-arrow">↗</span>
                       </div>
-                      <span>UE4 Radar</span>
                     </div>
-                  }
-                  @case ('gold') {
-                    <div class="miniature-badge gold-badge">
-                      <svg class="mini-sparkline" viewBox="0 0 60 24">
-                        <path d="M2,20 L15,14 L30,17 L45,6 L58,9" fill="none" stroke="#FFC93C" stroke-width="2.5" stroke-linecap="round" />
-                      </svg>
-                      <span>R² 98.2%</span>
-                    </div>
-                  }
-                }
+                  </div>
+                </div>
 
-                <ul class="chips">
-                  @for (t of p.tags.slice(0, 3); track t) {
-                    <li class="chip">{{ t }}</li>
-                  }
-                </ul>
+                <!-- Two26 Liquid Wave SVG Curtain -->
+                <svg class="liquid-wave-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                  <path class="wave-path" [attr.data-wave-idx]="i" fill="#14110F" d="M 0,105 C 30,105 70,105 100,105 L 100,105 L 0,105 Z"></path>
+                </svg>
               </div>
 
               <!-- Right Column: Info & Contextual Navigation -->
@@ -389,6 +414,9 @@ export class FeaturedShowcaseComponent {
   readonly activeIndex = signal(0);
   readonly activeCaseStudy = signal<Project | null>(null);
 
+  // Two26 Studio Liquid Wave Wipe Active States
+  readonly waveActive = signal<boolean[]>([false, false, false, false]);
+
   // Floating Cursor Follower State (Marcus Lorenzet Design)
   readonly hoveredProject = signal<Project | null>(null);
   readonly isFollowerActive = signal<boolean>(false);
@@ -444,6 +472,68 @@ export class FeaturedShowcaseComponent {
 
   pad(n: number): string {
     return n.toString().padStart(2, '0');
+  }
+
+  isSecondary(index: number): boolean {
+    return this.waveActive()[index] ?? false;
+  }
+
+  onMediaHover(index: number, toSecondary: boolean): void {
+    if (typeof window === 'undefined') return;
+    const isCurrent = this.waveActive()[index] ?? false;
+    if (isCurrent === toSecondary) return;
+
+    const pathEl = this.rootRef()?.nativeElement?.querySelector(`.wave-path[data-wave-idx="${index}"]`) as SVGPathElement | null;
+    if (!pathEl) {
+      this.waveActive.update(arr => {
+        const next = [...arr];
+        next[index] = toSecondary;
+        return next;
+      });
+      return;
+    }
+
+    const dBelow = "M 0,105 C 30,105 70,105 100,105 L 100,105 L 0,105 Z";
+    const dRisingApex = "M 0,45 C 30,5 75,5 100,45 L 100,105 L 0,105 Z";
+    const dFullBox = "M 0,-5 C 30,-5 70,-5 100,-5 L 100,105 L 0,105 Z";
+    const dExitingApex = "M 0,-5 L 100,-5 L 100,55 C 75,15 30,15 0,55 Z";
+    const dAbove = "M 0,-5 L 100,-5 L 100,-5 C 70,-5 30,-5 0,-5 Z";
+
+    gsap.killTweensOf(pathEl);
+
+    // Two26 Studio 2-Phase Liquid Wave Wipe
+    gsap.timeline()
+      .set(pathEl, { attr: { d: dBelow } })
+      .to(pathEl, {
+        attr: { d: dRisingApex },
+        duration: 0.26,
+        ease: 'power2.in'
+      })
+      .to(pathEl, {
+        attr: { d: dFullBox },
+        duration: 0.20,
+        ease: 'power1.out',
+        onComplete: () => {
+          this.zone.run(() => {
+            this.waveActive.update(arr => {
+              const next = [...arr];
+              next[index] = toSecondary;
+              return next;
+            });
+          });
+        }
+      })
+      .to(pathEl, {
+        attr: { d: dExitingApex },
+        duration: 0.22,
+        ease: 'power1.in'
+      })
+      .to(pathEl, {
+        attr: { d: dAbove },
+        duration: 0.22,
+        ease: 'power2.out'
+      })
+      .set(pathEl, { attr: { d: dBelow } });
   }
 
   setActive(i: number): void {
