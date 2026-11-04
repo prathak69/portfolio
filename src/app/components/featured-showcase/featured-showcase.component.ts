@@ -174,9 +174,9 @@ export const createProject = (
                   </div>
                 </div>
 
-                <!-- Two26 Liquid Wave SVG Curtain -->
+                <!-- Liquid Wave SVG Curtain (Themed with Project Accent Color) -->
                 <svg class="liquid-wave-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                  <path class="wave-path" [attr.data-wave-idx]="i" fill="#14110F" d="M 0,105 C 30,105 70,105 100,105 L 100,105 L 0,105 Z"></path>
+                  <path class="wave-path" [attr.data-wave-idx]="i" [attr.fill]="p.accent" d="M 0,105 C 30,105 70,105 100,105 L 100,105 L 0,105 Z"></path>
                 </svg>
               </div>
 

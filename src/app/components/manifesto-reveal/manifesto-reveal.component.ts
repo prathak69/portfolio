@@ -419,35 +419,34 @@ export class ManifestoRevealComponent implements AfterViewInit, OnDestroy {
       const diff = timelinePos - startTime;
 
       if (effectiveProgress <= 0 || diff <= 0) {
-        // Stage 0: Initial state (Muted peach / low-contrast) - All characters including 'W' are faded
-        charEl.style.color = 'rgba(255, 84, 0, 0.45)';
+        // Stage 0: Initial state (Muted website accent tint)
+        charEl.style.color = 'var(--manifesto-inactive, rgba(229, 57, 47, 0.4))';
         charEl.style.transform = 'scale(1) rotate(0deg)';
         charEl.style.textShadow = 'none';
       } else if (diff > 0 && diff <= 4.5) {
-        // Stage 1: Active Wavefront (Kinetic Zoom 1.15x + Brand Orange Glow #FF5400 + Dynamic Tilt)
+        // Stage 1: Active Wavefront (Kinetic Zoom 1.15x + Website Dynamic Accent + Glow)
         const u = diff / 4.5;
         const scale = 1.0 + 0.15 * Math.sin(u * Math.PI * 0.5);
         const randomTilt = Math.sin((i + 1) * 12.9898) * 3.5;
         const tilt = (randomTilt * Math.sin(u * Math.PI)).toFixed(2);
 
-        charEl.style.color = '#FF5400';
+        charEl.style.color = 'var(--manifesto-accent, #E5392F)';
         charEl.style.transform = `scale(${scale.toFixed(3)}) rotate(${tilt}deg)`;
-        charEl.style.textShadow = '0.6px 0.6px 0 #FF5400, -0.6px -0.6px 0 #FF5400, 0.6px 0.6px 0 #FF5400, -0.6px 0.6px 0 #FF5400';
+        charEl.style.textShadow = '0.6px 0.6px 0 var(--manifesto-accent, #E5392F), -0.6px -0.6px 0 var(--manifesto-accent, #E5392F), 0.6px 0.6px 0 var(--manifesto-accent, #E5392F), -0.6px 0.6px 0 var(--manifesto-accent, #E5392F)';
       } else if (diff > 4.5 && diff <= 9.0) {
-        // Stage 2: Settling to Solid Black
+        // Stage 2: Settling to Solid Ink
         const v = (diff - 4.5) / 4.5;
         const scale = 1.15 - 0.15 * v;
         const randomTilt = Math.sin((i + 1) * 12.9898) * 3.5;
         const tilt = (randomTilt * (1 - v) * 0.3).toFixed(2);
-        const r = Math.round(255 * (1 - v));
-        const g = Math.round(84 * (1 - v));
+        const pct = Math.round((1 - v) * 100);
 
-        charEl.style.color = `rgb(${r}, ${g}, 0)`;
+        charEl.style.color = `color-mix(in srgb, var(--manifesto-accent, #E5392F) ${pct}%, var(--manifesto-ink, #14110F))`;
         charEl.style.transform = `scale(${scale.toFixed(3)}) rotate(${tilt}deg)`;
-        charEl.style.textShadow = v > 0.5 ? 'none' : '0.4px 0.4px 0 rgba(255,84,0,0.3)';
+        charEl.style.textShadow = v > 0.5 ? 'none' : '0.4px 0.4px 0 color-mix(in srgb, var(--manifesto-accent, #E5392F) 30%, transparent)';
       } else {
-        // Stage 3: Fully settled solid black (#000000)
-        charEl.style.color = '#000000';
+        // Stage 3: Fully settled solid ink (#14110F)
+        charEl.style.color = 'var(--manifesto-ink, #14110F)';
         charEl.style.transform = 'scale(1) rotate(0deg)';
         charEl.style.textShadow = 'none';
       }

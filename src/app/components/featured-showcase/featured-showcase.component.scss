@@ -205,7 +205,12 @@
   .secondary-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.35) 50%, rgba(0, 0, 0, 0.1) 100%);
+    background: linear-gradient(
+      to top,
+      rgba(20, 17, 15, 0.94) 0%,
+      rgba(20, 17, 15, 0.5) 45%,
+      rgba(20, 17, 15, 0.1) 100%
+    );
     display: flex;
     align-items: flex-end;
     padding: 2rem;
@@ -216,22 +221,23 @@
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
-    color: #FFFFFF;
+    color: var(--cream, #FFF8F0);
   }
 
   .secondary-tag {
     font: 700 0.72rem / 1 var(--mono);
-    color: #FF5400;
+    color: var(--accent);
     text-transform: uppercase;
     letter-spacing: 0.08em;
   }
 
   .secondary-title {
-    font-size: 1.5rem;
+    font-size: 1.55rem;
     font-weight: 800;
     line-height: 1.15;
     margin: 0;
-    color: #FFFFFF;
+    color: var(--cream, #FFF8F0);
+    font-family: var(--display);
   }
 
   .secondary-cta {
@@ -240,12 +246,18 @@
     gap: 0.5rem;
     margin-top: 0.4rem;
     font: 700 0.78rem / 1 var(--mono);
-    color: #FFFFFF;
-    background: #FF5400;
-    padding: 0.5rem 1rem;
+    color: var(--cream, #FFF8F0);
+    background: var(--accent);
+    padding: 0.55rem 1.15rem;
     border-radius: 99px;
     width: fit-content;
-    box-shadow: 0 4px 14px rgba(255, 84, 0, 0.4);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    transition: transform 0.2s ease, filter 0.2s ease;
+
+    &:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
   }
 
   .secondary-arrow {

@@ -2,6 +2,18 @@
   display: block;
   width: 100%;
   position: relative;
+  --manifesto-bg: var(--bg, #FFF8F0);
+  --manifesto-paper: var(--paper, #F7EFE5);
+  --manifesto-ink: var(--ink, #14110F);
+  --manifesto-accent: var(--accent, #E5392F);
+  --manifesto-inactive: color-mix(in srgb, var(--manifesto-accent) 38%, transparent);
+}
+
+:host-context(.night-shift) {
+  --manifesto-bg: #171715;
+  --manifesto-paper: #21211E;
+  --manifesto-ink: #F7F4EE;
+  --manifesto-inactive: color-mix(in srgb, var(--manifesto-accent) 42%, transparent);
 }
 
 /* -------------------------------------------------------------
@@ -11,7 +23,8 @@
   position: relative;
   width: 100%;
   height: 250vh;
-  background-color: #F8EEE8; /* Two26 exact brand-secondary */
+  background-color: var(--manifesto-bg);
+  transition: background-color 0.4s ease;
 }
 
 /* -------------------------------------------------------------
@@ -54,7 +67,7 @@
 .about-text,
 .manifesto-header {
   font-family: 'NeueMontreal', 'Neuemontreal', var(--font-heading, 'Plus Jakarta Sans', sans-serif);
-  color: #000000;
+  color: var(--manifesto-ink);
   text-align: center;
   text-transform: uppercase;
   margin-bottom: 1.25rem;
@@ -63,6 +76,7 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   line-height: 100%;
+  transition: color 0.4s ease;
 
   @media (min-width: 768px) {
     margin-bottom: 1.75rem;
@@ -72,9 +86,10 @@
     font-size: 19px;
     font-weight: 700;
     letter-spacing: 0.05em;
-    color: #000000;
+    color: var(--manifesto-ink);
     text-transform: uppercase;
     line-height: 100%;
+    transition: color 0.4s ease;
   }
 }
 
@@ -100,13 +115,14 @@
 .about-para,
 .manifesto-paragraph {
   font-family: 'MDNichromeTest Dark', 'Mdnichrometest Dark', 'MD Nichrome Test Dark', 'Mdnichrometest', sans-serif;
-  color: #000000;
+  color: var(--manifesto-ink);
   text-align: center;
   letter-spacing: -1px;
   margin: 0 auto;
   font-weight: 400;
   line-height: 105%;
   user-select: none;
+  transition: color 0.4s ease;
 
   /* Responsive desktop sizing scaling gracefully to 84px */
   font-size: clamp(2.2rem, 5vw, 84px);
@@ -131,7 +147,7 @@
 .char {
   display: inline-block;
   position: relative;
-  color: rgba(255, 84, 0, 0.45);
+  color: var(--manifesto-inactive);
   transform-origin: center center;
   will-change: transform, color;
   backface-visibility: hidden;
@@ -139,10 +155,10 @@
 }
 
 /* -------------------------------------------------------------
-   Two26 Studio Pill Badges (Exact Sizes, Positions & Tilts)
+   Themed Pill Badges (Using Website Accent & Elevation)
    ------------------------------------------------------------- */
 .about-pill {
-  background-color: #FF5400;
+  background-color: var(--manifesto-accent);
   border-radius: 100px;
   justify-content: center;
   align-items: center;
@@ -151,14 +167,14 @@
   border: none;
   outline: none;
   cursor: pointer;
-  color: #F9E2E1;
-  box-shadow: 0 4px 16px rgba(255, 84, 0, 0.35);
+  color: var(--cream, #FFF8F0);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--manifesto-accent) 40%, transparent);
   z-index: 30;
   white-space: nowrap;
   user-select: none;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background-color 0.3s ease;
 
   @media (min-width: 640px) {
     font-size: 0.88rem;
@@ -171,8 +187,8 @@
   }
 
   &:hover {
-    box-shadow: 0 8px 24px rgba(255, 84, 0, 0.55);
-    filter: brightness(1.05);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--manifesto-accent) 55%, transparent);
+    filter: brightness(1.08);
   }
 
   &:active {
@@ -182,7 +198,7 @@
 
 .hero-pill-text {
   font-family: 'NeueMontreal', 'Neuemontreal', var(--font-heading, 'Plus Jakarta Sans', sans-serif);
-  color: #F9E2E1;
+  color: var(--cream, #FFF8F0);
   font-size: 1em;
   font-weight: 500;
   letter-spacing: -0.01em;
