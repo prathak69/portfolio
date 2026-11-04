@@ -411,6 +411,9 @@ export class ManifestoRevealComponent implements AfterViewInit, OnDestroy {
     const timelinePos = effectiveProgress * 100;
     const letterAnimSpan = 82;
 
+    // The 3 iconic stacking curtain loader colors (Red, Blue, Green)
+    const triColors = ['#E5392F', '#2F5BFF', '#5CC46B'];
+
     for (let i = 0; i < this.charElements.length; i++) {
       const charEl = this.charElements[i];
       if (!charEl) continue;
@@ -419,40 +422,46 @@ export class ManifestoRevealComponent implements AfterViewInit, OnDestroy {
       const diff = timelinePos - startTime;
 
       if (effectiveProgress <= 0 || diff <= 0) {
-        // Stage 0: Initial state (Clean muted whisper) - All characters including 'W' start unrevealed
+        // Stage 0: Initial state (Clean muted whisper) - All characters start unrevealed without harsh glow
         charEl.style.color = 'var(--manifesto-inactive, rgba(20, 17, 15, 0.22))';
         charEl.style.transform = 'scale(1) rotate(0deg)';
         charEl.style.textShadow = 'none';
       } else if (diff > 0 && diff <= 4.5) {
-        // Stage 1: Active Wavefront (Kinetic Zoom 1.16x + Prismatic Rainbow Wave + Dynamic Tilt)
+        // Stage 1: Active Wavefront (Kinetic Zoom 1.15x + 3 Stacking Colors + Crisp Anti-Glow Shadow)
         const u = diff / 4.5;
-        const scale = 1.0 + 0.16 * Math.sin(u * Math.PI * 0.5);
+        const scale = 1.0 + 0.15 * Math.sin(u * Math.PI * 0.5);
         const randomTilt = Math.sin((i + 1) * 12.9898) * 3.5;
         const tilt = (randomTilt * Math.sin(u * Math.PI)).toFixed(2);
 
-        // Continuous chromatic rainbow spectrum: shifts across character index and scroll travel
-        const hue = Math.round((i * 15 + timelinePos * 3) % 360);
-        const rainbowColor = `hsl(${hue}, 96%, 54%)`;
+        // Harmonious tri-color cycle across Red (#E5392F), Blue (#2F5BFF), Green (#5CC46B)
+        const colorPos = (i * 0.32 + timelinePos * 0.08) % 3;
+        const colorIdx = Math.floor(colorPos);
+        const frac = colorPos - colorIdx;
+        const c1 = triColors[colorIdx % 3];
+        const c2 = triColors[(colorIdx + 1) % 3];
+        const charColor = `color-mix(in srgb, ${c2} ${Math.round(frac * 100)}%, ${c1})`;
 
-        charEl.style.color = rainbowColor;
+        charEl.style.color = charColor;
         charEl.style.transform = `scale(${scale.toFixed(3)}) rotate(${tilt}deg)`;
-        charEl.style.textShadow = `0.8px 0.8px 0 ${rainbowColor}, -0.8px -0.8px 0 ${rainbowColor}, 0 0 14px color-mix(in srgb, ${rainbowColor} 65%, transparent)`;
+        charEl.style.textShadow = `0.4px 0.4px 0 ${charColor}, -0.4px -0.4px 0 ${charColor}`;
       } else if (diff > 4.5 && diff <= 9.0) {
-        // Stage 2: Settling Phase - Rainbow hue smoothly deepens and morphs into solid black ink
+        // Stage 2: Settling Phase - Smoothly blends from tri-color into solid black ink (#14110F)
         const v = (diff - 4.5) / 4.5;
-        const scale = 1.16 - 0.16 * v;
+        const scale = 1.15 - 0.15 * v;
         const randomTilt = Math.sin((i + 1) * 12.9898) * 3.5;
         const tilt = (randomTilt * (1 - v) * 0.3).toFixed(2);
         const pct = Math.round((1 - v) * 100);
 
-        const hue = Math.round((i * 15 + timelinePos * 3) % 360);
-        const rainbowColor = `hsl(${hue}, 96%, 54%)`;
+        const colorPos = (i * 0.32 + timelinePos * 0.08) % 3;
+        const colorIdx = Math.floor(colorPos);
+        const frac = colorPos - colorIdx;
+        const c1 = triColors[colorIdx % 3];
+        const c2 = triColors[(colorIdx + 1) % 3];
+        const charColor = `color-mix(in srgb, ${c2} ${Math.round(frac * 100)}%, ${c1})`;
 
-        charEl.style.color = `color-mix(in srgb, ${rainbowColor} ${pct}%, var(--manifesto-ink, #14110F))`;
+        charEl.style.color = `color-mix(in srgb, ${charColor} ${pct}%, var(--manifesto-ink, #14110F))`;
         charEl.style.transform = `scale(${scale.toFixed(3)}) rotate(${tilt}deg)`;
-        charEl.style.textShadow = v > 0.5
-          ? 'none'
-          : `0.4px 0.4px 0 color-mix(in srgb, ${rainbowColor} 30%, transparent)`;
+        charEl.style.textShadow = 'none';
       } else {
         // Stage 3: Fully settled clean solid black ink (#14110F)
         charEl.style.color = 'var(--manifesto-ink, #14110F)';

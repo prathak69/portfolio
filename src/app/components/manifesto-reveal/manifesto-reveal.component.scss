@@ -203,47 +203,49 @@
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
 
-/* Pill 1: "Professional overthinkers" (.about-pill.second) - Sunrise Coral & Amber */
+/* Pill 1: "Professional overthinkers" (.about-pill.second) - Red (Loader Panel 1) */
 .about-pill.second {
   position: absolute;
   top: 23%;
   left: 81%;
-  background: linear-gradient(135deg, #FF5400 0%, #FFC93C 100%);
-  box-shadow: 0 4px 18px rgba(255, 84, 0, 0.4);
+  background-color: #E5392F;
+  box-shadow: 0 4px 14px rgba(229, 57, 47, 0.3);
   transform: translate(-50%, calc(-50% + 22px)) rotate(-4deg) scale(0.6);
 
   &:hover {
-    box-shadow: 0 8px 26px rgba(255, 84, 0, 0.6);
+    box-shadow: 0 8px 20px rgba(229, 57, 47, 0.45);
+    filter: brightness(1.08);
   }
 }
 
-/* Pill 2: "Nerding out on design" (.about-pill.first) - Emerald to Electric Blue */
+/* Pill 2: "Nerding out on design" (.about-pill.first) - Blue (Loader Panel 2) */
 .about-pill.first {
   position: absolute;
   top: 57%;
   left: 12%;
-  background: linear-gradient(135deg, #5CC46B 0%, #2F5BFF 100%);
-  box-shadow: 0 4px 18px rgba(47, 91, 255, 0.4);
+  background-color: #2F5BFF;
+  box-shadow: 0 4px 14px rgba(47, 91, 255, 0.3);
   transform: translate(-50%, calc(-50% + 22px)) rotate(5deg) scale(0.6);
 
   &:hover {
-    box-shadow: 0 8px 26px rgba(47, 91, 255, 0.6);
+    box-shadow: 0 8px 20px rgba(47, 91, 255, 0.45);
+    filter: brightness(1.08);
   }
 }
 
-/* Pill 3: "Allergic to generic" (.about-pill.third) - Cosmic Violet to Neon Pink */
+/* Pill 3: "Allergic to generic" (.about-pill.third) - Green (Loader Panel 3) */
 .about-pill.third {
   position: absolute;
   top: 75%;
   left: 68%;
-  background: linear-gradient(135deg, #8B5CF6 0%, #FF8FB1 100%);
-  box-shadow: 0 4px 18px rgba(139, 92, 246, 0.4);
+  background-color: #5CC46B;
+  box-shadow: 0 4px 14px rgba(92, 196, 107, 0.3);
   transform: translate(-50%, calc(-50% + 22px)) rotate(-4.5deg) scale(0.6);
 
   &:hover {
-    box-shadow: 0 8px 26px rgba(139, 92, 246, 0.6);
+    box-shadow: 0 8px 20px rgba(92, 196, 107, 0.45);
+    filter: brightness(1.08);
   }
 }
